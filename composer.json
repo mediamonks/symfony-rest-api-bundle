@@ -1,0 +1,32 @@
+{
+  "name": "mediamonks/rest-api-bundle",
+  "type": "symfony-bundle",
+  "description": "MediaMonks Rest API Bundle",
+  "keywords": [
+    "rest",
+    "api",
+    "bundle"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Robert Slootjes",
+      "email": "robert@mediamonks.com"
+    }
+  ],
+  "require": {
+    "php": "^5.5.9|^7.0",
+    "symfony/framework-bundle": "^2.8|~3.0",
+    "jms/serializer-bundle": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "MediaMonks\\RestApiBundle\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    }
+  }
+}

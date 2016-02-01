@@ -42,3 +42,19 @@ class AppKernel extends Kernel
     // ...
 }
 ```
+
+Usage
+=====
+
+By default the event subscriber will be active on all calls that start with /api, however you can also implement
+the MediaMonks\RestApiBundle\RestApiControllerInterface on a controller to force the event subscriber to become active.
+
+You can simply return a string, array, object, Symfony response or exception from a controller and it will be
+automatically converted into a proper output conforming to the MediaMonks Rest API Spec.
+
+Todo
+====
+
+- Add tests
+- Add documentation
+- Add config options

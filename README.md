@@ -17,6 +17,11 @@ This bundle provides tools to implement an API according to the MediaMonks REST 
 - Supports forcing a "200 OK" status method
 - Supports paginated responses
 
+Requirements
+============
+
+- [JMSSerializerBundle](https://github.com/schmittjoh/JMSSerializerBundle) needs to be installed and enabled
+
 Installation
 ============
 

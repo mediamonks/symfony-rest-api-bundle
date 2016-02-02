@@ -207,7 +207,6 @@ class ResponseContainer
                     'message' => $this->exception->getMessage()
                 ];
             }
-            //$error['message'] = trim($this->getApp()->trans($error['message']));
             $return['error'] = $error;
         }
 

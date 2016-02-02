@@ -13,6 +13,7 @@ use MediaMonks\RestApiBundle\Response\PaginatedResponseAbstract;
 class ResponseContainer
 {
     const ERROR_HTTP_PREFIX = 'error.http.';
+    const ERROR_GENERAL_PREFIX = 'error.';
 
     /**
      * @var int
@@ -203,7 +204,8 @@ class ResponseContainer
                 ];
             } else {
                 $error = [
-                    'code'    => $this->exception->getCode(),
+                    'code'    => trim(self::ERROR_GENERAL_PREFIX .
+                        StringUtil::classToSnakeCase($this->exception, 'Exception'), '.'),
                     'message' => $this->exception->getMessage()
                 ];
             }

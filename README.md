@@ -70,10 +70,3 @@ the MediaMonks\RestApiBundle\RestApiControllerInterface on a controller to force
 
 You can simply return a string, array, object, Symfony response or exception from a controller and it will be
 automatically converted into a proper output conforming to the MediaMonks Rest API Spec.
-
-Todo
-====
-
-- Add tests
-- Add documentation
-- Add config options

@@ -66,6 +66,4 @@ abstract class PaginatedResponseAbstract
     {
         $this->total = $total;
     }
-
-
 }

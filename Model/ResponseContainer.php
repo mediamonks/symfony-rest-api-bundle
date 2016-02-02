@@ -207,7 +207,7 @@ class ResponseContainer
                     'message' => $this->exception->getMessage()
                 ];
             }
-            //$error['message'] = trim($this->getApp()->trans($error['message'])); // @todo implement translations
+            //$error['message'] = trim($this->getApp()->trans($error['message']));
             $return['error'] = $error;
         }
 
@@ -262,7 +262,6 @@ class ResponseContainer
      * This is called when an exception is thrown for the second time
      *
      * @return string
-     * @todo properly handle multiple exceptions
      */
     public function __toString()
     {

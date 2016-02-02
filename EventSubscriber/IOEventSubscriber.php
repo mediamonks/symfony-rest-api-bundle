@@ -162,7 +162,7 @@ class IOEventSubscriber implements EventSubscriberInterface
         $default = self::FORMAT_JSON;
         $format  = $request->getRequestFormat($request->query->get('_format', $default));
         if (!in_array($format, $this->formats)) {
-            $format = $serializerFormat = $default;
+            $format = $default;
         }
         $request->setRequestFormat($format);
     }

@@ -2,9 +2,9 @@
 
 namespace MediaMonks\RestApiBundle\Exception;
 
+use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
-use MediaMonks\RestApiBundle\Model\ResponseContainer;
 
 class FormValidationException extends \Exception
 {

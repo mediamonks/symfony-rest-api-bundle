@@ -10,7 +10,6 @@ This bundle provides tools to implement an API according to the MediaMonks REST 
 - Supports forcing a "200 OK" status method
 - Supports paginated responses
 
-[![Build Status](https://travis-ci.org/FriendsOfSymfony/FOSRestBundle.svg?branch=master)](https://travis-ci.org/FriendsOfSymfony/FOSRestBundle)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/c42e43fd-9c7b-47e1-8264-3a98961e9236/mini.png)](https://insight.sensiolabs.com/projects/c42e43fd-9c7b-47e1-8264-3a98961e9236)
 [![Total Downloads](https://poser.pugx.org/FriendsOfSymfony/symfony-rest-api-bundle/downloads.svg)](https://packagist.org/packages/mediamonks/rest-api-bundle)
 [![Latest Stable Version](https://poser.pugx.org/MediaMonks/symfony-rest-api-bundle/v/stable.svg)](https://packagist.org/packages/mediamonks/rest-api-bundlee)

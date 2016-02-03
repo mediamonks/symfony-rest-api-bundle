@@ -16,8 +16,11 @@
   ],
   "require": {
     "php": "^5.4|~7.0",
-    "symfony/symfony": "^2.3|^3.0",
+    "symfony/framework-bundle": "^2.7|^3.0",
     "jms/serializer-bundle": "^1.0"
+  },
+  "require-dev": {
+    "symfony/symfony": "^2.7|^3.0"
   },
   "autoload": {
     "psr-4": {

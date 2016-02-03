@@ -11,6 +11,7 @@ use MediaMonks\RestApiBundle\Controller\RestApiControllerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -251,15 +252,14 @@ class IOEventSubscriber implements EventSubscriberInterface
                     break;
                 default:
                     $headers           = $response->headers;
-                    $response          = new JsonResponse(null, $response->getStatusCode());
-                    $response->headers = $headers;
-                    $response->setContent($contentSerialized);
+                    $response          = new JsonResponse($contentSerialized, $response->getStatusCode());
+                    $response->headers = $headers; // some headers might mess up if we pass it to the JsonResponse
                     break;
             }
         } catch (\Exception $e) {
-            $response = new JsonResponse([
+            $response = new SymfonyJsonResponse([
                 'error' => [
-                    'code'    => 'error.api.middleware',
+                    'code'    => ResponseContainer::ERROR_CODE_REST_API_BUNDLE,
                     'message' => $e->getMessage()
                 ]
             ]);
@@ -325,10 +325,10 @@ class IOEventSubscriber implements EventSubscriberInterface
         $this->active = false;
 
         if ($event instanceof FilterControllerEvent) {
-            if(!$event->isMasterRequest()) {
+            if (!$event->isMasterRequest()) {
                 return false;
             }
-            if($event->getController()[0] instanceof RestApiControllerInterface) {
+            if ($event->getController()[0] instanceof RestApiControllerInterface) {
                 return $this->active = true;
             }
         }

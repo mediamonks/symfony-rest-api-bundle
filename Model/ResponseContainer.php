@@ -6,14 +6,15 @@ use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use MediaMonks\RestApiBundle\Response\Response;
+use Symfony\Component\HttpFoundation\Response;
 use MediaMonks\RestApiBundle\Exception\FormValidationException;
 use MediaMonks\RestApiBundle\Response\PaginatedResponseAbstract;
 
 class ResponseContainer
 {
-    const ERROR_HTTP_PREFIX = 'error.http.';
-    const ERROR_GENERAL_PREFIX = 'error.';
+    const ERROR_CODE_GENERAL = 'error.%s';
+    const ERROR_CODE_HTTP = 'error.http.%s';
+    const ERROR_CODE_REST_API_BUNDLE = 'error.rest_api_bundle';
 
     /**
      * @var int
@@ -67,7 +68,7 @@ class ResponseContainer
                 return $this->exception->getStatusCode();
             } elseif (
                 array_key_exists($this->exception->getCode(), Response::$statusTexts)
-                && $this->exception->getCode() >= 400
+                && $this->exception->getCode() >= Response::HTTP_BAD_REQUEST
             ) {
                 return $this->exception->getCode();
             } else {
@@ -198,14 +199,12 @@ class ResponseContainer
                 $error = $this->exception->toArray();
             } elseif ($this->exception instanceof HttpException) {
                 $error = [
-                    'code'    => self::ERROR_HTTP_PREFIX .
-                        StringUtil::classToSnakeCase($this->exception, 'HttpException'),
+                    'code'    => $this->getExceptionErrorCode(self::ERROR_CODE_HTTP, 'HttpException'),
                     'message' => $this->exception->getMessage()
                 ];
             } else {
                 $error = [
-                    'code'    => trim(self::ERROR_GENERAL_PREFIX .
-                        StringUtil::classToSnakeCase($this->exception, 'Exception'), '.'),
+                    'code'    => trim($this->getExceptionErrorCode(self::ERROR_CODE_GENERAL, 'Exception'), '.'),
                     'message' => $this->exception->getMessage()
                 ];
             }
@@ -225,6 +224,16 @@ class ResponseContainer
         }
 
         return $return;
+    }
+
+    /**
+     * @param $errorCode
+     * @param null $trim
+     * @return string
+     */
+    protected function getExceptionErrorCode($errorCode, $trim = null)
+    {
+        return sprintf($errorCode, StringUtil::classToSnakeCase($this->exception, $trim));
     }
 
     /**
@@ -267,7 +276,7 @@ class ResponseContainer
     public function __toString()
     {
         $data                  = $this->toArray();
-        $data['error']['code'] = 'api.handler.error';
+        $data['error']['code'] = self::ERROR_CODE_REST_API_BUNDLE;
 
         return json_encode($data);
     }

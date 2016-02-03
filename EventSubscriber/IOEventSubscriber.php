@@ -7,7 +7,6 @@ use JMS\Serializer\Serializer;
 use MediaMonks\RestApiBundle\Response\Response as RestApiResponse;
 use MediaMonks\RestApiBundle\Response\JsonResponse;
 use MediaMonks\RestApiBundle\Model\ResponseContainer;
-use MediaMonks\RestApiBundle\Controller\RestApiControllerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,16 +84,16 @@ class IOEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST   => [
+            KernelEvents::REQUEST    => [
                 ['onRequest', 512]
             ],
-            KernelEvents::EXCEPTION => [
+            KernelEvents::EXCEPTION  => [
                 ['onException', 512],
             ],
-            KernelEvents::VIEW      => [
+            KernelEvents::VIEW       => [
                 ['onView', 0],
             ],
-            KernelEvents::RESPONSE  => [
+            KernelEvents::RESPONSE   => [
                 ['onResponse', 0],
                 ['onResponseLate', -512],
             ]
@@ -323,15 +322,6 @@ class IOEventSubscriber implements EventSubscriberInterface
         }
 
         $this->active = false;
-
-        if ($event instanceof FilterControllerEvent) {
-            if (!$event->isMasterRequest()) {
-                return false;
-            }
-            if ($event->getController()[0] instanceof RestApiControllerInterface) {
-                return $this->active = true;
-            }
-        }
 
         foreach ($this->whitelist as $whitelist) {
             if (preg_match($whitelist, $request->getPathInfo())) {

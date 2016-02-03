@@ -20,7 +20,8 @@ This bundle provides tools to implement an API according to the MediaMonks REST 
 Requirements
 ============
 
-- [JMSSerializerBundle](https://github.com/schmittjoh/JMSSerializerBundle) needs to be installed and enabled
+- [Symfony Framework](https://github.com/symfony/symfony) version 2.3+
+- [JMSSerializerBundle](https://github.com/schmittjoh/JMSSerializerBundle) version 1.0+
 
 Installation
 ============

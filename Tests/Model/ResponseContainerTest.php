@@ -98,4 +98,52 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
     }
+
+    public function testDataGettersSetter()
+    {
+        $data = ['foo', 'bar'];
+        $responseContainer = new ResponseContainer();
+        $responseContainer->setData($data);
+        $this->assertEquals($data, $responseContainer->getData());
+    }
+
+    public function testExeptionGettersSetter()
+    {
+        $exception = new \Exception;
+        $responseContainer = new ResponseContainer();
+        $responseContainer->setException($exception);
+        $this->assertEquals($exception, $responseContainer->getException());
+    }
+
+    public function testLocationGettersSetter()
+    {
+        $location = 'http://www.mediamonks.com';
+        $responseContainer = new ResponseContainer();
+        $responseContainer->setLocation($location);
+        $this->assertEquals($location, $responseContainer->getLocation());
+    }
+
+    public function testPaginationGettersSetter()
+    {
+        $pagination = ['limit' => 0, 'offset' => 0];
+        $responseContainer = new ResponseContainer();
+        $responseContainer->setPagination($pagination);
+        $this->assertEquals($pagination, $responseContainer->getPagination());
+    }
+
+    public function testReturnStatusCodeGetterSetter()
+    {
+        $statusCode = Response::HTTP_NOT_MODIFIED;
+        $responseContainer = new ResponseContainer();
+        $responseContainer->setReturnStatusCode($statusCode);
+        $this->assertEquals($statusCode, $responseContainer->getReturnStatusCode());
+    }
+
+    public function testStatusCodeGetterSetter()
+    {
+        $statusCode = Response::HTTP_NOT_MODIFIED;
+        $responseContainer = new ResponseContainer();
+        $responseContainer->setStatusCode($statusCode);
+        $this->assertEquals($statusCode, $responseContainer->getStatusCode());
+    }
 }

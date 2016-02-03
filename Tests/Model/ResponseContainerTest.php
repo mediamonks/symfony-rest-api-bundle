@@ -47,7 +47,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectPaginatedResponse()
     {
-        $paginatedResponse = new OffsetPaginatedResponse('foo', 1, 2, 3, 4);
+        $paginatedResponse = new OffsetPaginatedResponse('foo', 1, 2, 3);
         $responseContainer = ResponseContainer::createAutoDetect($paginatedResponse);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
@@ -65,7 +65,6 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectEmptyResponse()
     {
         $responseContainer = ResponseContainer::createAutoDetect(null);
-        //$this->assertEquals(Response::HTTP_NO_CONTENT, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
         $this->assertNull($responseContainer->getException());
         $this->assertNull($responseContainer->getLocation());

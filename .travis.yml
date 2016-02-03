@@ -35,4 +35,7 @@ install:
   - composer update --prefer-source $COMPOSER_FLAGS
 
 script:
-  - phpunit --coverage-text
+  - if [ "$TRAVIS_PHP_VERSION" == "5.6" ]; then phpunit --coverage-clover=coverage.clover; else phpunit; fi
+
+after_script:
+  - if [ "$TRAVIS_PHP_VERSION" == "5.6" ]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi

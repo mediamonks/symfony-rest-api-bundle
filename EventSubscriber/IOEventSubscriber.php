@@ -323,15 +323,15 @@ class IOEventSubscriber implements EventSubscriberInterface
 
         $this->active = false;
 
-        foreach ($this->whitelist as $whitelist) {
-            if (preg_match($whitelist, $request->getPathInfo())) {
-                return $this->active = true;
+        foreach ($this->blacklist as $blacklist) {
+            if (preg_match($blacklist, $request->getPathInfo())) {
+                return false;
             }
         }
 
-        foreach ($this->blacklist as $blacklist) {
-            if (preg_match($blacklist, $request->getPathInfo())) {
-                $this->active = false;
+        foreach ($this->whitelist as $whitelist) {
+            if (preg_match($whitelist, $request->getPathInfo())) {
+                $this->active = true;
             }
         }
 

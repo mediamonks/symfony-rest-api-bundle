@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/MediaMonks/symfony-rest-api-bundle.svg?branch=master)](https://travis-ci.org/MediaMonks/symfony-rest-api-bundle)
+[![Build Status](https://travis-ci.org/MediaMonks/SymfonyRestApiBundle.svg?branch=master)](https://travis-ci.org/MediaMonks/SymfonyRestApiBundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MediaMonks/SymfonyRestApiBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MediaMonks/SymfonyRestApiBundle/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/MediaMonks/SymfonyRestApiBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/MediaMonks/SymfonyRestApiBundle/?branch=master)
 [![Total Downloads](https://poser.pugx.org/mediamonks/rest-api-bundle/downloads)](https://packagist.org/packages/mediamonks/rest-api-bundle)
@@ -73,8 +73,7 @@ class AppKernel extends Kernel
 Usage
 =====
 
-By default the event subscriber will be active on all calls that start with /api, however you can also implement
-the MediaMonks\RestApiBundle\RestApiControllerInterface on a controller to force the event subscriber to become active.
+By default the event subscriber will be active on all calls that start with /api, /api/doc is ignored.
 
-You can simply return a string, array, object, Symfony response or exception from a controller and it will be
+You can simply return a string, array, object, Symfony response or throw an exception from a controller and it will be
 automatically converted into a proper output conforming to the MediaMonks Rest API Spec.

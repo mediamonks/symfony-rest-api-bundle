@@ -4,7 +4,7 @@
 [![Total Downloads](https://poser.pugx.org/mediamonks/rest-api-bundle/downloads)](https://packagist.org/packages/mediamonks/rest-api-bundle)
 [![Latest Stable Version](https://poser.pugx.org/mediamonks/rest-api-bundle/v/stable)](https://packagist.org/packages/mediamonks/rest-api-bundle)
 [![Latest Unstable Version](https://poser.pugx.org/mediamonks/rest-api-bundle/v/unstable)](https://packagist.org/packages/mediamonks/rest-api-bundle)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/c42e43fd-9c7b-47e1-8264-3a98961e9236.svg)]()
+[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/c42e43fd-9c7b-47e1-8264-3a98961e9236.svg)](https://insight.sensiolabs.com/projects/c42e43fd-9c7b-47e1-8264-3a98961e9236)
 [![License](https://poser.pugx.org/mediamonks/rest-api-bundle/license)](https://packagist.org/packages/mediamonks/rest-api-bundle)
 
 MediaMonksRestApiBundle

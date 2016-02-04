@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
@@ -30,7 +29,7 @@ class IOEventSubscriber implements EventSubscriberInterface
     /**
      * @var array
      */
-    protected $formats = [self::FORMAT_JSON, self::FORMAT_XML];
+    protected $outputFormats;
 
     /**
      * @var Serializer
@@ -50,21 +49,17 @@ class IOEventSubscriber implements EventSubscriberInterface
     /**
      * @var string
      */
-    protected $origin;
+    protected $postMessageOrigin;
 
     /**
      * @var array
      */
-    protected $whitelist = [
-        '~^/api~'
-    ];
+    protected $whitelist;
 
     /**
      * @var array
      */
-    protected $blacklist = [
-        '~^/api/doc~'
-    ];
+    protected $blacklist;
 
     /**
      * @param Serializer $serializer
@@ -106,8 +101,17 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function setOptions(array $options)
     {
-        if (isset($options['origin'])) {
-            $this->setOrigin($options['origin']);
+        if (isset($options['post_message_origin'])) {
+            $this->setPostMessageOrigin($options['post_message_origin']);
+        }
+        if (isset($options['whitelist'])) {
+            $this->setWhitelist($options['whitelist']);
+        }
+        if (isset($options['blacklist'])) {
+            $this->setBlacklist($options['blacklist']);
+        }
+        if (isset($options['output_formats'])) {
+            $this->setOutputFormats($options['output_formats']);
         }
         return $this;
     }
@@ -115,18 +119,72 @@ class IOEventSubscriber implements EventSubscriberInterface
     /**
      * @return string
      */
-    public function getOrigin()
+    public function getPostMessageOrigin()
     {
-        return $this->origin;
+        return $this->postMessageOrigin;
     }
 
     /**
-     * @param string $origin
+     * @param string $postMessageOrigin
      * @return $this
      */
-    public function setOrigin($origin)
+    public function setPostMessageOrigin($postMessageOrigin)
     {
-        $this->origin = $origin;
+        $this->postMessageOrigin = $postMessageOrigin;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOutputFormats()
+    {
+        return $this->outputFormats;
+    }
+
+    /**
+     * @param array $outputFormats
+     * @return IOEventSubscriber
+     */
+    public function setOutputFormats($outputFormats)
+    {
+        $this->outputFormats = $outputFormats;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWhitelist()
+    {
+        return $this->whitelist;
+    }
+
+    /**
+     * @param array $whitelist
+     * @return IOEventSubscriber
+     */
+    public function setWhitelist($whitelist)
+    {
+        $this->whitelist = $whitelist;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBlacklist()
+    {
+        return $this->blacklist;
+    }
+
+    /**
+     * @param array $blacklist
+     * @return IOEventSubscriber
+     */
+    public function setBlacklist($blacklist)
+    {
+        $this->blacklist = $blacklist;
         return $this;
     }
 
@@ -161,7 +219,7 @@ class IOEventSubscriber implements EventSubscriberInterface
     {
         $default = self::FORMAT_JSON;
         $format  = $request->getRequestFormat($request->query->get('_format', $default));
-        if (!in_array($format, $this->formats)) {
+        if (!in_array($format, $this->outputFormats)) {
             $format = $default;
         }
         $request->setRequestFormat($format);
@@ -297,7 +355,7 @@ class IOEventSubscriber implements EventSubscriberInterface
                                 'request'  => $request,
                                 'response' => $response,
                                 'callback' => $request->query->get('callback'),
-                                'origin'   => $this->getOrigin()
+                                'origin'   => $this->getPostMessageOrigin()
                             ]
                         )
                     )->headers->set('Content-Type', 'text/html');

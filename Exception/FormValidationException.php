@@ -3,6 +3,7 @@
 namespace MediaMonks\RestApiBundle\Exception;
 
 use MediaMonks\RestApiBundle\Util\StringUtil;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,7 +13,7 @@ class FormValidationException extends \Exception
     const FIELD_ERROR_PREFIX = 'error.form.validation.';
 
     /**
-     * @var Form
+     * @var FormInterface
      */
     protected $form;
 
@@ -74,11 +75,11 @@ class FormValidationException extends \Exception
     }
 
     /**
-     * @param $error
-     * @param null $child
+     * @param FormError $error
+     * @param null|FormInterface $child
      * @return array
      */
-    protected function toErrorArray($error, $child = null)
+    protected function toErrorArray(FormError $error, FormInterface $child = null)
     {
         $data = [];
         if (is_null($child)) {
@@ -87,18 +88,25 @@ class FormValidationException extends \Exception
             $data['field'] = $child->getName();
         }
         if (!is_null($error->getCause()) && !is_null($error->getCause()->getConstraint())) {
-            $data['code'] = self::FIELD_ERROR_PREFIX . StringUtil::classToSnakeCase(
-                    $error->getCause()->getConstraint()
-                );
+            $data['code'] = $this->getErrorCode(StringUtil::classToSnakeCase($error->getCause()->getConstraint()));
         } else {
             if (stristr($error->getMessage(), 'csrf')) {
-                $data['code'] = self::FIELD_ERROR_PREFIX . 'csrf';
+                $data['code'] = $this->getErrorCode('csrf');
             } else {
-                $data['code'] = self::FIELD_ERROR_PREFIX . 'general';
+                $data['code'] = $this->getErrorCode('general');
             }
         }
         $data['message'] = $error->getMessage();
 
         return $data;
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    protected function getErrorCode($value)
+    {
+        return sprintf(self::ERROR_MESSAGE . '.%s', $value);
     }
 }

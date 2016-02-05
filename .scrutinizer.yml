@@ -1,2 +1,5 @@
+filter:
+    excluded_paths: [Tests/*]
+
 tools:
     external_code_coverage: true

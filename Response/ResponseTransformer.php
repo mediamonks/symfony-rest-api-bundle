@@ -4,11 +4,12 @@ namespace MediaMonks\RestApiBundle\Response;
 
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
-use MediaMonks\RestApiBundle\Model\ResponseContainer;
+use MediaMonks\RestApiBundle\Model\ResponseModel;
 use MediaMonks\RestApiBundle\Request\Format;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ResponseTransformer implements ResponseTransformerInterface
 {
@@ -80,8 +81,8 @@ class ResponseTransformer implements ResponseTransformerInterface
         $content = $response->getContent();
 
         // convert content to content container
-        if (!$content instanceof ResponseContainer) {
-            $content = ResponseContainer::createAutoDetect($response);
+        if (!$content instanceof ResponseModel) {
+            $content = ResponseModel::createAutoDetect($response);
         }
 
         // override http status code if needed
@@ -105,12 +106,29 @@ class ResponseTransformer implements ResponseTransformerInterface
             $response->headers->set('X-Status-Code', Response::HTTP_OK);
         }
 
-        // serialize content container
+        $response = $this->serialize($request, $response, $content);
+
+        // force empty output on a no-content response
+        if ($content->isEmpty() && $response->isEmpty()) {
+            $response->setContent('');
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param ResponseModel $responseContainer
+     * @return JsonResponse|SymfonyJsonResponse|Response
+     */
+    protected function serialize(Request $request, SymfonyResponse $response, ResponseModel $responseContainer)
+    {
         try {
             $context = new SerializationContext();
             $context->setSerializeNull(true);
             $format            = $request->getRequestFormat();
-            $contentSerialized = $this->serializer->serialize($content->toArray(), $format, $context);
+            $contentSerialized = $this->serializer->serialize($responseContainer->toArray(), $format, $context);
             switch ($format) {
                 case Format::FORMAT_XML:
                     $response->setContent($contentSerialized);
@@ -124,15 +142,10 @@ class ResponseTransformer implements ResponseTransformerInterface
         } catch (\Exception $e) {
             $response = new SymfonyJsonResponse([
                 'error' => [
-                    'code'    => ResponseContainer::ERROR_CODE_REST_API_BUNDLE,
+                    'code'    => ResponseModel::ERROR_CODE_REST_API_BUNDLE,
                     'message' => $e->getMessage()
                 ]
             ]);
-        }
-
-        // force empty output on a no-content response
-        if ($content->isEmpty() && $response->isEmpty()) {
-            $response->setContent('');
         }
 
         return $response;

@@ -4,7 +4,7 @@ namespace MediaMonks\RestApiBundle\Request;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class RequestMatcher
+class RequestMatcher implements RequestMatcherInterface
 {
     const ATTRIBUTE_MATCHED = 'mediamonks_rest_api_matched';
 

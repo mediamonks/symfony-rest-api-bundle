@@ -2,12 +2,13 @@
 
 namespace MediaMonks\RestApiBundle\EventSubscriber;
 
-use MediaMonks\RestApiBundle\Request\RequestMatcher;
-use MediaMonks\RestApiBundle\Request\RequestTransformer;
+use MediaMonks\RestApiBundle\Model\ResponseModel;
+use MediaMonks\RestApiBundle\Request\RequestMatcherInterface;
+use MediaMonks\RestApiBundle\Request\RequestTransformerInterface;
 use MediaMonks\RestApiBundle\Response\Response as RestApiResponse;
-use MediaMonks\RestApiBundle\Model\ResponseContainer;
-use MediaMonks\RestApiBundle\Response\ResponseTransformer;
+use MediaMonks\RestApiBundle\Response\ResponseTransformerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
@@ -17,30 +18,30 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class IOEventSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var RequestMatcher
+     * @var RequestMatcherInterface
      */
     protected $requestMatcher;
 
     /**
-     * @var RequestTransformer
+     * @var RequestTransformerInterface
      */
     protected $requestTransformer;
 
     /**
-     * @var ResponseTransformer
+     * @var ResponseTransformerInterface
      */
     protected $responseTransformer;
 
     /**
      * IOEventSubscriber constructor.
-     * @param RequestMatcher $requestMatcher
-     * @param RequestTransformer $requestTransformer
-     * @param ResponseTransformer $responseTransformer
+     * @param RequestMatcherInterface $requestMatcher
+     * @param RequestTransformerInterface $requestTransformer
+     * @param ResponseTransformerInterface $responseTransformer
      */
     public function __construct(
-        RequestMatcher $requestMatcher,
-        RequestTransformer $requestTransformer,
-        ResponseTransformer $responseTransformer
+        RequestMatcherInterface $requestMatcher,
+        RequestTransformerInterface $requestTransformer,
+        ResponseTransformerInterface $responseTransformer
     ) {
         $this->requestMatcher      = $requestMatcher;
         $this->requestTransformer  = $requestTransformer;
@@ -63,7 +64,7 @@ class IOEventSubscriber implements EventSubscriberInterface
                 ['onView', 0],
             ],
             KernelEvents::RESPONSE  => [
-                ['onResponse', 0],
+                ['onResponseEarly', 0],
                 ['onResponseLate', -512],
             ]
         ];
@@ -74,7 +75,7 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function onRequest(GetResponseEvent $event)
     {
-        if (!$this->requestMatcher->matches($event->getRequest())) {
+        if (!$this->requestMatches($event->getRequest())) {
             return;
         }
         $this->requestTransformer->transform($event->getRequest());
@@ -87,12 +88,10 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function onException(GetResponseForExceptionEvent $event)
     {
-        if (!$this->requestMatcher->matches($event->getRequest())) {
+        if (!$this->requestMatches($event->getRequest())) {
             return;
         }
-        $event->setResponse(
-            new RestApiResponse(ResponseContainer::createAutoDetect($event->getException()))
-        );
+        $event->setResponse($this->createRestApiResponse($event->getException()));
     }
 
     /**
@@ -102,13 +101,10 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function onView(GetResponseForControllerResultEvent $event)
     {
-        if (!$this->requestMatcher->matches($event->getRequest())) {
+        if (!$this->requestMatches($event->getRequest())) {
             return;
         }
-        $response = new RestApiResponse(
-            ResponseContainer::createAutoDetect($event->getControllerResult())
-        );
-        $event->setResponse($response);
+        $event->setResponse($this->createRestApiResponse($event->getControllerResult()));
     }
 
     /**
@@ -116,9 +112,9 @@ class IOEventSubscriber implements EventSubscriberInterface
      *
      * @param FilterResponseEvent $event
      */
-    public function onResponse(FilterResponseEvent $event)
+    public function onResponseEarly(FilterResponseEvent $event)
     {
-        if (!$this->requestMatcher->matches($event->getRequest())) {
+        if (!$this->requestMatches($event->getRequest())) {
             return;
         }
         $event->setResponse($this->responseTransformer->transformEarly($event->getRequest(), $event->getResponse()));
@@ -131,9 +127,27 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function onResponseLate(FilterResponseEvent $event)
     {
-        if (!$this->requestMatcher->matches($event->getRequest())) {
+        if (!$this->requestMatches($event->getRequest())) {
             return;
         }
         $this->responseTransformer->transformLate($event->getRequest(), $event->getResponse());
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    protected function requestMatches(Request $request)
+    {
+        return $this->requestMatcher->matches($request);
+    }
+
+    /**
+     * @param $data
+     * @return RestApiResponse
+     */
+    protected function createRestApiResponse($data)
+    {
+        return new RestApiResponse(ResponseModel::createAutoDetect($data));
     }
 }

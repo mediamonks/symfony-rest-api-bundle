@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use MediaMonks\RestApiBundle\Exception\FormValidationException;
 use MediaMonks\RestApiBundle\Response\PaginatedResponseAbstract;
 
-class ResponseContainer
+class ResponseModel
 {
     const ERROR_CODE_GENERAL = 'error.%s';
     const ERROR_CODE_HTTP = 'error.http.%s';

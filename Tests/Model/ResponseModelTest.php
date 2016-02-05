@@ -2,17 +2,17 @@
 
 namespace MediaMonks\RestApiBundle\Tests\Model;
 
-use MediaMonks\RestApiBundle\Model\ResponseContainer;
+use MediaMonks\RestApiBundle\Model\ResponseModel;
 use MediaMonks\RestApiBundle\Response\OffsetPaginatedResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ResponseContainerTest extends \PHPUnit_Framework_TestCase
+class ResponseModelTest extends \PHPUnit_Framework_TestCase
 {
     public function testAutoDetectException()
     {
         $exception = new \Exception('foo');
-        $responseContainer = ResponseContainer::createAutoDetect($exception);
+        $responseContainer = ResponseModel::createAutoDetect($exception);
 
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
@@ -30,7 +30,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectHttpException()
     {
         $exception = new NotFoundHttpException('foo');
-        $responseContainer = ResponseContainer::createAutoDetect($exception);
+        $responseContainer = ResponseModel::createAutoDetect($exception);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
@@ -48,7 +48,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectPaginatedResponse()
     {
         $paginatedResponse = new OffsetPaginatedResponse('foo', 1, 2, 3);
-        $responseContainer = ResponseContainer::createAutoDetect($paginatedResponse);
+        $responseContainer = ResponseModel::createAutoDetect($paginatedResponse);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('string', $responseContainer->getData());
@@ -64,7 +64,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectEmptyResponse()
     {
-        $responseContainer = ResponseContainer::createAutoDetect(null);
+        $responseContainer = ResponseModel::createAutoDetect(null);
         $this->assertNull($responseContainer->getData());
         $this->assertNull($responseContainer->getException());
         $this->assertNull($responseContainer->getLocation());
@@ -75,7 +75,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectStringResponse()
     {
         $data = 'foo';
-        $responseContainer = ResponseContainer::createAutoDetect($data);
+        $responseContainer = ResponseModel::createAutoDetect($data);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('string', $responseContainer->getData());
@@ -88,7 +88,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectArrayResponse()
     {
         $data = ['foo', 'bar'];
-        $responseContainer = ResponseContainer::createAutoDetect($data);
+        $responseContainer = ResponseModel::createAutoDetect($data);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('array', $responseContainer->getData());
@@ -101,7 +101,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testDataGettersSetter()
     {
         $data = ['foo', 'bar'];
-        $responseContainer = new ResponseContainer();
+        $responseContainer = new ResponseModel();
         $responseContainer->setData($data);
         $this->assertEquals($data, $responseContainer->getData());
     }
@@ -109,7 +109,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testExeptionGettersSetter()
     {
         $exception = new \Exception;
-        $responseContainer = new ResponseContainer();
+        $responseContainer = new ResponseModel();
         $responseContainer->setException($exception);
         $this->assertEquals($exception, $responseContainer->getException());
     }
@@ -117,7 +117,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testLocationGettersSetter()
     {
         $location = 'http://www.mediamonks.com';
-        $responseContainer = new ResponseContainer();
+        $responseContainer = new ResponseModel();
         $responseContainer->setLocation($location);
         $this->assertEquals($location, $responseContainer->getLocation());
     }
@@ -125,7 +125,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testPaginationGettersSetter()
     {
         $pagination = ['limit' => 0, 'offset' => 0];
-        $responseContainer = new ResponseContainer();
+        $responseContainer = new ResponseModel();
         $responseContainer->setPagination($pagination);
         $this->assertEquals($pagination, $responseContainer->getPagination());
     }
@@ -133,7 +133,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testReturnStatusCodeGetterSetter()
     {
         $statusCode = Response::HTTP_NOT_MODIFIED;
-        $responseContainer = new ResponseContainer();
+        $responseContainer = new ResponseModel();
         $responseContainer->setReturnStatusCode($statusCode);
         $this->assertEquals($statusCode, $responseContainer->getReturnStatusCode());
     }
@@ -141,7 +141,7 @@ class ResponseContainerTest extends \PHPUnit_Framework_TestCase
     public function testStatusCodeGetterSetter()
     {
         $statusCode = Response::HTTP_NOT_MODIFIED;
-        $responseContainer = new ResponseContainer();
+        $responseContainer = new ResponseModel();
         $responseContainer->setStatusCode($statusCode);
         $this->assertEquals($statusCode, $responseContainer->getStatusCode());
     }

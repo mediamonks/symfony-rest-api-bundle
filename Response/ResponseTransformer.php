@@ -26,7 +26,7 @@ class ResponseTransformer implements ResponseTransformerInterface
     protected $twig;
 
     /**
-     * @var
+     * @var string
      */
     protected $postMessageOrigin;
 
@@ -138,6 +138,10 @@ class ResponseTransformer implements ResponseTransformerInterface
         return $response;
     }
 
+    /**
+     * @param Request $request
+     * @param SymfonyResponse $response
+     */
     public function transformLate(Request $request, SymfonyResponse $response)
     {
         if ($request->getRequestFormat() === Format::FORMAT_JSON

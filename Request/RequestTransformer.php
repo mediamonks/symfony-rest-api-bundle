@@ -26,7 +26,7 @@ class RequestTransformer implements RequestTransformerInterface
     public function transform(Request $request)
     {
         $this->acceptJsonBody($request);
-        $this->detectRequestFormat($request);
+        $this->setRequestFormat($request);
     }
 
     /**
@@ -43,7 +43,7 @@ class RequestTransformer implements RequestTransformerInterface
     /**
      * @param Request $request
      */
-    protected function detectRequestFormat(Request $request)
+    protected function setRequestFormat(Request $request)
     {
         $default = Format::getDefault();
         $format  = $request->getRequestFormat($request->query->get('_format', $default));

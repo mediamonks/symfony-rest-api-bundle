@@ -29,6 +29,7 @@
         <service id="mediamonks_rest_api.response_transformer" class="%mediamonks_rest_api.response_transformer.class%">
             <argument type="service" id="jms_serializer"/>
             <argument type="service" id="twig"/>
+            <argument type="collection"/>
         </service>
     </services>
 </container>

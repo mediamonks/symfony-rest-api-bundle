@@ -26,14 +26,49 @@ class ResponseTransformer implements ResponseTransformerInterface
     protected $twig;
 
     /**
+     * @var
+     */
+    protected $postMessageOrigin;
+
+    /**
      * ResponseTransformer constructor.
      * @param Serializer $serializer
      * @param \Twig_Environment $twig
+     * @param array $options
      */
-    public function __construct(Serializer $serializer, \Twig_Environment $twig)
+    public function __construct(Serializer $serializer, \Twig_Environment $twig, $options = [])
     {
-        $this->serializer          = $serializer;
-        $this->twig                = $twig;
+        $this->serializer = $serializer;
+        $this->twig       = $twig;
+        $this->setOptions($options);
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setOptions(array $options)
+    {
+        if(isset($options['post_message_origin'])) {
+            $this->setPostMessageOrigin($options['post_message_origin']);
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPostMessageOrigin()
+    {
+        return $this->postMessageOrigin;
+    }
+
+    /**
+     * @param mixed $postMessageOrigin
+     * @return ResponseTransformer
+     */
+    public function setPostMessageOrigin($postMessageOrigin)
+    {
+        $this->postMessageOrigin = $postMessageOrigin;
+        return $this;
     }
 
     /**
@@ -42,7 +77,7 @@ class ResponseTransformer implements ResponseTransformerInterface
      */
     public function transformEarly(Request $request, SymfonyResponse $response)
     {
-        $content  = $response->getContent();
+        $content = $response->getContent();
 
         // convert content to content container
         if (!$content instanceof ResponseContainer) {

@@ -2,7 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\Response;
 
-abstract class PaginatedResponseAbstract
+abstract class AbstractPaginatedResponse
 {
     /**
      * @var mixed
@@ -27,7 +27,7 @@ abstract class PaginatedResponseAbstract
      */
     public function __construct($data, $limit, $total = null)
     {
-        $this->data = $data;
+        $this->data  = $data;
         $this->limit = $limit;
         $this->total = $total;
     }

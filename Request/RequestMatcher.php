@@ -37,7 +37,7 @@ class RequestMatcher implements RequestMatcherInterface
      */
     public function matches(Request $request, $requestType = HttpKernelInterface::MASTER_REQUEST)
     {
-        if($requestType !== HttpKernelInterface::MASTER_REQUEST) {
+        if ($requestType !== HttpKernelInterface::MASTER_REQUEST) {
             return false;
         }
 

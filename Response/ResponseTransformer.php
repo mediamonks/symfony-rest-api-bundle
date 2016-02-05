@@ -48,7 +48,7 @@ class ResponseTransformer implements ResponseTransformerInterface
      */
     public function setOptions(array $options)
     {
-        if(isset($options['post_message_origin'])) {
+        if (isset($options['post_message_origin'])) {
             $this->setPostMessageOrigin($options['post_message_origin']);
         }
     }
@@ -79,12 +79,10 @@ class ResponseTransformer implements ResponseTransformerInterface
     {
         $content = $response->getContent();
 
-        // convert content to content container
         if (!$content instanceof ResponseModel) {
             $content = ResponseModel::createAutoDetect($response);
         }
 
-        // override http status code if needed
         $statusCode = $content->getStatusCode();
         if (!empty($statusCode)) {
             $response->setStatusCode($content->getStatusCode());
@@ -96,23 +94,36 @@ class ResponseTransformer implements ResponseTransformerInterface
             $content->setStatusCode(Response::HTTP_NO_CONTENT);
         }
 
-        // put statusCode in response and force 200 OK in header?
-        if ($request->headers->has('X-Force-Status-Code-200')
-            || ($request->getRequestFormat() == Format::FORMAT_JSON && $request->query->has('callback'))
-        ) {
-            $content->setReturnStatusCode(true);
-            $response->setStatusCode(Response::HTTP_OK);
-            $response->headers->set('X-Status-Code', Response::HTTP_OK);
-        }
+        $this->forceStatusCodeHttpOK($request, $response, $content);
 
         $response = $this->serialize($request, $response, $content);
 
-        // force empty output on a no-content response
         if ($content->isEmpty() && $response->isEmpty()) {
             $response->setContent('');
         }
 
         return $response;
+    }
+
+    /**
+     * Check if we should put the status code in the output and force a 200 OK in the header
+     *
+     * @param Request $request
+     * @param SymfonyResponse $response
+     * @param ResponseModel $responseContainer
+     */
+    protected function forceStatusCodeHttpOK(
+        Request $request,
+        SymfonyResponse $response,
+        ResponseModel $responseContainer
+    ) {
+        if ($request->headers->has('X-Force-Status-Code-200')
+            || ($request->getRequestFormat() == Format::FORMAT_JSON && $request->query->has('callback'))
+        ) {
+            $responseContainer->setReturnStatusCode(true);
+            $response->setStatusCode(Response::HTTP_OK);
+            $response->headers->set('X-Status-Code', Response::HTTP_OK);
+        }
     }
 
     /**
@@ -155,6 +166,11 @@ class ResponseTransformer implements ResponseTransformerInterface
      * @param SymfonyResponse $response
      */
     public function transformLate(Request $request, SymfonyResponse $response)
+    {
+        $this->wrapResponse($request, $response);
+    }
+
+    protected function wrapResponse(Request $request, SymfonyResponse $response)
     {
         if ($request->getRequestFormat() === Format::FORMAT_JSON
             && $request->query->has('callback')

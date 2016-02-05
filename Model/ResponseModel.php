@@ -2,13 +2,12 @@
 
 namespace MediaMonks\RestApiBundle\Model;
 
+use MediaMonks\RestApiBundle\Exception\FormValidationException;
+use MediaMonks\RestApiBundle\Response\AbstractPaginatedResponse;
 use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Response;
-use MediaMonks\RestApiBundle\Exception\FormValidationException;
-use MediaMonks\RestApiBundle\Response\PaginatedResponseAbstract;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ResponseModel
 {
@@ -22,7 +21,7 @@ class ResponseModel
     protected $statusCode = Response::HTTP_OK;
 
     /**
-     * @var bool
+     * @var bool|int
      */
     protected $returnStatusCode = false;
 
@@ -59,7 +58,7 @@ class ResponseModel
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getStatusCode()
     {
@@ -140,7 +139,7 @@ class ResponseModel
      * @param mixed $exception
      * @return $this
      */
-    public function setException($exception)
+    public function setException(\Exception $exception)
     {
         $this->exception = $exception;
 
@@ -158,7 +157,7 @@ class ResponseModel
     /**
      * @param array $pagination
      */
-    public function setPagination($pagination)
+    public function setPagination(array $pagination)
     {
         $this->pagination = $pagination;
     }
@@ -254,13 +253,13 @@ class ResponseModel
     {
         if ($content instanceof \Exception) {
             $this->setException($content);
-        } elseif ($content instanceof PaginatedResponseAbstract) {
+        } elseif ($content instanceof AbstractPaginatedResponse) {
             $this->setPagination($content->toArray());
             $this->setData($content->getData());
         } elseif ($content instanceof RedirectResponse) {
             $this->setLocation($content->headers->get('Location'));
             $this->setStatusCode($content->getStatusCode());
-        } elseif ($content instanceof SymfonyResponse) {
+        } elseif ($content instanceof Response) {
             $this->setData($content->getContent());
             $this->setStatusCode($content->getStatusCode());
         } else {

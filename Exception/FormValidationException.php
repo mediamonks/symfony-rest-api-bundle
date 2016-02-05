@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 class FormValidationException extends \Exception
 {
     const ERROR_MESSAGE = 'error.form.validation';
-    const FIELD_ERROR_PREFIX = 'error.form.validation.';
 
     /**
      * @var FormInterface

@@ -2,7 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\Response;
 
-class OffsetPaginatedResponse extends PaginatedResponseAbstract
+class OffsetPaginatedResponse extends AbstractPaginatedResponse
 {
     /**
      * @var int
@@ -37,6 +37,9 @@ class OffsetPaginatedResponse extends PaginatedResponseAbstract
         $this->offset = $offset;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         $data = [

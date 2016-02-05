@@ -2,7 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\Response;
 
-class CursorPaginatedResponse extends PaginatedResponseAbstract
+class CursorPaginatedResponse extends AbstractPaginatedResponse
 {
     /**
      * @var mixed
@@ -60,6 +60,9 @@ class CursorPaginatedResponse extends PaginatedResponseAbstract
         $this->after = $after;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         $data = [

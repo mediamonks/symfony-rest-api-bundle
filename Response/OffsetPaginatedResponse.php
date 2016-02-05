@@ -2,7 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\Response;
 
-class OffsetPaginatedResponse extends AbstractPaginatedResponse
+class OffsetPaginatedResponse extends AbstractPaginatedResponse implements PaginatedResponseInterface
 {
     /**
      * @var int

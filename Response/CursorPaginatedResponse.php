@@ -2,7 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\Response;
 
-class CursorPaginatedResponse extends AbstractPaginatedResponse
+class CursorPaginatedResponse extends AbstractPaginatedResponse implements PaginatedResponseInterface
 {
     /**
      * @var mixed

@@ -55,7 +55,7 @@ class FormValidationException extends \Exception
     protected function getErrorMessages(FormInterface $form)
     {
         $errors = [];
-        foreach ($form->getErrors() as $key => $error) {
+        foreach ($form->getErrors() as $error) {
             if ($form->isRoot()) {
                 $errors[] = $this->toErrorArray($error);
             } else {
@@ -78,7 +78,7 @@ class FormValidationException extends \Exception
      * @param null|FormInterface $child
      * @return array
      */
-    protected function toErrorArray(FormError $error, FormInterface $child = null)
+    protected function toErrorArray(FormError $error = null, FormInterface $child = null)
     {
         $data = [];
         if (is_null($child)) {

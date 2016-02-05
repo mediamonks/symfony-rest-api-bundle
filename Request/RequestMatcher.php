@@ -45,28 +45,31 @@ class RequestMatcher implements RequestMatcherInterface
             return true;
         }
 
-        return $this->matchAgainstWhitelistAndBlacklist($request);
+        $match = $this->matchRequestPathAgainstLists($request->getPathInfo());
+
+        if($match) {
+            $request->attributes->set(self::ATTRIBUTE_MATCHED, true);
+        }
+
+        return $match;
     }
 
     /**
-     * @param Request $request
+     * @param $requestPath
      * @return bool
      */
-    protected function matchAgainstWhitelistAndBlacklist(Request $request)
+    protected function matchRequestPathAgainstLists($requestPath)
     {
-        foreach ($this->blacklist as $blacklist) {
-            if (preg_match($blacklist, $request->getPathInfo())) {
+        foreach ($this->blacklist as $regex) {
+            if (preg_match($regex, $requestPath)) {
                 return false;
             }
         }
-
-        foreach ($this->whitelist as $whitelist) {
-            if (preg_match($whitelist, $request->getPathInfo())) {
-                $request->attributes->set(self::ATTRIBUTE_MATCHED, true);
+        foreach ($this->whitelist as $regex) {
+            if (preg_match($regex, $requestPath)) {
                 return true;
             }
         }
-
         return false;
     }
 }

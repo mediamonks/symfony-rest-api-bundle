@@ -90,7 +90,7 @@ class ResponseModel
     }
 
     /**
-     * @return mixed
+     * @return bool|int
      */
     public function getReturnStatusCode()
     {
@@ -98,7 +98,7 @@ class ResponseModel
     }
 
     /**
-     * @param mixed $returnStatusCode
+     * @param int $returnStatusCode
      * @return $this
      */
     public function setReturnStatusCode($returnStatusCode)
@@ -128,7 +128,7 @@ class ResponseModel
     }
 
     /**
-     * @return mixed
+     * @return \Exception
      */
     public function getException()
     {
@@ -136,7 +136,7 @@ class ResponseModel
     }
 
     /**
-     * @param mixed $exception
+     * @param \Exception $exception
      * @return $this
      */
     public function setException(\Exception $exception)
@@ -228,8 +228,8 @@ class ResponseModel
     }
 
     /**
-     * @param $errorCode
-     * @param null $trim
+     * @param string $errorCode
+     * @param string $trim
      * @return string
      */
     protected function getExceptionErrorCode($errorCode, $trim = null)

@@ -164,6 +164,4 @@ class ResponseTransformer implements ResponseTransformerInterface
             }
         }
     }
-
-
 }

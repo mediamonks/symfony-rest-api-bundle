@@ -29,12 +29,12 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectHttpException()
     {
-        $exception = new NotFoundHttpException('foo');
-        $responseContainer = ResponseModel::createAutoDetect($exception);
+        $notFoundHttpException = new NotFoundHttpException('foo');
+        $responseContainer = ResponseModel::createAutoDetect($notFoundHttpException);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
-        $this->assertEquals($exception, $responseContainer->getException());
+        $this->assertEquals($notFoundHttpException, $responseContainer->getException());
         $this->assertNull($responseContainer->getLocation());
         $this->assertNull($responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
@@ -74,8 +74,8 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectStringResponse()
     {
-        $data = 'foo';
-        $responseContainer = ResponseModel::createAutoDetect($data);
+        $stringData = 'foo';
+        $responseContainer = ResponseModel::createAutoDetect($stringData);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('string', $responseContainer->getData());
@@ -87,8 +87,8 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectArrayResponse()
     {
-        $data = ['foo', 'bar'];
-        $responseContainer = ResponseModel::createAutoDetect($data);
+        $arrayData = ['foo', 'bar'];
+        $responseContainer = ResponseModel::createAutoDetect($arrayData);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('array', $responseContainer->getData());

@@ -9,7 +9,6 @@ use MediaMonks\RestApiBundle\Request\Format;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class ResponseTransformer implements ResponseTransformerInterface
 {
@@ -118,9 +117,9 @@ class ResponseTransformer implements ResponseTransformerInterface
 
     /**
      * @param Request $request
-     * @param Response $response
+     * @param SymfonyResponse $response
      * @param ResponseModel $responseContainer
-     * @return JsonResponse|SymfonyJsonResponse|Response
+     * @return SymfonyResponse
      */
     protected function serialize(Request $request, SymfonyResponse $response, ResponseModel $responseContainer)
     {

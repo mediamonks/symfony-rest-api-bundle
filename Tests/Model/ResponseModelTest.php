@@ -4,6 +4,7 @@ namespace MediaMonks\RestApiBundle\Tests\Model;
 
 use MediaMonks\RestApiBundle\Model\ResponseModel;
 use MediaMonks\RestApiBundle\Response\OffsetPaginatedResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -12,7 +13,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectException()
     {
         $exception = new \Exception('foo');
-        $responseContainer = ResponseModel::createAutoDetect($exception);
+        $responseContainer = $this->createResponseModel($exception);
 
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
@@ -30,7 +31,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectHttpException()
     {
         $notFoundHttpException = new NotFoundHttpException('foo');
-        $responseContainer = ResponseModel::createAutoDetect($notFoundHttpException);
+        $responseContainer = $this->createResponseModel($notFoundHttpException);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
@@ -48,7 +49,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectPaginatedResponse()
     {
         $paginatedResponse = new OffsetPaginatedResponse('foo', 1, 2, 3);
-        $responseContainer = ResponseModel::createAutoDetect($paginatedResponse);
+        $responseContainer = $this->createResponseModel($paginatedResponse);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('string', $responseContainer->getData());
@@ -64,7 +65,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectEmptyResponse()
     {
-        $responseContainer = ResponseModel::createAutoDetect(null);
+        $responseContainer = $this->createResponseModel(null);
         $this->assertNull($responseContainer->getData());
         $this->assertNull($responseContainer->getException());
         $this->assertNull($responseContainer->getLocation());
@@ -75,7 +76,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectStringResponse()
     {
         $stringData = 'foo';
-        $responseContainer = ResponseModel::createAutoDetect($stringData);
+        $responseContainer = $this->createResponseModel($stringData);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('string', $responseContainer->getData());
@@ -88,10 +89,38 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectArrayResponse()
     {
         $arrayData = ['foo', 'bar'];
-        $responseContainer = ResponseModel::createAutoDetect($arrayData);
+        $responseContainer = $this->createResponseModel($arrayData);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('array', $responseContainer->getData());
+        $this->assertNull($responseContainer->getException());
+        $this->assertNull($responseContainer->getLocation());
+        $this->assertNull($responseContainer->getPagination());
+        $this->assertFalse($responseContainer->isEmpty());
+    }
+
+    public function testAutoDetectRedirectResponse()
+    {
+        $uri = 'http://www.mediamonks.com';
+        $redirect = new RedirectResponse($uri, Response::HTTP_MOVED_PERMANENTLY);
+        $responseContainer = $this->createResponseModel($redirect);
+
+        $this->assertEquals(Response::HTTP_MOVED_PERMANENTLY, $responseContainer->getStatusCode());
+        $this->assertNull($responseContainer->getData());
+        $this->assertNull($responseContainer->getException());
+        $this->assertEquals($uri, $responseContainer->getLocation());
+        $this->assertNull($responseContainer->getPagination());
+        $this->assertFalse($responseContainer->isEmpty());
+    }
+
+    public function testAutoDetectSymfonyResponse()
+    {
+        $data = 'foo';
+        $redirect = new Response($data);
+        $responseContainer = $this->createResponseModel($redirect);
+
+        $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
+        $this->assertEquals($data, $responseContainer->getData());
         $this->assertNull($responseContainer->getException());
         $this->assertNull($responseContainer->getLocation());
         $this->assertNull($responseContainer->getPagination());
@@ -144,5 +173,14 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $responseContainer = new ResponseModel();
         $responseContainer->setStatusCode($statusCode);
         $this->assertEquals($statusCode, $responseContainer->getStatusCode());
+    }
+
+    /**
+     * @param $content
+     * @return $this
+     */
+    protected function createResponseModel($content)
+    {
+        return ResponseModel::createAutoDetect($content);
     }
 }

@@ -243,7 +243,7 @@ class ResponseModel
      */
     public function isEmpty()
     {
-        return (empty($this->exception) && is_null($this->data));
+        return (empty($this->exception) && is_null($this->data) && is_null($this->location));
     }
 
     /**

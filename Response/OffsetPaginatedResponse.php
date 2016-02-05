@@ -17,10 +17,8 @@ class OffsetPaginatedResponse extends PaginatedResponseAbstract
      */
     public function __construct($data, $offset, $limit, $total = null)
     {
-        $this->data   = $data;
+        parent::__construct($data, $limit, $total);
         $this->offset = $offset;
-        $this->limit  = $limit;
-        $this->total  = $total;
     }
 
     /**

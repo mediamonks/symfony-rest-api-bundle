@@ -20,6 +20,19 @@ abstract class PaginatedResponseAbstract
     protected $total;
 
     /**
+     * PaginatedResponseAbstract constructor.
+     * @param $data
+     * @param $limit
+     * @param null $total
+     */
+    public function __construct($data, $limit, $total = null)
+    {
+        $this->data = $data;
+        $this->limit = $limit;
+        $this->total = $total;
+    }
+
+    /**
      * @return mixed
      */
     public function getData()

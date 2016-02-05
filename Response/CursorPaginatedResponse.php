@@ -23,11 +23,9 @@ class CursorPaginatedResponse extends PaginatedResponseAbstract
      */
     public function __construct($data, $before, $after, $limit, $total = null)
     {
-        $this->data   = $data;
+        parent::__construct($data, $limit, $total);
         $this->before = $before;
         $this->after  = $after;
-        $this->limit  = $limit;
-        $this->total  = $total;
     }
 
     /**

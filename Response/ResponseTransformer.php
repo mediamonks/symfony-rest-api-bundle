@@ -54,7 +54,7 @@ class ResponseTransformer implements ResponseTransformerInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getPostMessageOrigin()
     {
@@ -62,7 +62,7 @@ class ResponseTransformer implements ResponseTransformerInterface
     }
 
     /**
-     * @param mixed $postMessageOrigin
+     * @param string $postMessageOrigin
      * @return ResponseTransformer
      */
     public function setPostMessageOrigin($postMessageOrigin)

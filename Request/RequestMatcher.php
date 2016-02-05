@@ -47,7 +47,7 @@ class RequestMatcher implements RequestMatcherInterface
 
         $match = $this->matchRequestPathAgainstLists($request->getPathInfo());
 
-        if($match) {
+        if ($match) {
             $request->attributes->set(self::ATTRIBUTE_MATCHED, true);
         }
 

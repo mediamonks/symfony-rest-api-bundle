@@ -6,15 +6,29 @@
 
     <parameters>
         <parameter key="mediamonks_rest_api.io_event_subscriber.class">MediaMonks\RestApiBundle\EventSubscriber\IOEventSubscriber</parameter>
+        <parameter key="mediamonks_rest_api.request_matcher.class">MediaMonks\RestApiBundle\Request\RequestMatcher</parameter>
+        <parameter key="mediamonks_rest_api.request_transformer.class">MediaMonks\RestApiBundle\Request\RequestTransformer</parameter>
+        <parameter key="mediamonks_rest_api.response_transformer.class">MediaMonks\RestApiBundle\Response\ResponseTransformer</parameter>
     </parameters>
 
     <services>
         <service id="mediamonks_rest_api.io_event_subscriber" class="%mediamonks_rest_api.io_event_subscriber.class%">
             <tag name="kernel.event_subscriber"/>
 
+            <argument type="service" id="mediamonks_rest_api.request_matcher"/>
+            <argument type="service" id="mediamonks_rest_api.request_transformer"/>
+            <argument type="service" id="mediamonks_rest_api.response_transformer"/>
+        </service>
+        <service id="mediamonks_rest_api.request_matcher" class="%mediamonks_rest_api.request_matcher.class%">
+            <argument type="collection"/>
+            <argument type="collection"/>
+        </service>
+        <service id="mediamonks_rest_api.request_transformer" class="%mediamonks_rest_api.request_transformer.class%">
+            <argument type="collection"/>
+        </service>
+        <service id="mediamonks_rest_api.response_transformer" class="%mediamonks_rest_api.response_transformer.class%">
             <argument type="service" id="jms_serializer"/>
             <argument type="service" id="twig"/>
-            <argument type="collection"/>
         </service>
     </services>
 </container>

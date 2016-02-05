@@ -25,12 +25,13 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
-        $container->getDefinition('mediamonks_rest_api.io_event_subscriber')->replaceArgument(2, [
-            'post_message_origin' => $config['post_message_origin'],
-            'whitelist' => $config['path']['whitelist'],
-            'blacklist' => $config['path']['blacklist'],
-            'output_formats' => $config['output_formats']
-        ]);
+        $container->getDefinition('mediamonks_rest_api.request_matcher')
+            ->replaceArgument(0, $config['path']['whitelist']);
+        $container->getDefinition('mediamonks_rest_api.request_matcher')
+            ->replaceArgument(1, $config['path']['blacklist']);
+
+        $container->getDefinition('mediamonks_rest_api.request_transformer')
+            ->replaceArgument(0, $config['output_formats']);
     }
 
     /**

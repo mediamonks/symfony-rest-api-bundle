@@ -3,7 +3,7 @@
 namespace MediaMonks\RestApiBundle\Exception;
 
 use MediaMonks\RestApiBundle\Util\StringUtil;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class FormValidationException extends \Exception
@@ -17,11 +17,11 @@ class FormValidationException extends \Exception
     protected $form;
 
     /**
-     * @param Form $form
+     * @param FormInterface $form
      * @param string $message
      * @param \Exception|int $code
      */
-    public function __construct(Form $form, $message = self::ERROR_MESSAGE, $code = Response::HTTP_BAD_REQUEST)
+    public function __construct(FormInterface $form, $message = self::ERROR_MESSAGE, $code = Response::HTTP_BAD_REQUEST)
     {
         $this->form    = $form;
         $this->message = $message;
@@ -49,10 +49,10 @@ class FormValidationException extends \Exception
     }
 
     /**
-     * @param Form $form
+     * @param FormInterface $form
      * @return array
      */
-    protected function getErrorMessages(Form $form)
+    protected function getErrorMessages(FormInterface $form)
     {
         $errors = [];
         foreach ($form->getErrors() as $key => $error) {

@@ -189,41 +189,43 @@ class ResponseModel
     public function toArray()
     {
         $return = [];
-
         if ($this->getReturnStatusCode()) {
             $return['statusCode'] = $this->getStatusCode();
         }
-
         if (isset($this->exception)) {
-            if ($this->exception instanceof FormValidationException) {
-                $error = $this->exception->toArray();
-            } elseif ($this->exception instanceof HttpException) {
-                $error = [
-                    'code'    => $this->getExceptionErrorCode(self::ERROR_CODE_HTTP, 'HttpException'),
-                    'message' => $this->exception->getMessage()
-                ];
-            } else {
-                $error = [
-                    'code'    => trim($this->getExceptionErrorCode(self::ERROR_CODE_GENERAL, 'Exception'), '.'),
-                    'message' => $this->exception->getMessage()
-                ];
-            }
-            $return['error'] = $error;
+            $return['error'] = $this->exceptionToArray();
         }
-
         if (isset($this->data)) {
             $return['data'] = $this->data;
         }
-
         if (isset($this->location)) {
             $return['location'] = $this->location;
         }
-
         if (isset($this->pagination)) {
             $return['pagination'] = $this->pagination;
         }
-
         return $return;
+    }
+
+    /**
+     * @return array
+     */
+    protected function exceptionToArray()
+    {
+        if ($this->exception instanceof FormValidationException) {
+            $error = $this->exception->toArray();
+        } elseif ($this->exception instanceof HttpException) {
+            $error = [
+                'code'    => $this->getExceptionErrorCode(self::ERROR_CODE_HTTP, 'HttpException'),
+                'message' => $this->exception->getMessage()
+            ];
+        } else {
+            $error = [
+                'code'    => trim($this->getExceptionErrorCode(self::ERROR_CODE_GENERAL, 'Exception'), '.'),
+                'message' => $this->exception->getMessage()
+            ];
+        }
+        return $error;
     }
 
     /**

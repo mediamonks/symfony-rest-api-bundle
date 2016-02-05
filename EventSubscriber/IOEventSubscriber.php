@@ -8,11 +8,11 @@ use MediaMonks\RestApiBundle\Request\RequestTransformerInterface;
 use MediaMonks\RestApiBundle\Response\Response as RestApiResponse;
 use MediaMonks\RestApiBundle\Response\ResponseTransformerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class IOEventSubscriber implements EventSubscriberInterface
@@ -75,7 +75,7 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function onRequest(GetResponseEvent $event)
     {
-        if (!$this->requestMatches($event->getRequest())) {
+        if (!$this->eventRequestMatches($event)) {
             return;
         }
         $this->requestTransformer->transform($event->getRequest());
@@ -88,7 +88,7 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function onException(GetResponseForExceptionEvent $event)
     {
-        if (!$this->requestMatches($event->getRequest())) {
+        if (!$this->eventRequestMatches($event)) {
             return;
         }
         $event->setResponse($this->createRestApiResponse($event->getException()));
@@ -101,7 +101,7 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function onView(GetResponseForControllerResultEvent $event)
     {
-        if (!$this->requestMatches($event->getRequest())) {
+        if (!$this->eventRequestMatches($event)) {
             return;
         }
         $event->setResponse($this->createRestApiResponse($event->getControllerResult()));
@@ -114,7 +114,7 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function onResponseEarly(FilterResponseEvent $event)
     {
-        if (!$this->requestMatches($event->getRequest())) {
+        if (!$this->eventRequestMatches($event)) {
             return;
         }
         $event->setResponse($this->responseTransformer->transformEarly($event->getRequest(), $event->getResponse()));
@@ -127,19 +127,19 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     public function onResponseLate(FilterResponseEvent $event)
     {
-        if (!$this->requestMatches($event->getRequest())) {
+        if (!$this->eventRequestMatches($event)) {
             return;
         }
         $this->responseTransformer->transformLate($event->getRequest(), $event->getResponse());
     }
 
     /**
-     * @param Request $request
+     * @param KernelEvent $event
      * @return bool
      */
-    protected function requestMatches(Request $request)
+    protected function eventRequestMatches(KernelEvent $event)
     {
-        return $this->requestMatcher->matches($request);
+        return $this->requestMatcher->matches($event->getRequest(), $event->getRequestType());
     }
 
     /**

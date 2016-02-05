@@ -2,6 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\DependencyInjection;
 
+use MediaMonks\RestApiBundle\Request\Format;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -22,11 +23,11 @@ final class Configuration implements ConfigurationInterface
                 ->scalarNode('post_message_origin')
                     ->defaultNull()
                 ->end()
-                ->arrayNode('path')
+                ->arrayNode('request_matcher')
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('whitelist')
-                            ->defaultValue(['~^/api~'])
+                            ->defaultValue(['~^/api/$~', '~^/api~'])
                             ->prototype('scalar')
                             ->end()
                         ->end()
@@ -38,11 +39,11 @@ final class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->arrayNode('output_formats')
-                    ->defaultValue(['json'])
+                    ->defaultValue([Format::getDefault()])
                     ->prototype('scalar')
                     ->validate()
-                        ->ifNotInArray(['xml', 'json'])
-                        ->thenInvalid('Formats can only contain "json" and "xml", not "%s"')
+                        ->ifNotInArray(Format::getAvailable())
+                        ->thenInvalid('Formats can only contain "' . implode('"', Format::getAvailable()) . '", not "%s"')
                     ->end()
                 ->end()
             ->end();

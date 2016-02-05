@@ -14,4 +14,12 @@ class Format
     {
         return self::FORMAT_JSON;
     }
+
+    /**
+     * @return array
+     */
+    public static function getAvailable()
+    {
+        return [self::FORMAT_JSON, self::FORMAT_XML];
+    }
 }

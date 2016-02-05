@@ -2,8 +2,8 @@
 
 namespace MediaMonks\RestApiBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
@@ -26,9 +26,9 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
         $loader->load('services.xml');
 
         $container->getDefinition('mediamonks_rest_api.request_matcher')
-            ->replaceArgument(0, $config['path']['whitelist']);
+            ->replaceArgument(0, $config['request_matcher']['whitelist']);
         $container->getDefinition('mediamonks_rest_api.request_matcher')
-            ->replaceArgument(1, $config['path']['blacklist']);
+            ->replaceArgument(1, $config['request_matcher']['blacklist']);
 
         $container->getDefinition('mediamonks_rest_api.request_transformer')
             ->replaceArgument(0, $config['output_formats']);

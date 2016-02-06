@@ -21,7 +21,7 @@ class ResponseModel
     protected $statusCode = Response::HTTP_OK;
 
     /**
-     * @var bool|int
+     * @var bool
      */
     protected $returnStatusCode = false;
 
@@ -98,7 +98,7 @@ class ResponseModel
     }
 
     /**
-     * @param int $returnStatusCode
+     * @param bool $returnStatusCode
      * @return $this
      */
     public function setReturnStatusCode($returnStatusCode)

@@ -6,7 +6,7 @@ class StringUtil
 {
     /**
      * @param $class
-     * @param null $trim
+     * @param string $trim
      * @return string
      */
     public static function classToSnakeCase($class, $trim = null)

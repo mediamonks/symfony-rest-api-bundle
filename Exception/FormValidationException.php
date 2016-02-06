@@ -55,17 +55,21 @@ class FormValidationException extends \Exception
     protected function getErrorMessages(FormInterface $form)
     {
         $errors = [];
-        foreach ($form->getErrors() as $error) {
-            if ($form->isRoot()) {
-                $errors[] = $this->toErrorArray($error);
-            } else {
-                $errors[] = $this->toErrorArray($error, $form);
+        if(!empty($form->getErrors())) {
+            foreach ($form->getErrors() as $error) {
+                if ($form->isRoot()) {
+                    $errors[] = $this->toErrorArray($error);
+                } else {
+                    $errors[] = $this->toErrorArray($error, $form);
+                }
             }
         }
-        foreach ($form->all() as $child) {
-            if (!$child->isValid()) {
-                foreach ($this->getErrorMessages($child) as $error) {
-                    $errors[] = $error;
+        if(!empty($form->all())) {
+            foreach ($form->all() as $child) {
+                if (!$child->isValid()) {
+                    foreach ($this->getErrorMessages($child) as $error) {
+                        $errors[] = $error;
+                    }
                 }
             }
         }

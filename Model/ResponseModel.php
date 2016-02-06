@@ -90,7 +90,7 @@ class ResponseModel
     }
 
     /**
-     * @return bool|int
+     * @return bool
      */
     public function getReturnStatusCode()
     {

@@ -28,4 +28,4 @@ Requirements
 Installation & Usage
 ====================
 
-The installation and usage instructions are located in the [documentation](https://github.com/MediaMonks/SymfonyRestApiBundle/tree/master/Resources/doc).
+The installation and usage instructions are located in the [documentation](/Resources/doc).

@@ -71,10 +71,10 @@ class FormValidationException extends \Exception
 
     /**
      * @param FormError $error
-     * @param null|FormInterface $child
+     * @param FormInterface $child
      * @return array
      */
-    protected function toErrorArray(FormError $error = null, FormInterface $child = null)
+    protected function toErrorArray(FormError $error = null, FormInterface $child)
     {
         $data = [];
         if (is_null($child)) {
@@ -101,7 +101,7 @@ class FormValidationException extends \Exception
         if (stristr($error->getMessage(), 'csrf')) {
             return $this->getErrorCode('csrf');
         }
-        return $data['code'] = $this->getErrorCode('general');
+        return $this->getErrorCode('general');
     }
 
     /**

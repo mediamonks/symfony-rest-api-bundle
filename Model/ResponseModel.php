@@ -269,6 +269,7 @@ class ResponseModel
         return $this;
     }
 
+    // @codeCoverageIgnoreStart
     /**
      * This is called when an exception is thrown for the second time
      *
@@ -281,4 +282,5 @@ class ResponseModel
 
         return json_encode($data);
     }
+    // @codeCoverageIgnoreEnd
 }

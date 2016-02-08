@@ -56,7 +56,7 @@ class FormValidationException extends \Exception
     {
         $errors = [];
         foreach ($form->getErrors() as $error) {
-            if(empty($error)) {
+            if (empty($error)) {
                 continue;
             }
             if ($form->isRoot()) {
@@ -66,7 +66,7 @@ class FormValidationException extends \Exception
             }
         }
         foreach ($form->all() as $child) {
-            if(empty($child)) {
+            if (empty($child)) {
                 continue;
             }
             if (!$child->isValid()) {

@@ -101,6 +101,17 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $matcher->matches($request));
     }
 
+    public function testMatchesAlreadyMatched()
+    {
+        $subject = new RequestMatcher(['~^/api$~']);
+        $request = $this->getRequestFromPath('/api');
+
+        // First match, path 1
+        $this->assertTrue($subject->matches($request));
+        // Second match, shortcut path 2
+        $this->assertTrue($subject->matches($request));
+    }
+
     /**
      * @param string $path
      * @return Request

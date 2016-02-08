@@ -27,10 +27,10 @@ file of your project:
     {
         public function registerBundles()
         {
-            $bundles = array(
+            $bundles = [
                 // ...
                 new MediaMonks\RestApiBundle\MediaMonksRestApiBundle(),
-            );
+            ];
 
             // ...
         }

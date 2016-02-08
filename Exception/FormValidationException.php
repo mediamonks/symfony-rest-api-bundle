@@ -70,17 +70,17 @@ class FormValidationException extends \Exception
     }
 
     /**
-     * @param FormError $error
-     * @param FormInterface $child
+     * @param FormError|null $error
+     * @param FormInterface|null $form
      * @return array
      */
-    protected function toErrorArray(FormError $error = null, FormInterface $child)
+    protected function toErrorArray(FormError $error = null, FormInterface $form = null)
     {
         $data = [];
-        if (is_null($child)) {
+        if (is_null($form)) {
             $data['field'] = '#';
         } else {
-            $data['field'] = $child->getName();
+            $data['field'] = $form->getName();
         }
         if (!is_null($error->getCause()) && !is_null($error->getCause()->getConstraint())) {
             $data['code'] = $this->getErrorCode(StringUtil::classToSnakeCase($error->getCause()->getConstraint()));

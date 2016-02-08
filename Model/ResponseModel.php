@@ -51,10 +51,10 @@ class ResponseModel
      */
     public static function createAutoDetect($content)
     {
-        $container = new self();
-        $container->autoDetectContent($content);
+        $responseModel = new self();
+        $responseModel->autoDetectContent($content);
 
-        return $container;
+        return $responseModel;
     }
 
     /**

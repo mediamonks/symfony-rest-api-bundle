@@ -40,4 +40,5 @@ You can set it by adding it to your configuration:
 .. code-block:: yaml
 
     # app/config/config.yml
-    post_message_origin: http://www.mediamonks.com/
+    mediamonks_rest_api:
+        post_message_origin: http://www.mediamonks.com/

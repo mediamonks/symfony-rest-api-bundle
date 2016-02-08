@@ -36,12 +36,10 @@ file of your project:
         }
     }
 
-C) Enable the Serializer
+C) Enable JMS Serializer
 ------------------------
 
-This bundle needs `JMSSerializerBundle`_ to work correctly.
-
-That was it!
+This bundle needs `JMSSerializerBundle`_ to work correctly so make that's setup as well.
 
 .. _`installation chapter`: https://getcomposer.org/doc/00-intro.md
 .. _`JMSSerializerBundle`: https://github.com/schmittjoh/JMSSerializerBundle

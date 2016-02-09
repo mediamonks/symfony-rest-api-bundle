@@ -274,7 +274,8 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
     protected function methodIsBound($method, $testEvent)
     {
         foreach (IOEventSubscriber::getSubscribedEvents() as $event => $listeners) {
-            foreach ($listeners as list($listener)) {
+            foreach ($listeners as $listener) {
+                list ($listener) = $listener;
                 if ($listener == $method && $event == $testEvent) {
                     $this->assertTrue(true);
                     return;

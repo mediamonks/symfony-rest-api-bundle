@@ -14,19 +14,64 @@ class ResponseModelFactory
      */
     public static function createFromContent($content)
     {
-        $responseModel = new ResponseModel();
-        if ($content instanceof \Exception) {
-            $responseModel->setException($content);
-        } elseif ($content instanceof PaginatedResponseInterface) {
-            $responseModel->setPagination($content);
-        } elseif ($content instanceof RedirectResponse) {
-            $responseModel->setRedirect($content);
-        } elseif ($content instanceof Response) {
-            $responseModel->setData($content->getContent());
-            $responseModel->setStatusCode($content->getStatusCode());
-        } else {
-            $responseModel->setData($content);
+        if ($content instanceof Response) {
+            return self::createFromResponse($content);
         }
-        return $responseModel;
+        if ($content instanceof PaginatedResponseInterface) {
+            return self::createFromPaginatedResponse($content);
+        }
+        if ($content instanceof \Exception) {
+            return self::createFromException($content);
+        }
+        return self::create()->setData($content);
+    }
+
+    /**
+     * @param Response $response
+     * @return ResponseModel
+     */
+    public static function createFromResponse(Response $response)
+    {
+        if ($response instanceof RedirectResponse) {
+            return self::createFromRedirectResponse($response);
+        }
+        return self::create()
+            ->setData($response->getContent())
+            ->setStatusCode($response->getStatusCode());
+    }
+
+    /**
+     * @param PaginatedResponseInterface $response
+     * @return ResponseModel
+     */
+    public static function createFromPaginatedResponse(PaginatedResponseInterface $response)
+    {
+        return self::create()->setPagination($response);
+    }
+
+    /**
+     * @param RedirectResponse $response
+     * @return $this
+     */
+    public static function createFromRedirectResponse(RedirectResponse $response)
+    {
+        return self::create()->setRedirect($response);
+    }
+
+    /**
+     * @param \Exception $exception
+     * @return ResponseModel
+     */
+    public static function createFromException(\Exception $exception)
+    {
+        return self::create()->setException($exception);
+    }
+
+    /**
+     * @return ResponseModel
+     */
+    public static function create()
+    {
+        return new ResponseModel;
     }
 }

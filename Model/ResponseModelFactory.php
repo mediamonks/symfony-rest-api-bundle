@@ -3,8 +3,8 @@
 namespace MediaMonks\RestApiBundle\Model;
 
 use MediaMonks\RestApiBundle\Response\PaginatedResponseInterface;
-use MediaMonks\RestApiBundle\Response\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ResponseModelFactory
 {

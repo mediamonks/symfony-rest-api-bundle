@@ -7,6 +7,7 @@ use MediaMonks\RestApiBundle\Response\OffsetPaginatedResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use \Mockery as m;
 
 class ResponseModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -173,6 +174,50 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $responseContainer = new ResponseModel();
         $responseContainer->setStatusCode($statusCode);
         $this->assertEquals($statusCode, $responseContainer->getStatusCode());
+    }
+
+    public function testGetCodeFromStatusCode()
+    {
+        $statusCode = Response::HTTP_BAD_REQUEST;
+        $code = 400;
+        $exception = new \Exception('', $code);
+
+        $responseContainer = new ResponseModel();
+        $responseContainer->setStatusCode($statusCode);
+        $responseContainer->setException($exception);
+
+        $this->assertEquals($code, $responseContainer->getStatusCode());
+    }
+
+    public function testToArrayStatusCode()
+    {
+        $responseContainer = new ResponseModel();
+        $responseContainer->setReturnStatusCode(Response::HTTP_OK);
+
+        $this->assertEquals(['statusCode' => Response::HTTP_OK], $responseContainer->toArray());
+    }
+
+    public function testToArrayLocation()
+    {
+        $location = 'http://www.mediamonks.com';
+
+        $responseContainer = new ResponseModel();
+        $responseContainer->setLocation($location);
+
+        $this->assertEquals(['location' => $location], $responseContainer->toArray());
+    }
+
+    public function testSomeExceptionToArrayFormValidationException()
+    {
+        $mockException = m::mock('\MediaMonks\RestApiBundle\Exception\FormValidationException');
+        $mockException->shouldReceive('toArray');
+        $mockException->shouldReceive('getFieldErrors');
+
+        $responseContainer = new ResponseModel();
+        $responseContainer->setException($mockException);
+
+        $expected = ['error' => ['code' => 0, 'message' => '', 'fields' => null]];
+        $this->assertEquals($expected, $responseContainer->toArray());
     }
 
     /**

@@ -193,11 +193,9 @@ class ResponseModel
         }
         if (isset($this->exception)) {
             $return['error'] = $this->exceptionToArray();
-        }
-        elseif (isset($this->redirect)) {
+        } elseif (isset($this->redirect)) {
             $return['location'] = $this->redirect->headers->get('Location');
-        }
-        else {
+        } else {
             $return += $this->toArrayData();
         }
         return $return;

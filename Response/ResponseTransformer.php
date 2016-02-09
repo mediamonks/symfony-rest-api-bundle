@@ -89,7 +89,7 @@ class ResponseTransformer implements ResponseTransformerInterface
 
         $response->setStatusCode($responseModel->getStatusCode());
         $this->forceStatusCodeHttpOK($request, $response, $responseModel);
-        $response = $this->serialize($request, $response, $responseModel);
+        $response = $this->createSerializedResponse($request, $response, $responseModel);
 
         return $response;
     }
@@ -121,33 +121,72 @@ class ResponseTransformer implements ResponseTransformerInterface
      * @param ResponseModel $responseModel
      * @return SymfonyResponse
      */
-    protected function serialize(Request $request, SymfonyResponse $response, ResponseModel $responseModel)
-    {
+    protected function createSerializedResponse(
+        Request $request,
+        SymfonyResponse $response,
+        ResponseModel $responseModel
+    ) {
         try {
-            $context = new SerializationContext();
-            $context->setSerializeNull(true);
-            $format            = $request->getRequestFormat();
-            $contentSerialized = $this->serializer->serialize($responseModel->toArray(), $format, $context);
-            switch ($format) {
-                case Format::FORMAT_XML:
-                    $response->setContent($contentSerialized);
-                    break;
-                default:
-                    $headers           = $response->headers;
-                    $response          = new JsonResponse($contentSerialized, $response->getStatusCode());
-                    $response->headers = $headers; // some headers might mess up if we pass it to the JsonResponse
-                    break;
-            }
+            $response = $this->serialize($request, $response, $responseModel);
         } catch (\Exception $e) {
             $response = new SymfonyJsonResponse([
                 'error' => [
-                    'code'    => Error::CODE_REST_API_BUNDLE,
+                    'code'    => Error::CODE_SERIALIZE,
                     'message' => $e->getMessage()
                 ]
             ]);
         }
 
         return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param SymfonyResponse $response
+     * @param ResponseModel $responseModel
+     * @return JsonResponse|SymfonyResponse
+     */
+    protected function serialize(Request $request, SymfonyResponse $response, ResponseModel $responseModel)
+    {
+        switch ($request->getRequestFormat()) {
+            case Format::FORMAT_XML:
+                $response->setContent($this->getSerializedContent($request, $responseModel));
+                break;
+            default:
+                $headers           = $response->headers;
+                $response          = new JsonResponse(
+                    $this->getSerializedContent($request, $responseModel),
+                    $response->getStatusCode()
+                );
+                $response->headers = $headers; // some headers might mess up if we pass it to the JsonResponse
+                break;
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param ResponseModel $responseModel
+     * @return mixed|string
+     */
+    protected function getSerializedContent(Request $request, ResponseModel $responseModel)
+    {
+        return $this->serializer->serialize(
+            $responseModel->toArray(),
+            $request->getRequestFormat(),
+            $this->getSerializerContext()
+        );
+    }
+
+    /**
+     * @return SerializationContext
+     */
+    protected function getSerializerContext()
+    {
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        return $context;
     }
 
     /**
@@ -166,9 +205,9 @@ class ResponseTransformer implements ResponseTransformerInterface
 
     /**
      * @param Request $request
-     * @param SymfonyResponse $response
+     * @param JsonResponse $response
      */
-    protected function wrapResponse(Request $request, SymfonyResponse $response)
+    protected function wrapResponse(Request $request, JsonResponse $response)
     {
         switch ($request->query->get(self::PARAMETER_WRAPPER)) {
             case self::WRAPPER_POST_MESSAGE:

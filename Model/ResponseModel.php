@@ -5,6 +5,7 @@ namespace MediaMonks\RestApiBundle\Model;
 use MediaMonks\RestApiBundle\Exception\FormValidationException;
 use MediaMonks\RestApiBundle\Response\AbstractPaginatedResponse;
 use MediaMonks\RestApiBundle\Response\Error;
+use MediaMonks\RestApiBundle\Response\PaginatedResponseInterface;
 use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +34,7 @@ class ResponseModel
     protected $exception;
 
     /**
-     * @var array
+     * @var PaginatedResponseInterface
      */
     protected $pagination;
 
@@ -61,17 +62,18 @@ class ResponseModel
     {
         if (isset($this->exception)) {
             return $this->getExceptionStatusCode();
-        }
-        elseif(isset($this->redirect)) {
+        } elseif (isset($this->redirect)) {
             return $this->redirect->getStatusCode();
-        }
-        elseif ($this->isEmpty()) {
+        } elseif ($this->isEmpty()) {
             return Response::HTTP_NO_CONTENT;
         }
 
         return $this->statusCode;
     }
 
+    /**
+     * @return int
+     */
     protected function getExceptionStatusCode()
     {
         if ($this->exception instanceof HttpException) {
@@ -163,11 +165,15 @@ class ResponseModel
     }
 
     /**
-     * @param array $pagination
+     * @param PaginatedResponseInterface $pagination
+     * @return $this
      */
-    public function setPagination(array $pagination)
+    public function setPagination(PaginatedResponseInterface $pagination)
     {
         $this->pagination = $pagination;
+        $this->setData($pagination->getData());
+
+        return $this;
     }
 
     /**
@@ -208,7 +214,7 @@ class ResponseModel
             $return['location'] = $this->redirect->headers->get('Location');
         }
         if (isset($this->pagination)) {
-            $return['pagination'] = $this->pagination;
+            $return['pagination'] = $this->pagination->toArray();
         }
         return $return;
     }
@@ -250,6 +256,7 @@ class ResponseModel
         return (
             empty($this->exception)
             && is_null($this->data)
+            && is_null($this->pagination)
             && is_null($this->redirect)
         );
     }
@@ -262,9 +269,8 @@ class ResponseModel
     {
         if ($content instanceof \Exception) {
             $this->setException($content);
-        } elseif ($content instanceof AbstractPaginatedResponse) {
-            $this->setPagination($content->toArray());
-            $this->setData($content->getData());
+        } elseif ($content instanceof PaginatedResponseInterface) {
+            $this->setPagination($content);
         } elseif ($content instanceof RedirectResponse) {
             $this->setRedirect($content);
         } elseif ($content instanceof Response) {

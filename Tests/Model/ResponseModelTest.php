@@ -55,7 +55,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $responseContainer->getData());
         $this->assertNull($responseContainer->getException());
         $this->assertNull($responseContainer->getRedirect());
-        $this->assertInternalType('array', $responseContainer->getPagination());
+        $this->assertEquals($paginatedResponse, $responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
 
         $responseContainerArray = $responseContainer->toArray();
@@ -158,7 +158,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testPaginationGettersSetter()
     {
-        $pagination = ['limit' => 0, 'offset' => 0];
+        $pagination = new OffsetPaginatedResponse('foo', 1, 2, 3);
         $responseContainer = new ResponseModel();
         $responseContainer->setPagination($pagination);
         $this->assertEquals($pagination, $responseContainer->getPagination());

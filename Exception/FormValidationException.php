@@ -82,10 +82,7 @@ class FormValidationException extends \Exception
     {
         $errors = [];
         foreach ($form->all() as $child) {
-            if (empty($child)) {
-                continue;
-            }
-            if (!$child->isValid()) {
+            if (!empty($child) && !$child->isValid()) {
                 foreach ($this->getErrorMessages($child) as $error) {
                     $errors[] = $error;
                 }

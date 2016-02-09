@@ -38,9 +38,9 @@ class ResponseModel
     protected $pagination;
 
     /**
-     * @var string
+     * @var RedirectResponse
      */
-    protected $location;
+    protected $redirect;
 
     /**
      * @param mixed $content
@@ -62,7 +62,10 @@ class ResponseModel
         if (isset($this->exception)) {
             return $this->getExceptionStatusCode();
         }
-        if ($this->isEmpty()) {
+        elseif(isset($this->redirect)) {
+            return $this->redirect->getStatusCode();
+        }
+        elseif ($this->isEmpty()) {
             return Response::HTTP_NO_CONTENT;
         }
 
@@ -84,7 +87,7 @@ class ResponseModel
     }
 
     /**
-     * @param mixed $statusCode
+     * @param int $statusCode
      * @return $this
      */
     public function setStatusCode($statusCode)
@@ -168,24 +171,23 @@ class ResponseModel
     }
 
     /**
-     * @return string
+     * @return RedirectResponse
      */
-    public function getLocation()
+    public function getRedirect()
     {
-        return $this->location;
+        return $this->redirect;
     }
 
     /**
-     * @param string $location
+     * @param RedirectResponse $redirect
      * @return $this
      */
-    public function setLocation($location)
+    public function setRedirect(RedirectResponse $redirect)
     {
-        $this->location = $location;
+        $this->redirect = $redirect;
 
         return $this;
     }
-
 
     /**
      * @return array
@@ -202,8 +204,8 @@ class ResponseModel
         if (isset($this->data)) {
             $return['data'] = $this->data;
         }
-        if (isset($this->location)) {
-            $return['location'] = $this->location;
+        if (isset($this->redirect)) {
+            $return['location'] = $this->redirect->headers->get('Location');
         }
         if (isset($this->pagination)) {
             $return['pagination'] = $this->pagination;
@@ -248,7 +250,7 @@ class ResponseModel
         return (
             empty($this->exception)
             && is_null($this->data)
-            && is_null($this->location)
+            && is_null($this->redirect)
         );
     }
 
@@ -264,8 +266,7 @@ class ResponseModel
             $this->setPagination($content->toArray());
             $this->setData($content->getData());
         } elseif ($content instanceof RedirectResponse) {
-            $this->setLocation($content->headers->get('Location'));
-            $this->setStatusCode($content->getStatusCode());
+            $this->setRedirect($content);
         } elseif ($content instanceof Response) {
             $this->setData($content->getContent());
             $this->setStatusCode($content->getStatusCode());

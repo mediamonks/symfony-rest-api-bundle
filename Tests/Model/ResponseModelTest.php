@@ -18,7 +18,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
         $this->assertEquals($exception, $responseContainer->getException());
-        $this->assertNull($responseContainer->getLocation());
+        $this->assertNull($responseContainer->getRedirect());
         $this->assertNull($responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
 
@@ -36,7 +36,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Response::HTTP_NOT_FOUND, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
         $this->assertEquals($notFoundHttpException, $responseContainer->getException());
-        $this->assertNull($responseContainer->getLocation());
+        $this->assertNull($responseContainer->getRedirect());
         $this->assertNull($responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
 
@@ -54,7 +54,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('string', $responseContainer->getData());
         $this->assertNull($responseContainer->getException());
-        $this->assertNull($responseContainer->getLocation());
+        $this->assertNull($responseContainer->getRedirect());
         $this->assertInternalType('array', $responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
 
@@ -69,7 +69,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Response::HTTP_NO_CONTENT, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
         $this->assertNull($responseContainer->getException());
-        $this->assertNull($responseContainer->getLocation());
+        $this->assertNull($responseContainer->getRedirect());
         $this->assertNull($responseContainer->getPagination());
         $this->assertTrue($responseContainer->isEmpty());
     }
@@ -82,7 +82,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('string', $responseContainer->getData());
         $this->assertNull($responseContainer->getException());
-        $this->assertNull($responseContainer->getLocation());
+        $this->assertNull($responseContainer->getRedirect());
         $this->assertNull($responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
     }
@@ -95,7 +95,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertInternalType('array', $responseContainer->getData());
         $this->assertNull($responseContainer->getException());
-        $this->assertNull($responseContainer->getLocation());
+        $this->assertNull($responseContainer->getRedirect());
         $this->assertNull($responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
     }
@@ -107,11 +107,14 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $responseContainer = $this->createResponseModel($redirect);
 
         $this->assertEquals(Response::HTTP_MOVED_PERMANENTLY, $responseContainer->getStatusCode());
-        $this->assertNull($responseContainer->getData());
         $this->assertNull($responseContainer->getException());
-        $this->assertEquals($uri, $responseContainer->getLocation());
+        $this->assertEquals($redirect, $responseContainer->getRedirect());
         $this->assertNull($responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
+
+        $data = $responseContainer->toArray();
+
+        $this->assertEquals($uri, $data['location']);
     }
 
     public function testAutoDetectSymfonyResponse()
@@ -123,7 +126,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
         $this->assertEquals($data, $responseContainer->getData());
         $this->assertNull($responseContainer->getException());
-        $this->assertNull($responseContainer->getLocation());
+        $this->assertNull($responseContainer->getRedirect());
         $this->assertNull($responseContainer->getPagination());
         $this->assertFalse($responseContainer->isEmpty());
     }
@@ -147,9 +150,10 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
     public function testLocationGettersSetter()
     {
         $location = 'http://www.mediamonks.com';
+        $redirect = new RedirectResponse($location);
         $responseContainer = new ResponseModel();
-        $responseContainer->setLocation($location);
-        $this->assertEquals($location, $responseContainer->getLocation());
+        $responseContainer->setRedirect($redirect);
+        $this->assertEquals($redirect, $responseContainer->getRedirect());
     }
 
     public function testPaginationGettersSetter()
@@ -166,15 +170,6 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $responseContainer = new ResponseModel();
         $responseContainer->setReturnStatusCode($statusCode);
         $this->assertEquals($statusCode, $responseContainer->getReturnStatusCode());
-    }
-
-    public function testStatusCodeGetterSetter()
-    {
-        $statusCode = Response::HTTP_OK;
-        $responseContainer = new ResponseModel();
-        $responseContainer->setData('OK');
-        $responseContainer->setStatusCode($statusCode);
-        $this->assertEquals($statusCode, $responseContainer->getStatusCode());
     }
 
     /**

@@ -9,6 +9,9 @@ use Symfony\Component\Form\FormInterface;
 
 class FormValidationException extends \Exception
 {
+    const ERROR_TYPE_GENERAL = 'general';
+    const ERROR_TYPE_CSRF = 'csrf';
+
     /**
      * @var FormInterface
      */
@@ -98,10 +101,10 @@ class FormValidationException extends \Exception
      */
     protected function getErrorCodeByMessage(FormError $error)
     {
-        if (stristr($error->getMessage(), 'csrf')) {
-            return $this->getErrorCode('csrf');
+        if (stristr($error->getMessage(), self::ERROR_TYPE_CSRF)) {
+            return $this->getErrorCode(self::ERROR_TYPE_CSRF);
         }
-        return $this->getErrorCode('general');
+        return $this->getErrorCode(self::ERROR_TYPE_GENERAL);
     }
 
     /**

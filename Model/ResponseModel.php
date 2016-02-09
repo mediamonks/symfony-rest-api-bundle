@@ -209,6 +209,7 @@ class ResponseModel
     protected function exceptionToArray()
     {
         $error = [
+            'code' => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.'),
             'message' => $this->exception->getMessage()
         ];
 
@@ -217,8 +218,6 @@ class ResponseModel
             $error['fields'] = $this->exception->getFieldErrors();
         } elseif ($this->exception instanceof HttpException) {
             $error['code'] = $this->getExceptionErrorCode(Error::CODE_HTTP, 'HttpException');
-        } else {
-            $error['code'] = trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.');
         }
         return $error;
     }

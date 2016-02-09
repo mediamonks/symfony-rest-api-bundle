@@ -194,14 +194,26 @@ class ResponseModel
         if (isset($this->exception)) {
             $return['error'] = $this->exceptionToArray();
         }
-        if (isset($this->data)) {
-            $return['data'] = $this->data;
-        }
-        if (isset($this->redirect)) {
+        elseif (isset($this->redirect)) {
             $return['location'] = $this->redirect->headers->get('Location');
         }
-        if (isset($this->pagination)) {
-            $return['pagination'] = $this->pagination->toArray();
+        else {
+            $return += $this->toArrayData();
+        }
+        return $return;
+    }
+
+    /**
+     * @return array
+     */
+    protected function toArrayData()
+    {
+        $return = [];
+        if (isset($this->data)) {
+            $return['data'] = $this->data;
+            if (isset($this->pagination)) {
+                $return['pagination'] = $this->pagination->toArray();
+            }
         }
         return $return;
     }

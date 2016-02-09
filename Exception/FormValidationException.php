@@ -73,11 +73,11 @@ class FormValidationException extends \Exception
     }
 
     /**
-     * @param FormError|null $error
+     * @param FormError $error
      * @param FormInterface|null $form
      * @return array
      */
-    protected function toErrorArray(FormError $error = null, FormInterface $form = null)
+    protected function toErrorArray(FormError $error, FormInterface $form = null)
     {
         $data = [];
         if (is_null($form)) {

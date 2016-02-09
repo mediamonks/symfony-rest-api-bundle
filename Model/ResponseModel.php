@@ -60,19 +60,27 @@ class ResponseModel
     public function getStatusCode()
     {
         if (isset($this->exception)) {
-            if ($this->exception instanceof HttpException) {
-                return $this->exception->getStatusCode();
-            } elseif (
-                array_key_exists($this->exception->getCode(), Response::$statusTexts)
-                && $this->exception->getCode() >= Response::HTTP_BAD_REQUEST
-            ) {
-                return $this->exception->getCode();
-            } else {
-                return Response::HTTP_INTERNAL_SERVER_ERROR;
-            }
+            return $this->getExceptionStatusCode();
+        }
+        if ($this->isEmpty()) {
+            return Response::HTTP_NO_CONTENT;
         }
 
         return $this->statusCode;
+    }
+
+    protected function getExceptionStatusCode()
+    {
+        if ($this->exception instanceof HttpException) {
+            return $this->exception->getStatusCode();
+        } elseif (
+            array_key_exists($this->exception->getCode(), Response::$statusTexts)
+            && $this->exception->getCode() >= Response::HTTP_BAD_REQUEST
+        ) {
+            return $this->exception->getCode();
+        }
+
+        return Response::HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /**
@@ -209,12 +217,12 @@ class ResponseModel
     protected function exceptionToArray()
     {
         $error = [
-            'code' => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.'),
+            'code'    => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.'),
             'message' => $this->exception->getMessage()
         ];
 
         if ($this->exception instanceof FormValidationException) {
-            $error['code'] = $this->exception->getCode();
+            $error['code']   = $this->exception->getCode();
             $error['fields'] = $this->exception->getFieldErrors();
         } elseif ($this->exception instanceof HttpException) {
             $error['code'] = $this->getExceptionErrorCode(Error::CODE_HTTP, 'HttpException');
@@ -237,7 +245,11 @@ class ResponseModel
      */
     public function isEmpty()
     {
-        return (empty($this->exception) && is_null($this->data) && is_null($this->location));
+        return (
+            empty($this->exception)
+            && is_null($this->data)
+            && is_null($this->location)
+        );
     }
 
     /**

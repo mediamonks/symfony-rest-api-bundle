@@ -156,7 +156,12 @@ class ResponseTransformer implements ResponseTransformerInterface
      */
     public function transformLate(Request $request, SymfonyResponse $response)
     {
-        $this->wrapResponse($request, $response);
+        if ($request->getRequestFormat() === Format::FORMAT_JSON
+            && $request->query->has(self::PARAMETER_CALLBACK)
+            && $response instanceof JsonResponse
+        ) {
+            $this->wrapResponse($request, $response);
+        }
     }
 
     /**
@@ -165,28 +170,23 @@ class ResponseTransformer implements ResponseTransformerInterface
      */
     protected function wrapResponse(Request $request, SymfonyResponse $response)
     {
-        if ($request->getRequestFormat() === Format::FORMAT_JSON
-            && $request->query->has(self::PARAMETER_CALLBACK)
-            && $response instanceof JsonResponse
-        ) {
-            switch ($request->query->get(self::PARAMETER_WRAPPER)) {
-                case self::WRAPPER_POST_MESSAGE:
-                    $response->setContent(
-                        $this->twig->render(
-                            'MediaMonksRestApiBundle::post_message.html.twig',
-                            [
-                                'request'  => $request,
-                                'response' => $response,
-                                'callback' => $request->query->get(self::PARAMETER_CALLBACK),
-                                'origin'   => $this->getPostMessageOrigin()
-                            ]
-                        )
-                    )->headers->set('Content-Type', 'text/html');
-                    break;
-                default:
-                    $response->setCallback($request->query->get(self::PARAMETER_CALLBACK));
-                    break;
-            }
+        switch ($request->query->get(self::PARAMETER_WRAPPER)) {
+            case self::WRAPPER_POST_MESSAGE:
+                $response->setContent(
+                    $this->twig->render(
+                        'MediaMonksRestApiBundle::post_message.html.twig',
+                        [
+                            'request'  => $request,
+                            'response' => $response,
+                            'callback' => $request->query->get(self::PARAMETER_CALLBACK),
+                            'origin'   => $this->getPostMessageOrigin()
+                        ]
+                    )
+                )->headers->set('Content-Type', 'text/html');
+                break;
+            default:
+                $response->setCallback($request->query->get(self::PARAMETER_CALLBACK));
+                break;
         }
     }
 }

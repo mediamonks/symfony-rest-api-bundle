@@ -2,14 +2,15 @@
 
 namespace MediaMonks\RestApiBundle\Exception;
 
+use MediaMonks\RestApiBundle\Response\Error;
 use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 class FormValidationException extends \Exception
 {
-    const ERROR_MESSAGE = 'error.form.validation';
+    const ERROR_TYPE_GENERAL = 'general';
+    const ERROR_TYPE_CSRF = 'csrf';
 
     /**
      * @var FormInterface
@@ -17,27 +18,19 @@ class FormValidationException extends \Exception
     protected $form;
 
     /**
+     * FormValidationException constructor.
      * @param FormInterface $form
-     * @param string $message
-     * @param \Exception|int $code
+     * @param int|string $message
+     * @param \Exception|string $code
      */
-    public function __construct(FormInterface $form, $message = self::ERROR_MESSAGE, $code = Response::HTTP_BAD_REQUEST)
-    {
+    public function __construct(
+        FormInterface $form,
+        $message = Error::MESSAGE_FORM_VALIDATION,
+        $code = Error::CODE_FORM_VALIDATION
+    ) {
         $this->form    = $form;
         $this->message = $message;
         $this->code    = $code;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        return [
-            'code'    => self::ERROR_MESSAGE,
-            'message' => self::ERROR_MESSAGE,
-            'fields'  => $this->getFieldErrors()
-        ];
     }
 
     /**
@@ -80,30 +73,38 @@ class FormValidationException extends \Exception
     }
 
     /**
-     * @param FormError $error
-     * @param null|FormInterface $child
+     * @param FormError|null $error
+     * @param FormInterface|null $form
      * @return array
      */
-    protected function toErrorArray(FormError $error = null, FormInterface $child = null)
+    protected function toErrorArray(FormError $error = null, FormInterface $form = null)
     {
         $data = [];
-        if (is_null($child)) {
+        if (is_null($form)) {
             $data['field'] = '#';
         } else {
-            $data['field'] = $child->getName();
+            $data['field'] = $form->getName();
         }
         if (!is_null($error->getCause()) && !is_null($error->getCause()->getConstraint())) {
             $data['code'] = $this->getErrorCode(StringUtil::classToSnakeCase($error->getCause()->getConstraint()));
         } else {
-            if (stristr($error->getMessage(), 'csrf')) {
-                $data['code'] = $this->getErrorCode('csrf');
-            } else {
-                $data['code'] = $this->getErrorCode('general');
-            }
+            $this->getErrorCodeByMessage($error);
         }
         $data['message'] = $error->getMessage();
 
         return $data;
+    }
+
+    /**
+     * @param FormError $error
+     * @return string
+     */
+    protected function getErrorCodeByMessage(FormError $error)
+    {
+        if (stristr($error->getMessage(), self::ERROR_TYPE_CSRF)) {
+            return $this->getErrorCode(self::ERROR_TYPE_CSRF);
+        }
+        return $this->getErrorCode(self::ERROR_TYPE_GENERAL);
     }
 
     /**
@@ -112,6 +113,6 @@ class FormValidationException extends \Exception
      */
     protected function getErrorCode($value)
     {
-        return sprintf(self::ERROR_MESSAGE . '.%s', $value);
+        return sprintf(Error::CODE_FORM_VALIDATION . '.%s', $value);
     }
 }

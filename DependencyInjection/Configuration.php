@@ -20,9 +20,6 @@ final class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('post_message_origin')
-                    ->defaultNull()
-                ->end()
                 ->arrayNode('request_matcher')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -44,7 +41,11 @@ final class Configuration implements ConfigurationInterface
                     ->validate()
                         ->ifNotInArray(Format::getAvailable())
                         ->thenInvalid('Formats can only contain "' . implode('"', Format::getAvailable()) . '", not "%s"')
+                        ->end()
                     ->end()
+                ->end()
+                ->scalarNode('post_message_origin')
+                    ->defaultNull()
                 ->end()
             ->end();
 

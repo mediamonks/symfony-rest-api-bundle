@@ -3,7 +3,7 @@
 namespace MediaMonks\RestApiBundle\DependencyInjection;
 
 use MediaMonks\RestApiBundle\Request\Format;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -27,9 +27,9 @@ final class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param NodeDefinition $node
+     * @param ArrayNodeDefinition $node
      */
-    protected function addRequestMatcherNode(NodeDefinition $node)
+    protected function addRequestMatcherNode(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode('request_matcher')
@@ -50,9 +50,9 @@ final class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param NodeDefinition $node
+     * @param ArrayNodeDefinition $node
      */
-    protected function addOutputFormatNode(NodeDefinition $node)
+    protected function addOutputFormatNode(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode('output_formats')
@@ -67,9 +67,9 @@ final class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param NodeDefinition $node
+     * @param ArrayNodeDefinition $node
      */
-    protected function addPostMessageOriginNode(NodeDefinition $node)
+    protected function addPostMessageOriginNode(ArrayNodeDefinition $node)
     {
         $node->children()
             ->scalarNode('post_message_origin')

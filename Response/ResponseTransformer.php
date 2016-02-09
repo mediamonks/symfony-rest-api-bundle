@@ -141,7 +141,7 @@ class ResponseTransformer implements ResponseTransformerInterface
         } catch (\Exception $e) {
             $response = new SymfonyJsonResponse([
                 'error' => [
-                    'code'    => ResponseModel::ERROR_CODE_REST_API_BUNDLE,
+                    'code'    => Error::CODE_REST_API_BUNDLE,
                     'message' => $e->getMessage()
                 ]
             ]);

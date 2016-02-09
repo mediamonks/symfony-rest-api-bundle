@@ -4,6 +4,7 @@ namespace MediaMonks\RestApiBundle\Model;
 
 use MediaMonks\RestApiBundle\Exception\FormValidationException;
 use MediaMonks\RestApiBundle\Response\AbstractPaginatedResponse;
+use MediaMonks\RestApiBundle\Response\Error;
 use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,10 +12,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ResponseModel
 {
-    const ERROR_CODE_GENERAL = 'error.%s';
-    const ERROR_CODE_HTTP = 'error.http.%s';
-    const ERROR_CODE_REST_API_BUNDLE = 'error.rest_api_bundle';
-
     /**
      * @var int
      */
@@ -51,10 +48,10 @@ class ResponseModel
      */
     public static function createAutoDetect($content)
     {
-        $container = new self();
-        $container->autoDetectContent($content);
+        $responseModel = new self();
+        $responseModel->autoDetectContent($content);
 
-        return $container;
+        return $responseModel;
     }
 
     /**
@@ -211,18 +208,16 @@ class ResponseModel
      */
     protected function exceptionToArray()
     {
+        $error = [
+            'code' => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.'),
+            'message' => $this->exception->getMessage()
+        ];
+
         if ($this->exception instanceof FormValidationException) {
-            $error = $this->exception->toArray();
+            $error['code'] = $this->exception->getCode();
+            $error['fields'] = $this->exception->getFieldErrors();
         } elseif ($this->exception instanceof HttpException) {
-            $error = [
-                'code'    => $this->getExceptionErrorCode(self::ERROR_CODE_HTTP, 'HttpException'),
-                'message' => $this->exception->getMessage()
-            ];
-        } else {
-            $error = [
-                'code'    => trim($this->getExceptionErrorCode(self::ERROR_CODE_GENERAL, 'Exception'), '.'),
-                'message' => $this->exception->getMessage()
-            ];
+            $error['code'] = $this->getExceptionErrorCode(Error::CODE_HTTP, 'HttpException');
         }
         return $error;
     }
@@ -277,7 +272,7 @@ class ResponseModel
     public function __toString()
     {
         $data                  = $this->toArray();
-        $data['error']['code'] = self::ERROR_CODE_REST_API_BUNDLE;
+        $data['error']['code'] = Error::CODE_REST_API_BUNDLE;
 
         return json_encode($data);
     }

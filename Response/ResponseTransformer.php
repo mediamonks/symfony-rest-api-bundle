@@ -15,6 +15,9 @@ class ResponseTransformer implements ResponseTransformerInterface
     const WRAPPER_PADDING = 'padding';
     const WRAPPER_POST_MESSAGE = 'postMessage';
 
+    const PARAMETER_CALLBACK = 'callback';
+    const PARAMETER_WRAPPER = '_wrapper';
+
     /**
      * @var Serializer
      */
@@ -72,33 +75,34 @@ class ResponseTransformer implements ResponseTransformerInterface
     }
 
     /**
+     * @param Request $request
      * @param SymfonyResponse $response
      * @return SymfonyResponse
      */
     public function transformEarly(Request $request, SymfonyResponse $response)
     {
-        $content = $response->getContent();
+        $responseModel = $response->getContent();
 
-        if (!$content instanceof ResponseModel) {
-            $content = ResponseModel::createAutoDetect($response);
+        if (!$responseModel instanceof ResponseModel) {
+            $responseModel = ResponseModel::createAutoDetect($response);
         }
 
-        $statusCode = $content->getStatusCode();
+        $statusCode = $responseModel->getStatusCode();
         if (!empty($statusCode)) {
-            $response->setStatusCode($content->getStatusCode());
+            $response->setStatusCode($responseModel->getStatusCode());
         }
 
         // set 204 header for empty content
-        if ($content->isEmpty() && !$response->isRedirect()) {
+        if ($responseModel->isEmpty() && !$response->isRedirect()) {
             $response->setStatusCode(Response::HTTP_NO_CONTENT);
-            $content->setStatusCode(Response::HTTP_NO_CONTENT);
+            $responseModel->setStatusCode(Response::HTTP_NO_CONTENT);
         }
 
-        $this->forceStatusCodeHttpOK($request, $response, $content);
+        $this->forceStatusCodeHttpOK($request, $response, $responseModel);
 
-        $response = $this->serialize($request, $response, $content);
+        $response = $this->serialize($request, $response, $responseModel);
 
-        if ($content->isEmpty() && $response->isEmpty()) {
+        if ($responseModel->isEmpty() && $response->isEmpty()) {
             $response->setContent('');
         }
 
@@ -110,17 +114,17 @@ class ResponseTransformer implements ResponseTransformerInterface
      *
      * @param Request $request
      * @param SymfonyResponse $response
-     * @param ResponseModel $responseContainer
+     * @param ResponseModel $responseModel
      */
     protected function forceStatusCodeHttpOK(
         Request $request,
         SymfonyResponse $response,
-        ResponseModel $responseContainer
+        ResponseModel $responseModel
     ) {
         if ($request->headers->has('X-Force-Status-Code-200')
-            || ($request->getRequestFormat() == Format::FORMAT_JSON && $request->query->has('callback'))
+            || ($request->getRequestFormat() == Format::FORMAT_JSON && $request->query->has(self::PARAMETER_CALLBACK))
         ) {
-            $responseContainer->setReturnStatusCode(true);
+            $responseModel->setReturnStatusCode(true);
             $response->setStatusCode(Response::HTTP_OK);
             $response->headers->set('X-Status-Code', Response::HTTP_OK);
         }
@@ -129,16 +133,16 @@ class ResponseTransformer implements ResponseTransformerInterface
     /**
      * @param Request $request
      * @param SymfonyResponse $response
-     * @param ResponseModel $responseContainer
+     * @param ResponseModel $responseModel
      * @return SymfonyResponse
      */
-    protected function serialize(Request $request, SymfonyResponse $response, ResponseModel $responseContainer)
+    protected function serialize(Request $request, SymfonyResponse $response, ResponseModel $responseModel)
     {
         try {
             $context = new SerializationContext();
             $context->setSerializeNull(true);
             $format            = $request->getRequestFormat();
-            $contentSerialized = $this->serializer->serialize($responseContainer->toArray(), $format, $context);
+            $contentSerialized = $this->serializer->serialize($responseModel->toArray(), $format, $context);
             switch ($format) {
                 case Format::FORMAT_XML:
                     $response->setContent($contentSerialized);
@@ -170,13 +174,17 @@ class ResponseTransformer implements ResponseTransformerInterface
         $this->wrapResponse($request, $response);
     }
 
+    /**
+     * @param Request $request
+     * @param SymfonyResponse $response
+     */
     protected function wrapResponse(Request $request, SymfonyResponse $response)
     {
         if ($request->getRequestFormat() === Format::FORMAT_JSON
-            && $request->query->has('callback')
+            && $request->query->has(self::PARAMETER_CALLBACK)
             && $response instanceof JsonResponse
         ) {
-            switch ($request->query->get('_wrapper')) {
+            switch ($request->query->get(self::PARAMETER_WRAPPER)) {
                 case self::WRAPPER_POST_MESSAGE:
                     $response->setContent(
                         $this->twig->render(
@@ -184,14 +192,14 @@ class ResponseTransformer implements ResponseTransformerInterface
                             [
                                 'request'  => $request,
                                 'response' => $response,
-                                'callback' => $request->query->get('callback'),
+                                'callback' => $request->query->get(self::PARAMETER_CALLBACK),
                                 'origin'   => $this->getPostMessageOrigin()
                             ]
                         )
                     )->headers->set('Content-Type', 'text/html');
                     break;
                 default:
-                    $response->setCallback($request->query->get('callback'));
+                    $response->setCallback($request->query->get(self::PARAMETER_CALLBACK));
                     break;
             }
         }

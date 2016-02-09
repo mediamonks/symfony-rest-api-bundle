@@ -87,24 +87,9 @@ class ResponseTransformer implements ResponseTransformerInterface
             $responseModel = ResponseModel::createAutoDetect($response);
         }
 
-        $statusCode = $responseModel->getStatusCode();
-        if (!empty($statusCode)) {
-            $response->setStatusCode($responseModel->getStatusCode());
-        }
-
-        // set 204 header for empty content
-        if ($responseModel->isEmpty() && !$response->isRedirect()) {
-            $response->setStatusCode(Response::HTTP_NO_CONTENT);
-            $responseModel->setStatusCode(Response::HTTP_NO_CONTENT);
-        }
-
+        $response->setStatusCode($responseModel->getStatusCode());
         $this->forceStatusCodeHttpOK($request, $response, $responseModel);
-
         $response = $this->serialize($request, $response, $responseModel);
-
-        if ($responseModel->isEmpty() && $response->isEmpty()) {
-            $response->setContent('');
-        }
 
         return $response;
     }

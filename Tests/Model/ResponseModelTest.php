@@ -67,6 +67,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectEmptyResponse()
     {
         $responseContainer = $this->createResponseModel(null);
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
         $this->assertNull($responseContainer->getException());
         $this->assertNull($responseContainer->getLocation());
@@ -170,8 +171,9 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testStatusCodeGetterSetter()
     {
-        $statusCode = Response::HTTP_NOT_MODIFIED;
+        $statusCode = Response::HTTP_OK;
         $responseContainer = new ResponseModel();
+        $responseContainer->setData('OK');
         $responseContainer->setStatusCode($statusCode);
         $this->assertEquals($statusCode, $responseContainer->getStatusCode());
     }
@@ -222,7 +224,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param $content
-     * @return $this
+     * @return ResponseModel
      */
     protected function createResponseModel($content)
     {

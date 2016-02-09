@@ -209,14 +209,15 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testSomeExceptionToArrayFormValidationException()
     {
-        $result = ['someArray'];
         $mockException = m::mock('\MediaMonks\RestApiBundle\Exception\FormValidationException');
-        $mockException->shouldReceive('toArray')->andReturn($result);
+        $mockException->shouldReceive('toArray');
+        $mockException->shouldReceive('getFieldErrors');
 
         $responseContainer = new ResponseModel();
         $responseContainer->setException($mockException);
 
-        $this->assertEquals(['error' => $result], $responseContainer->toArray());
+        $expected = ['error' => ['code' => 0, 'message' => '', 'fields' => null]];
+        $this->assertEquals($expected, $responseContainer->toArray());
     }
 
     /**

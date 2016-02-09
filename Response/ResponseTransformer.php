@@ -5,6 +5,7 @@ namespace MediaMonks\RestApiBundle\Response;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use MediaMonks\RestApiBundle\Model\ResponseModel;
+use MediaMonks\RestApiBundle\Model\ResponseModelFactory;
 use MediaMonks\RestApiBundle\Request\Format;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -84,7 +85,7 @@ class ResponseTransformer implements ResponseTransformerInterface
         $responseModel = $response->getContent();
 
         if (!$responseModel instanceof ResponseModel) {
-            $responseModel = ResponseModel::createAutoDetect($response);
+            $responseModel = ResponseModelFactory::createFromContent($response);
         }
 
         $response->setStatusCode($responseModel->getStatusCode());

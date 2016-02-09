@@ -3,6 +3,7 @@
 namespace MediaMonks\RestApiBundle\Tests\Model;
 
 use MediaMonks\RestApiBundle\Model\ResponseModel;
+use MediaMonks\RestApiBundle\Model\ResponseModelFactory;
 use MediaMonks\RestApiBundle\Response\OffsetPaginatedResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -178,6 +179,6 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
      */
     protected function createResponseModel($content)
     {
-        return ResponseModel::createAutoDetect($content);
+        return ResponseModelFactory::createFromContent($content);
     }
 }

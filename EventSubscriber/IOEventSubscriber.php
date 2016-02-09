@@ -2,7 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\EventSubscriber;
 
-use MediaMonks\RestApiBundle\Model\ResponseModel;
+use MediaMonks\RestApiBundle\Model\ResponseModelFactory;
 use MediaMonks\RestApiBundle\Request\RequestMatcherInterface;
 use MediaMonks\RestApiBundle\Request\RequestTransformerInterface;
 use MediaMonks\RestApiBundle\Response\Response as RestApiResponse;
@@ -148,6 +148,6 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     protected function createRestApiResponse($data)
     {
-        return new RestApiResponse(ResponseModel::createAutoDetect($data));
+        return new RestApiResponse(ResponseModelFactory::createFromContent($data));
     }
 }

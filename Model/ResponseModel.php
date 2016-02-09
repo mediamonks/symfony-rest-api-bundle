@@ -3,7 +3,6 @@
 namespace MediaMonks\RestApiBundle\Model;
 
 use MediaMonks\RestApiBundle\Exception\FormValidationException;
-use MediaMonks\RestApiBundle\Response\AbstractPaginatedResponse;
 use MediaMonks\RestApiBundle\Response\Error;
 use MediaMonks\RestApiBundle\Response\PaginatedResponseInterface;
 use MediaMonks\RestApiBundle\Util\StringUtil;
@@ -42,18 +41,6 @@ class ResponseModel
      * @var RedirectResponse
      */
     protected $redirect;
-
-    /**
-     * @param mixed $content
-     * @return $this
-     */
-    public static function createAutoDetect($content)
-    {
-        $responseModel = new self();
-        $responseModel->autoDetectContent($content);
-
-        return $responseModel;
-    }
 
     /**
      * @return int
@@ -259,28 +246,6 @@ class ResponseModel
             && is_null($this->pagination)
             && is_null($this->redirect)
         );
-    }
-
-    /**
-     * @param $content
-     * @return $this
-     */
-    public function autoDetectContent($content)
-    {
-        if ($content instanceof \Exception) {
-            $this->setException($content);
-        } elseif ($content instanceof PaginatedResponseInterface) {
-            $this->setPagination($content);
-        } elseif ($content instanceof RedirectResponse) {
-            $this->setRedirect($content);
-        } elseif ($content instanceof Response) {
-            $this->setData($content->getContent());
-            $this->setStatusCode($content->getStatusCode());
-        } else {
-            $this->setData($content);
-        }
-
-        return $this;
     }
 
     /**

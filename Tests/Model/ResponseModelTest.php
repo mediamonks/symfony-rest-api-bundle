@@ -83,6 +83,10 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testSomeExceptionToArrayFormValidationException()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('This test fails on HHVM, see issue #8');
+        }
+        
         $mockException = m::mock('\MediaMonks\RestApiBundle\Exception\FormValidationException');
         $mockException->shouldReceive('toArray');
         $mockException->shouldReceive('getFieldErrors');

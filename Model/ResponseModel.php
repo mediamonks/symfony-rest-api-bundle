@@ -189,7 +189,7 @@ class ResponseModel
     {
         $return = [];
         if ($this->getReturnStatusCode()) {
-            $return['statusCode'] = $this->getStatusCode();
+            $return['statusCode'] = $this->getReturnStatusCode();
         }
         if (isset($this->exception)) {
             $return['error'] = $this->exceptionToArray();

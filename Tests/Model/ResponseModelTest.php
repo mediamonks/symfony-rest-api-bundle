@@ -81,16 +81,6 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['statusCode' => Response::HTTP_OK], $responseContainer->toArray());
     }
 
-    public function testToArrayLocation()
-    {
-        $location = 'http://www.mediamonks.com';
-
-        $responseContainer = new ResponseModel();
-        $responseContainer->setLocation($location);
-
-        $this->assertEquals(['location' => $location], $responseContainer->toArray());
-    }
-
     public function testSomeExceptionToArrayFormValidationException()
     {
         $mockException = m::mock('\MediaMonks\RestApiBundle\Exception\FormValidationException');

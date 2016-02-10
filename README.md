@@ -10,22 +10,18 @@
 MediaMonksRestApiBundle
 =======
 
-This bundle provides tools to implement an API according to the MediaMonks REST API specifications:
+This bundle provides tools to implement an API according to the [MediaMonks REST API specification](https://github.com/MediaMonks/documents/rest-api-spec.pdf).
 
-- Converts all responses automatically to the specification
-- Accepts application/json, application/x-www-form-urlencoded & multipart/form-data input
-- Supports json and xml response
+- Converts scalars, arrays and objects to proper output
+- Converts exceptions to proper output
+- Supports application/json, application/x-www-form-urlencoded & multipart/form-data input
+- Supports json and xml output
 - Supports method overriding
 - Supports forcing a "200 OK" status method
 - Supports paginated responses
+- Supports wrapping json response in a method (jsonp) and post message
 
-Requirements
-============
+Documentation
+=============
 
-- [Symfony Framework](https://github.com/symfony/symfony) version 2.7+
-- [JMSSerializerBundle](https://github.com/schmittjoh/JMSSerializerBundle) version 1.0+
-
-Installation & Usage
-====================
-
-The installation and usage instructions are located in the [documentation](/Resources/doc).
+Please refer to the files in the [/Resources/doc](/Resources/doc) folder.

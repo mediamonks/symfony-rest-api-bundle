@@ -28,8 +28,7 @@ class FormValidationException extends AbstractFieldsException
         $code = Error::CODE_FORM_VALIDATION
     ) {
         $this->form    = $form;
-        $this->message = $message;
-        $this->code    = $code;
+        parent::__construct($message, $code);
     }
 
     /**

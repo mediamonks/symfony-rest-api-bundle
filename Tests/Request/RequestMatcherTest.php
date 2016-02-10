@@ -80,6 +80,7 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(true, $matcher->matches($request));
         $this->assertTrue($request->attributes->has(RequestMatcher::ATTRIBUTE_MATCHED));
+        $this->assertEquals(true, $matcher->matches($request));
     }
 
     public function testNonMatchedRequestIsNotMarkedAsMatched()

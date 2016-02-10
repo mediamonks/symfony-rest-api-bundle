@@ -5,6 +5,7 @@ namespace MediaMonks\RestApiBundle\Response;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use MediaMonks\RestApiBundle\Model\ResponseModel;
+use MediaMonks\RestApiBundle\Model\ResponseModelFactory;
 use MediaMonks\RestApiBundle\Request\Format;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -84,12 +85,12 @@ class ResponseTransformer implements ResponseTransformerInterface
         $responseModel = $response->getContent();
 
         if (!$responseModel instanceof ResponseModel) {
-            $responseModel = ResponseModel::createAutoDetect($response);
+            $responseModel = ResponseModelFactory::createFromContent($response);
         }
 
         $response->setStatusCode($responseModel->getStatusCode());
         $this->forceStatusCodeHttpOK($request, $response, $responseModel);
-        $response = $this->serialize($request, $response, $responseModel);
+        $response = $this->createSerializedResponse($request, $response, $responseModel);
 
         return $response;
     }
@@ -121,27 +122,17 @@ class ResponseTransformer implements ResponseTransformerInterface
      * @param ResponseModel $responseModel
      * @return SymfonyResponse
      */
-    protected function serialize(Request $request, SymfonyResponse $response, ResponseModel $responseModel)
-    {
+    protected function createSerializedResponse(
+        Request $request,
+        SymfonyResponse $response,
+        ResponseModel $responseModel
+    ) {
         try {
-            $context = new SerializationContext();
-            $context->setSerializeNull(true);
-            $format            = $request->getRequestFormat();
-            $contentSerialized = $this->serializer->serialize($responseModel->toArray(), $format, $context);
-            switch ($format) {
-                case Format::FORMAT_XML:
-                    $response->setContent($contentSerialized);
-                    break;
-                default:
-                    $headers           = $response->headers;
-                    $response          = new JsonResponse($contentSerialized, $response->getStatusCode());
-                    $response->headers = $headers; // some headers might mess up if we pass it to the JsonResponse
-                    break;
-            }
+            $response = $this->serialize($request, $response, $responseModel);
         } catch (\Exception $e) {
             $response = new SymfonyJsonResponse([
                 'error' => [
-                    'code'    => ResponseModel::ERROR_CODE_REST_API_BUNDLE,
+                    'code'    => Error::CODE_SERIALIZE,
                     'message' => $e->getMessage()
                 ]
             ]);
@@ -153,40 +144,89 @@ class ResponseTransformer implements ResponseTransformerInterface
     /**
      * @param Request $request
      * @param SymfonyResponse $response
+     * @param ResponseModel $responseModel
+     * @return JsonResponse|SymfonyResponse
      */
-    public function transformLate(Request $request, SymfonyResponse $response)
+    protected function serialize(Request $request, SymfonyResponse $response, ResponseModel $responseModel)
     {
-        $this->wrapResponse($request, $response);
+        switch ($request->getRequestFormat()) {
+            case Format::FORMAT_XML:
+                $response->setContent($this->getSerializedContent($request, $responseModel));
+                break;
+            default:
+                $headers           = $response->headers;
+                $response          = new JsonResponse(
+                    $this->getSerializedContent($request, $responseModel),
+                    $response->getStatusCode()
+                );
+                $response->headers = $headers; // some headers might mess up if we pass it to the JsonResponse
+                break;
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param ResponseModel $responseModel
+     * @return mixed|string
+     */
+    protected function getSerializedContent(Request $request, ResponseModel $responseModel)
+    {
+        return $this->serializer->serialize(
+            $responseModel->toArray(),
+            $request->getRequestFormat(),
+            $this->getSerializerContext()
+        );
+    }
+
+    /**
+     * @return SerializationContext
+     */
+    protected function getSerializerContext()
+    {
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        return $context;
     }
 
     /**
      * @param Request $request
      * @param SymfonyResponse $response
      */
-    protected function wrapResponse(Request $request, SymfonyResponse $response)
+    public function transformLate(Request $request, SymfonyResponse $response)
     {
         if ($request->getRequestFormat() === Format::FORMAT_JSON
             && $request->query->has(self::PARAMETER_CALLBACK)
             && $response instanceof JsonResponse
         ) {
-            switch ($request->query->get(self::PARAMETER_WRAPPER)) {
-                case self::WRAPPER_POST_MESSAGE:
-                    $response->setContent(
-                        $this->twig->render(
-                            'MediaMonksRestApiBundle::post_message.html.twig',
-                            [
-                                'request'  => $request,
-                                'response' => $response,
-                                'callback' => $request->query->get(self::PARAMETER_CALLBACK),
-                                'origin'   => $this->getPostMessageOrigin()
-                            ]
-                        )
-                    )->headers->set('Content-Type', 'text/html');
-                    break;
-                default:
-                    $response->setCallback($request->query->get(self::PARAMETER_CALLBACK));
-                    break;
-            }
+            $this->wrapResponse($request, $response);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param JsonResponse $response
+     */
+    protected function wrapResponse(Request $request, JsonResponse $response)
+    {
+        switch ($request->query->get(self::PARAMETER_WRAPPER)) {
+            case self::WRAPPER_POST_MESSAGE:
+                $response->setContent(
+                    $this->twig->render(
+                        'MediaMonksRestApiBundle::post_message.html.twig',
+                        [
+                            'request'  => $request,
+                            'response' => $response,
+                            'callback' => $request->query->get(self::PARAMETER_CALLBACK),
+                            'origin'   => $this->getPostMessageOrigin()
+                        ]
+                    )
+                )->headers->set('Content-Type', 'text/html');
+                break;
+            default:
+                $response->setCallback($request->query->get(self::PARAMETER_CALLBACK));
+                break;
         }
     }
 }

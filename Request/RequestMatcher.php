@@ -41,17 +41,34 @@ class RequestMatcher implements RequestMatcherInterface
             return false;
         }
 
-        if ($request->attributes->getBoolean(self::ATTRIBUTE_MATCHED) === true) {
+        if ($this->matchPreviouslyMatchedRequest($request)) {
             return true;
         }
 
         $match = $this->matchRequestPathAgainstLists($request->getPathInfo());
 
         if ($match) {
-            $request->attributes->set(self::ATTRIBUTE_MATCHED, true);
+            $this->markRequestAsMatched($request);
         }
 
         return $match;
+    }
+
+    /**
+     * @param Request $request
+     */
+    protected function markRequestAsMatched(Request $request)
+    {
+        $request->attributes->set(self::ATTRIBUTE_MATCHED, true);
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    protected function matchPreviouslyMatchedRequest(Request $request)
+    {
+        return $request->attributes->getBoolean(self::ATTRIBUTE_MATCHED);
     }
 
     /**
@@ -60,16 +77,38 @@ class RequestMatcher implements RequestMatcherInterface
      */
     protected function matchRequestPathAgainstLists($requestPath)
     {
+        if ($this->matchRequestPathAgainstBlacklist($requestPath) === false) {
+            return false;
+        }
+        if ($this->matchRequestPathAgainstWhitelist($requestPath) === true) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param $requestPath
+     * @return bool
+     */
+    protected function matchRequestPathAgainstBlacklist($requestPath)
+    {
         foreach ($this->blacklist as $regex) {
             if (preg_match($regex, $requestPath)) {
                 return false;
             }
         }
+    }
+
+    /**
+     * @param $requestPath
+     * @return bool
+     */
+    protected function matchRequestPathAgainstWhitelist($requestPath)
+    {
         foreach ($this->whitelist as $regex) {
             if (preg_match($regex, $requestPath)) {
                 return true;
             }
         }
-        return false;
     }
 }

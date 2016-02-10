@@ -6,41 +6,56 @@ use MediaMonks\RestApiBundle\Response\CursorPaginatedResponse;
 
 class CursorPaginatedResponseTest extends \PHPUnit_Framework_TestCase
 {
+    const DATA = 'data';
+    const BEFORE = 1;
+    const AFTER = 2;
+    const LIMIT = 3;
+    const TOTAL = 4;
+
+    /**
+     * @return CursorPaginatedResponse
+     */
+    public function createCursorPaginatedResponse()
+    {
+        return new CursorPaginatedResponse(self::DATA, self::BEFORE, self::AFTER, self::LIMIT, self::TOTAL);
+    }
+
     public function testCursorPaginatedResponse()
     {
-        $data     = 'data';
-        $before   = 1;
-        $after    = 2;
-        $limit    = 3;
-        $total    = 4;
-        $response = new CursorPaginatedResponse($data, $before, $after, $limit, $total);
-
-        $this->assertEquals($data, $response->getData());
-        $this->assertEquals($before, $response->getBefore());
-        $this->assertEquals($after, $response->getAfter());
-        $this->assertEquals($limit, $response->getLimit());
-        $this->assertEquals($total, $response->getTotal());
+        $response = $this->createCursorPaginatedResponse();
+        $this->assertEquals(self::DATA, $response->getData());
+        $this->assertEquals(self::BEFORE, $response->getBefore());
+        $this->assertEquals(self::AFTER, $response->getAfter());
+        $this->assertEquals(self::LIMIT, $response->getLimit());
+        $this->assertEquals(self::TOTAL, $response->getTotal());
     }
 
     public function testCursorPaginatedResponseGettersSetters()
     {
-        $data     = 'data';
-        $before   = 1;
-        $after    = 2;
-        $limit    = 3;
-        $total    = 4;
         $response = new CursorPaginatedResponse(null, 0, 0, 0, 0);
-        $response->setData($data);
-        $response->setBefore($before);
-        $response->setAfter($after);
-        $response->setLimit($limit);
-        $response->setTotal($total);
 
-        $this->assertEquals($data, $response->getData());
-        $this->assertEquals($before, $response->getBefore());
-        $this->assertEquals($after, $response->getAfter());
-        $this->assertEquals($limit, $response->getLimit());
-        $this->assertEquals($total, $response->getTotal());
+        $response->setData(self::DATA);
+        $response->setBefore(self::BEFORE);
+        $response->setAfter(self::AFTER);
+        $response->setLimit(self::LIMIT);
+        $response->setTotal(self::TOTAL);
+
+        $this->assertEquals(self::DATA, $response->getData());
+        $this->assertEquals(self::BEFORE, $response->getBefore());
+        $this->assertEquals(self::AFTER, $response->getAfter());
+        $this->assertEquals(self::LIMIT, $response->getLimit());
+        $this->assertEquals(self::TOTAL, $response->getTotal());
+    }
+
+    public function testCursorPaginatedResponseToArray()
+    {
+        $response = $this->createCursorPaginatedResponse();
+        $data = $response->toArray();
+
+        $this->assertEquals(self::BEFORE, $data['before']);
+        $this->assertEquals(self::AFTER, $data['after']);
+        $this->assertEquals(self::LIMIT, $data['limit']);
+        $this->assertEquals(self::TOTAL, $data['total']);
     }
 
     public function testToArrayNullTotal()

@@ -12,15 +12,15 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 {
     public function testDataGettersSetter()
     {
-        $data = ['foo', 'bar'];
+        $data              = ['foo', 'bar'];
         $responseContainer = new ResponseModel();
         $responseContainer->setData($data);
         $this->assertEquals($data, $responseContainer->getData());
     }
 
-    public function testExeptionGettersSetter()
+    public function testExceptionGettersSetter()
     {
-        $exception = new \Exception;
+        $exception         = new \Exception;
         $responseContainer = new ResponseModel();
         $responseContainer->setException($exception);
         $this->assertEquals($exception, $responseContainer->getException());
@@ -28,8 +28,8 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testLocationGettersSetter()
     {
-        $location = 'http://www.mediamonks.com';
-        $redirect = new RedirectResponse($location);
+        $location          = 'http://www.mediamonks.com';
+        $redirect          = new RedirectResponse($location);
         $responseContainer = new ResponseModel();
         $responseContainer->setRedirect($redirect);
         $this->assertEquals($redirect, $responseContainer->getRedirect());
@@ -37,7 +37,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testPaginationGettersSetter()
     {
-        $pagination = new OffsetPaginatedResponse('foo', 1, 2, 3);
+        $pagination        = new OffsetPaginatedResponse('foo', 1, 2, 3);
         $responseContainer = new ResponseModel();
         $responseContainer->setPagination($pagination);
         $this->assertEquals($pagination, $responseContainer->getPagination());
@@ -45,7 +45,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testReturnStatusCodeGetterSetter()
     {
-        $statusCode = Response::HTTP_NOT_MODIFIED;
+        $statusCode        = Response::HTTP_NOT_MODIFIED;
         $responseContainer = new ResponseModel();
         $responseContainer->setReturnStatusCode($statusCode);
         $this->assertEquals($statusCode, $responseContainer->getReturnStatusCode());
@@ -53,7 +53,7 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
 
     public function testStatusCodeGetterSetter()
     {
-        $statusCode = Response::HTTP_OK;
+        $statusCode        = Response::HTTP_OK;
         $responseContainer = new ResponseModel();
         $responseContainer->setData('OK');
         $responseContainer->setStatusCode($statusCode);
@@ -63,8 +63,8 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
     public function testGetCodeFromStatusCode()
     {
         $statusCode = Response::HTTP_BAD_REQUEST;
-        $code = 400;
-        $exception = new \Exception('', $code);
+        $code       = 400;
+        $exception  = new \Exception('', $code);
 
         $responseContainer = new ResponseModel();
         $responseContainer->setStatusCode($statusCode);
@@ -81,21 +81,22 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['statusCode' => Response::HTTP_OK], $responseContainer->toArray());
     }
 
-    public function testSomeExceptionToArrayFormValidationException()
+    public function testValidationExceptionToArrayFormValidationException()
     {
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('This test fails on HHVM, see issue #8');
         }
-        
-        $mockException = m::mock('\MediaMonks\RestApiBundle\Exception\FormValidationException');
-        $mockException->shouldReceive('toArray');
-        $mockException->shouldReceive('getFieldErrors');
+
+        $error = ['code' => 0, 'message' => '', 'fields' => null];
+
+        $mockException = m::mock('\MediaMonks\RestApiBundle\Exception\ValidationException, \MediaMonks\RestApiBundle\Exception\ExceptionInterface');
+        $mockException->shouldReceive('toArray')->andReturn($error);
+        $mockException->shouldReceive('getFields');
 
         $responseContainer = new ResponseModel();
         $responseContainer->setException($mockException);
 
-        $expected = ['error' => ['code' => 0, 'message' => '', 'fields' => null]];
-        $this->assertEquals($expected, $responseContainer->toArray());
+        $this->assertEquals(['error' => $error], $responseContainer->toArray());
     }
 
     /**

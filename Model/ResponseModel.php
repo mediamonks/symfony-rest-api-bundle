@@ -2,6 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\Model;
 
+use MediaMonks\RestApiBundle\Exception\ExceptionInterface;
 use MediaMonks\RestApiBundle\Exception\FormValidationException;
 use MediaMonks\RestApiBundle\Response\Error;
 use MediaMonks\RestApiBundle\Response\PaginatedResponseInterface;
@@ -221,16 +222,16 @@ class ResponseModel
      */
     protected function exceptionToArray()
     {
-        $error = [
-            'code'    => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.'),
-            'message' => $this->exception->getMessage()
-        ];
-
-        if ($this->exception instanceof FormValidationException) {
-            $error['code']   = $this->exception->getCode();
-            $error['fields'] = $this->exception->getFieldErrors();
-        } elseif ($this->exception instanceof HttpException) {
-            $error['code'] = $this->getExceptionErrorCode(Error::CODE_HTTP, 'HttpException');
+        if ($this->exception instanceof ExceptionInterface) {
+            $error = $this->exception->toArray();
+        } else {
+            $error = [
+                'code'    => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.'),
+                'message' => $this->exception->getMessage()
+            ];
+            if ($this->exception instanceof HttpException) {
+                $error['code'] = $this->getExceptionErrorCode(Error::CODE_HTTP, 'HttpException');
+            }
         }
         return $error;
     }

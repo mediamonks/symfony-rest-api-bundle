@@ -7,7 +7,7 @@ use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 
-class FormValidationException extends \Exception
+class FormValidationException extends AbstractFieldsException
 {
     const FIELD_ROOT = '#';
 
@@ -35,7 +35,7 @@ class FormValidationException extends \Exception
     /**
      * @return array
      */
-    public function getFieldErrors()
+    public function getFields()
     {
         return $this->getErrorMessages($this->form);
     }
@@ -96,24 +96,21 @@ class FormValidationException extends \Exception
     /**
      * @param FormError $error
      * @param FormInterface|null $form
-     * @return array
+     * @return ErrorField
      */
     protected function toErrorArray(FormError $error, FormInterface $form = null)
     {
-        $data = [];
         if (is_null($form)) {
-            $data['field'] = self::FIELD_ROOT;
+            $field = self::FIELD_ROOT;
         } else {
-            $data['field'] = $form->getName();
+            $field = $form->getName();
         }
         if (!is_null($error->getCause()) && !is_null($error->getCause()->getConstraint())) {
-            $data['code'] = $this->getErrorCode(StringUtil::classToSnakeCase($error->getCause()->getConstraint()));
+            $code = $this->getErrorCode(StringUtil::classToSnakeCase($error->getCause()->getConstraint()));
         } else {
-            $this->getErrorCodeByMessage($error);
+            $code = $this->getErrorCodeByMessage($error);
         }
-        $data['message'] = $error->getMessage();
-
-        return $data;
+        return new ErrorField($field, $code, $error->getMessage());
     }
 
     /**

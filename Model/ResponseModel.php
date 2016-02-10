@@ -189,7 +189,7 @@ class ResponseModel
     {
         $return = [];
         if ($this->getReturnStatusCode()) {
-            $return['statusCode'] = $this->getStatusCode();
+            $return['statusCode'] = $this->getReturnStatusCode();
         }
         if (isset($this->exception)) {
             $return['error'] = $this->exceptionToArray();
@@ -258,6 +258,7 @@ class ResponseModel
         );
     }
 
+    // @codeCoverageIgnoreStart
     /**
      * This is called when an exception is thrown for the second time
      *
@@ -270,4 +271,5 @@ class ResponseModel
 
         return json_encode($data);
     }
+    // @codeCoverageIgnoreEnd
 }

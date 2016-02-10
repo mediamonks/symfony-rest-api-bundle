@@ -57,4 +57,20 @@ class CursorPaginatedResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::LIMIT, $data['limit']);
         $this->assertEquals(self::TOTAL, $data['total']);
     }
+
+    public function testToArrayNullTotal()
+    {
+        $subject = new CursorPaginatedResponse(null, 1, 2, 3);
+
+        $expected = ['before' => 1, 'after' => 2, 'limit' => 3];
+        $this->assertEquals($expected, $subject->toArray());
+    }
+
+    public function testToArrayNotNullTotal()
+    {
+        $subject = new CursorPaginatedResponse(null, 1, 2, 3, 4);
+
+        $expected = ['before' => 1, 'after' => 2, 'limit' => 3, 'total' => 4];
+        $this->assertEquals($expected, $subject->toArray());
+    }
 }

@@ -9,9 +9,6 @@ use Symfony\Component\Form\FormInterface;
 
 class FormValidationException extends \Exception
 {
-    const ERROR_TYPE_GENERAL = 'general';
-    const ERROR_TYPE_CSRF = 'csrf';
-
     /**
      * @var FormInterface
      */
@@ -48,6 +45,22 @@ class FormValidationException extends \Exception
     protected function getErrorMessages(FormInterface $form)
     {
         $errors = [];
+        foreach ($this->getFormErrorMessages($form) as $error) {
+            $errors[] = $error;
+        }
+        foreach ($this->getFormChildErrorMessages($form) as $error) {
+            $errors[] = $error;
+        }
+        return $errors;
+    }
+
+    /**
+     * @param FormInterface $form
+     * @return array
+     */
+    protected function getFormErrorMessages(FormInterface $form)
+    {
+        $errors = [];
         foreach ($form->getErrors() as $error) {
             if (empty($error)) {
                 continue;
@@ -58,26 +71,32 @@ class FormValidationException extends \Exception
                 $errors[] = $this->toErrorArray($error, $form);
             }
         }
+        return $errors;
+    }
+
+    /**
+     * @param FormInterface $form
+     * @return array
+     */
+    protected function getFormChildErrorMessages(FormInterface $form)
+    {
+        $errors = [];
         foreach ($form->all() as $child) {
-            if (empty($child)) {
-                continue;
-            }
-            if (!$child->isValid()) {
+            if (!empty($child) && !$child->isValid()) {
                 foreach ($this->getErrorMessages($child) as $error) {
                     $errors[] = $error;
                 }
             }
         }
-
         return $errors;
     }
 
     /**
-     * @param FormError|null $error
+     * @param FormError $error
      * @param FormInterface|null $form
      * @return array
      */
-    protected function toErrorArray(FormError $error = null, FormInterface $form = null)
+    protected function toErrorArray(FormError $error, FormInterface $form = null)
     {
         $data = [];
         if (is_null($form)) {
@@ -101,10 +120,10 @@ class FormValidationException extends \Exception
      */
     protected function getErrorCodeByMessage(FormError $error)
     {
-        if (stristr($error->getMessage(), self::ERROR_TYPE_CSRF)) {
-            return $this->getErrorCode(self::ERROR_TYPE_CSRF);
+        if (stristr($error->getMessage(), Error::FORM_TYPE_CSRF)) {
+            return $this->getErrorCode(Error::FORM_TYPE_CSRF);
         }
-        return $this->getErrorCode(self::ERROR_TYPE_GENERAL);
+        return $this->getErrorCode(Error::FORM_TYPE_GENERAL);
     }
 
     /**

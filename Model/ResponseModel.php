@@ -3,8 +3,8 @@
 namespace MediaMonks\RestApiBundle\Model;
 
 use MediaMonks\RestApiBundle\Exception\FormValidationException;
-use MediaMonks\RestApiBundle\Response\AbstractPaginatedResponse;
 use MediaMonks\RestApiBundle\Response\Error;
+use MediaMonks\RestApiBundle\Response\PaginatedResponseInterface;
 use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,26 +33,14 @@ class ResponseModel
     protected $exception;
 
     /**
-     * @var array
+     * @var PaginatedResponseInterface
      */
     protected $pagination;
 
     /**
-     * @var string
+     * @var RedirectResponse
      */
-    protected $location;
-
-    /**
-     * @param mixed $content
-     * @return $this
-     */
-    public static function createAutoDetect($content)
-    {
-        $responseModel = new self();
-        $responseModel->autoDetectContent($content);
-
-        return $responseModel;
-    }
+    protected $redirect;
 
     /**
      * @return int
@@ -61,14 +49,18 @@ class ResponseModel
     {
         if (isset($this->exception)) {
             return $this->getExceptionStatusCode();
-        }
-        if ($this->isEmpty()) {
+        } elseif (isset($this->redirect)) {
+            return $this->redirect->getStatusCode();
+        } elseif ($this->isEmpty()) {
             return Response::HTTP_NO_CONTENT;
         }
 
         return $this->statusCode;
     }
 
+    /**
+     * @return int
+     */
     protected function getExceptionStatusCode()
     {
         if ($this->exception instanceof HttpException) {
@@ -84,7 +76,7 @@ class ResponseModel
     }
 
     /**
-     * @param mixed $statusCode
+     * @param int $statusCode
      * @return $this
      */
     public function setStatusCode($statusCode)
@@ -160,32 +152,35 @@ class ResponseModel
     }
 
     /**
-     * @param array $pagination
-     */
-    public function setPagination(array $pagination)
-    {
-        $this->pagination = $pagination;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    /**
-     * @param string $location
+     * @param PaginatedResponseInterface $pagination
      * @return $this
      */
-    public function setLocation($location)
+    public function setPagination(PaginatedResponseInterface $pagination)
     {
-        $this->location = $location;
+        $this->pagination = $pagination;
+        $this->setData($pagination->getData());
 
         return $this;
     }
 
+    /**
+     * @return RedirectResponse
+     */
+    public function getRedirect()
+    {
+        return $this->redirect;
+    }
+
+    /**
+     * @param RedirectResponse $redirect
+     * @return $this
+     */
+    public function setRedirect(RedirectResponse $redirect)
+    {
+        $this->redirect = $redirect;
+
+        return $this;
+    }
 
     /**
      * @return array
@@ -198,15 +193,25 @@ class ResponseModel
         }
         if (isset($this->exception)) {
             $return['error'] = $this->exceptionToArray();
+        } elseif (isset($this->redirect)) {
+            $return['location'] = $this->redirect->headers->get('Location');
+        } else {
+            $return += $this->toArrayData();
         }
+        return $return;
+    }
+
+    /**
+     * @return array
+     */
+    protected function toArrayData()
+    {
+        $return = [];
         if (isset($this->data)) {
             $return['data'] = $this->data;
-        }
-        if (isset($this->location)) {
-            $return['location'] = $this->location;
-        }
-        if (isset($this->pagination)) {
-            $return['pagination'] = $this->pagination;
+            if (isset($this->pagination)) {
+                $return['pagination'] = $this->pagination->toArray();
+            }
         }
         return $return;
     }
@@ -248,32 +253,9 @@ class ResponseModel
         return (
             empty($this->exception)
             && is_null($this->data)
-            && is_null($this->location)
+            && is_null($this->pagination)
+            && is_null($this->redirect)
         );
-    }
-
-    /**
-     * @param $content
-     * @return $this
-     */
-    public function autoDetectContent($content)
-    {
-        if ($content instanceof \Exception) {
-            $this->setException($content);
-        } elseif ($content instanceof AbstractPaginatedResponse) {
-            $this->setPagination($content->toArray());
-            $this->setData($content->getData());
-        } elseif ($content instanceof RedirectResponse) {
-            $this->setLocation($content->headers->get('Location'));
-            $this->setStatusCode($content->getStatusCode());
-        } elseif ($content instanceof Response) {
-            $this->setData($content->getContent());
-            $this->setStatusCode($content->getStatusCode());
-        } else {
-            $this->setData($content);
-        }
-
-        return $this;
     }
 
     /**

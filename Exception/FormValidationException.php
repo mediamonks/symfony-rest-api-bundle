@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormInterface;
 
 class FormValidationException extends \Exception
 {
+    const FIELD_ROOT = '#';
+
     /**
      * @var FormInterface
      */
@@ -100,7 +102,7 @@ class FormValidationException extends \Exception
     {
         $data = [];
         if (is_null($form)) {
-            $data['field'] = '#';
+            $data['field'] = self::FIELD_ROOT;
         } else {
             $data['field'] = $form->getName();
         }

@@ -15,7 +15,7 @@ class ValidationException extends AbstractValidationException
      * ValidationException constructor.
      * @param array $fields
      * @param string $message
-     * @param \Exception|string $code
+     * @param string $code
      */
     public function __construct(
         array $fields,

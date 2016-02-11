@@ -238,7 +238,7 @@ class ResponseModel
         } elseif ($this->exception instanceof HttpException) {
             return $this->httpExceptionToArray();
         }
-        
+
         return $this->generalExceptionToArray();
     }
 

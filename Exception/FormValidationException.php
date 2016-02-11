@@ -19,7 +19,7 @@ class FormValidationException extends AbstractValidationException
     /**
      * FormValidationException constructor.
      * @param FormInterface $form
-     * @param int|string $message
+     * @param string $message
      * @param \Exception|string $code
      */
     public function __construct(

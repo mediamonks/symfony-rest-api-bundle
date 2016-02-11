@@ -7,8 +7,10 @@ use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 
-class FormValidationException extends \Exception
+class FormValidationException extends AbstractValidationException
 {
+    const FIELD_ROOT = '#';
+
     /**
      * @var FormInterface
      */
@@ -17,23 +19,22 @@ class FormValidationException extends \Exception
     /**
      * FormValidationException constructor.
      * @param FormInterface $form
-     * @param int|string $message
-     * @param \Exception|string $code
+     * @param string $message
+     * @param string $code
      */
     public function __construct(
         FormInterface $form,
         $message = Error::MESSAGE_FORM_VALIDATION,
         $code = Error::CODE_FORM_VALIDATION
     ) {
-        $this->form    = $form;
-        $this->message = $message;
-        $this->code    = $code;
+        $this->form = $form;
+        parent::__construct($message, $code);
     }
 
     /**
      * @return array
      */
-    public function getFieldErrors()
+    public function getFields()
     {
         return $this->getErrorMessages($this->form);
     }
@@ -94,24 +95,21 @@ class FormValidationException extends \Exception
     /**
      * @param FormError $error
      * @param FormInterface|null $form
-     * @return array
+     * @return ErrorField
      */
     protected function toErrorArray(FormError $error, FormInterface $form = null)
     {
-        $data = [];
         if (is_null($form)) {
-            $data['field'] = '#';
+            $field = self::FIELD_ROOT;
         } else {
-            $data['field'] = $form->getName();
+            $field = $form->getName();
         }
         if (!is_null($error->getCause()) && !is_null($error->getCause()->getConstraint())) {
-            $data['code'] = $this->getErrorCode(StringUtil::classToSnakeCase($error->getCause()->getConstraint()));
+            $code = $this->getErrorCode(StringUtil::classToSnakeCase($error->getCause()->getConstraint()));
         } else {
-            $this->getErrorCodeByMessage($error);
+            $code = $this->getErrorCodeByMessage($error);
         }
-        $data['message'] = $error->getMessage();
-
-        return $data;
+        return new ErrorField($field, $code, $error->getMessage());
     }
 
     /**

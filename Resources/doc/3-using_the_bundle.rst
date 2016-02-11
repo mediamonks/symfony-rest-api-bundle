@@ -32,7 +32,7 @@ will serialize and output the content according to the specification.
 
         public function objectAction()
         {
-            return new \AppBundle\Entity\Example();
+            return new \AppBundle\Entity\Example(); // to be used with JMS Serializer
         }
     }
 
@@ -104,7 +104,9 @@ Exceptions will be automatically converted to a correct error response with best
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+    use MediaMonks\RestApiBundle\Exception\ErrorField;
     use MediaMonks\RestApiBundle\Exception\FormValidationException;
+    use MediaMonks\RestApiBundle\Exception\ValidationException;
 
     class ExampleController extends Controller
     {
@@ -136,5 +138,12 @@ Exceptions will be automatically converted to a correct error response with best
                 throw new FormValidationException($form);
             }
             // other code for handling your form
+        }
+
+        public function customValidationExceptionAction(Request $request)
+        {
+            throw new ValidationException([
+                new ErrorField('field', 'code', 'message')
+            ]);
         }
     }

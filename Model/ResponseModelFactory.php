@@ -3,12 +3,10 @@
 namespace MediaMonks\RestApiBundle\Model;
 
 use MediaMonks\RestApiBundle\Response\PaginatedResponseInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ResponseModelFactory
 {
-
     /**
      * @return ResponseModelFactory
      */
@@ -41,12 +39,7 @@ class ResponseModelFactory
      */
     public function createFromResponse(Response $response)
     {
-        if ($response instanceof RedirectResponse) {
-            return $this->createFromRedirectResponse($response);
-        }
-        return $this->create()
-            ->setData($response->getContent())
-            ->setStatusCode($response->getStatusCode());
+        return $this->create()->setResponse($response);
     }
 
     /**
@@ -56,15 +49,6 @@ class ResponseModelFactory
     public function createFromPaginatedResponse(PaginatedResponseInterface $response)
     {
         return $this->create()->setPagination($response);
-    }
-
-    /**
-     * @param RedirectResponse $response
-     * @return $this
-     */
-    public function createFromRedirectResponse(RedirectResponse $response)
-    {
-        return $this->create()->setRedirect($response);
     }
 
     /**

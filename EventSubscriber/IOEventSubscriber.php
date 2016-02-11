@@ -148,6 +148,6 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     protected function createRestApiResponse($data)
     {
-        return new RestApiResponse(ResponseModelFactory::createFromContent($data));
+        return new RestApiResponse(ResponseModelFactory::createFactory()->createFromContent($data));
     }
 }

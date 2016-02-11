@@ -8,54 +8,62 @@ use Symfony\Component\HttpFoundation\Response;
 class ResponseModelFactory
 {
     /**
+     * @return ResponseModelFactory
+     */
+    public static function createFactory()
+    {
+        return new self();
+    }
+
+    /**
      * @param mixed $content
      * @return ResponseModel
      */
-    public static function createFromContent($content)
+    public function createFromContent($content)
     {
         if ($content instanceof Response) {
-            return self::createFromResponse($content);
+            return $this->createFromResponse($content);
         }
         if ($content instanceof PaginatedResponseInterface) {
-            return self::createFromPaginatedResponse($content);
+            return $this->createFromPaginatedResponse($content);
         }
         if ($content instanceof \Exception) {
-            return self::createFromException($content);
+            return $this->createFromException($content);
         }
-        return self::create()->setData($content);
+        return $this->create()->setData($content);
     }
 
     /**
      * @param Response $response
      * @return ResponseModel
      */
-    public static function createFromResponse(Response $response)
+    public function createFromResponse(Response $response)
     {
-        return self::create()->setResponse($response);
+        return $this->create()->setResponse($response);
     }
 
     /**
      * @param PaginatedResponseInterface $response
      * @return ResponseModel
      */
-    public static function createFromPaginatedResponse(PaginatedResponseInterface $response)
+    public function createFromPaginatedResponse(PaginatedResponseInterface $response)
     {
-        return self::create()->setPagination($response);
+        return $this->create()->setPagination($response);
     }
 
     /**
      * @param \Exception $exception
      * @return ResponseModel
      */
-    public static function createFromException(\Exception $exception)
+    public function createFromException(\Exception $exception)
     {
-        return self::create()->setException($exception);
+        return $this->create()->setException($exception);
     }
 
     /**
      * @return ResponseModel
      */
-    public static function create()
+    public function create()
     {
         return new ResponseModel;
     }

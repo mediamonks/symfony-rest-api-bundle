@@ -185,7 +185,7 @@ class ResponseModel
      * @param Response $response
      * @return ResponseModel
      */
-    public function setResponse($response)
+    public function setResponse(Response $response)
     {
         $this->response = $response;
         $this->setStatusCode($response->getStatusCode());

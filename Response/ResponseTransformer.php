@@ -35,6 +35,11 @@ class ResponseTransformer implements ResponseTransformerInterface
     protected $postMessageOrigin;
 
     /**
+     * @var ResponseModelFactory
+     */
+    protected $responseModelFactory;
+
+    /**
      * ResponseTransformer constructor.
      * @param Serializer $serializer
      * @param \Twig_Environment $twig
@@ -85,7 +90,7 @@ class ResponseTransformer implements ResponseTransformerInterface
         $responseModel = $response->getContent();
 
         if (!$responseModel instanceof ResponseModel) {
-            $responseModel = ResponseModelFactory::createFromContent($response);
+            $responseModel = $this->getResonseModelFactory()->createFromContent($response);
         }
 
         $response->setStatusCode($responseModel->getStatusCode());
@@ -93,6 +98,40 @@ class ResponseTransformer implements ResponseTransformerInterface
         $response = $this->createSerializedResponse($request, $response, $responseModel);
 
         return $response;
+    }
+
+    /**
+     * @param ResponseModelFactory $factory
+     */
+    public function setResponseModelFactory($factory)
+    {
+        $this->responseModelFactory = $factory;
+    }
+
+    /**
+     * @return ResponseModelFactory
+     */
+    public function getResonseModelFactory()
+    {
+        if (!isset($this->responseModelFactory)) {
+            $this->responseModelFactory = ResponseModelFactory::createFactory();
+        }
+
+        return $this->responseModelFactory;
+    }
+
+    /**
+     * @param Request $request
+     * @param SymfonyResponse $response
+     */
+    public function transformLate(Request $request, SymfonyResponse $response)
+    {
+        if ($request->getRequestFormat() === Format::FORMAT_JSON
+            && $request->query->has(self::PARAMETER_CALLBACK)
+            && $response instanceof JsonResponse
+        ) {
+            $this->wrapResponse($request, $response);
+        }
     }
 
     /**
@@ -188,20 +227,6 @@ class ResponseTransformer implements ResponseTransformerInterface
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         return $context;
-    }
-
-    /**
-     * @param Request $request
-     * @param SymfonyResponse $response
-     */
-    public function transformLate(Request $request, SymfonyResponse $response)
-    {
-        if ($request->getRequestFormat() === Format::FORMAT_JSON
-            && $request->query->has(self::PARAMETER_CALLBACK)
-            && $response instanceof JsonResponse
-        ) {
-            $this->wrapResponse($request, $response);
-        }
     }
 
     /**

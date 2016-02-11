@@ -152,6 +152,6 @@ class ResponseModelFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function createResponseModel($content)
     {
-        return ResponseModelFactory::createFromContent($content);
+        return ResponseModelFactory::createFactory()->createFromContent($content);
     }
 }

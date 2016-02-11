@@ -8,34 +8,43 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResponseModelFactory
 {
+
+    /**
+     * @return ResponseModelFactory
+     */
+    public static function createFactory()
+    {
+        return new self();
+    }
+
     /**
      * @param mixed $content
      * @return ResponseModel
      */
-    public static function createFromContent($content)
+    public function createFromContent($content)
     {
         if ($content instanceof Response) {
-            return self::createFromResponse($content);
+            return $this->createFromResponse($content);
         }
         if ($content instanceof PaginatedResponseInterface) {
-            return self::createFromPaginatedResponse($content);
+            return $this->createFromPaginatedResponse($content);
         }
         if ($content instanceof \Exception) {
-            return self::createFromException($content);
+            return $this->createFromException($content);
         }
-        return self::create()->setData($content);
+        return $this->create()->setData($content);
     }
 
     /**
      * @param Response $response
      * @return ResponseModel
      */
-    public static function createFromResponse(Response $response)
+    public function createFromResponse(Response $response)
     {
         if ($response instanceof RedirectResponse) {
-            return self::createFromRedirectResponse($response);
+            return $this->createFromRedirectResponse($response);
         }
-        return self::create()
+        return $this->create()
             ->setData($response->getContent())
             ->setStatusCode($response->getStatusCode());
     }
@@ -44,33 +53,33 @@ class ResponseModelFactory
      * @param PaginatedResponseInterface $response
      * @return ResponseModel
      */
-    public static function createFromPaginatedResponse(PaginatedResponseInterface $response)
+    public function createFromPaginatedResponse(PaginatedResponseInterface $response)
     {
-        return self::create()->setPagination($response);
+        return $this->create()->setPagination($response);
     }
 
     /**
      * @param RedirectResponse $response
      * @return $this
      */
-    public static function createFromRedirectResponse(RedirectResponse $response)
+    public function createFromRedirectResponse(RedirectResponse $response)
     {
-        return self::create()->setRedirect($response);
+        return $this->create()->setRedirect($response);
     }
 
     /**
      * @param \Exception $exception
      * @return ResponseModel
      */
-    public static function createFromException(\Exception $exception)
+    public function createFromException(\Exception $exception)
     {
-        return self::create()->setException($exception);
+        return $this->create()->setException($exception);
     }
 
     /**
      * @return ResponseModel
      */
-    public static function create()
+    public function create()
     {
         return new ResponseModel;
     }

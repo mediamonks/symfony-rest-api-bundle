@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="./vendor/autoload.php" colors="true">
+<phpunit
+    bootstrap="./vendor/autoload.php"
+    colors="true"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    checkForUnintentionallyCoveredCode="true"
+    beStrictAboutTestSize="true"
+    beStrictAboutChangesToGlobalState="true">
     <testsuites>
         <testsuite name="MediaMonksRestApiBundle">
             <directory suffix="Test.php">./Tests</directory>

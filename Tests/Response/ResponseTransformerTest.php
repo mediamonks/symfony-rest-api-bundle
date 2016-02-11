@@ -163,7 +163,7 @@ class ResponseTransformerTest extends TestCase
         $this->assertNoException(function() use($response) {
             $response->shouldHaveReceived('setStatusCode')->with(Response::HTTP_CONFLICT);
         });
-        $this->assertInstanceOf(JsonResponse::class, $actualResponse);
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\JsonResponse', $actualResponse);
     }
 
     public function testTransformEarlyForceHttpOk()
@@ -304,6 +304,6 @@ class ResponseTransformerTest extends TestCase
 
         $factory = $subject->getResonseModelFactory();
 
-        $this->assertInstanceOf(ResponseModelFactory::class, $factory);
+        $this->assertInstanceOf('MediaMonks\RestApiBundle\Model\ResponseModelFactory', $factory);
     }
 }

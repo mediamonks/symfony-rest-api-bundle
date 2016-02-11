@@ -70,14 +70,19 @@ class ResponseModel
             return $this->exception->getStatusCode();
         } elseif ($this->exception instanceof AbstractValidationException) {
             return Response::HTTP_BAD_REQUEST;
-        } elseif (
-            array_key_exists($this->exception->getCode(), Response::$statusTexts)
-            && $this->exception->getCode() >= Response::HTTP_BAD_REQUEST
-        ) {
+        } elseif ($this->isValidHttpStatusCode($this->exception->getCode())) {
             return $this->exception->getCode();
         }
-
         return Response::HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    /**
+     * @param int $code
+     * @return bool
+     */
+    protected function isValidHttpStatusCode($code)
+    {
+        return array_key_exists($code, Response::$statusTexts) && $code >= Response::HTTP_BAD_REQUEST;
     }
 
     /**
@@ -229,17 +234,34 @@ class ResponseModel
     protected function exceptionToArray()
     {
         if ($this->exception instanceof ExceptionInterface) {
-            $error = $this->exception->toArray();
-        } else {
-            $error = [
-                'code'    => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.'),
-                'message' => $this->exception->getMessage()
-            ];
-            if ($this->exception instanceof HttpException) {
-                $error['code'] = $this->getExceptionErrorCode(Error::CODE_HTTP, 'HttpException');
-            }
+            return $this->exception->toArray();
+        } elseif ($this->exception instanceof HttpException) {
+            return $this->httpExceptionToArray();
         }
-        return $error;
+        
+        return $this->generalExceptionToArray();
+    }
+
+    /**
+     * @return array
+     */
+    protected function httpExceptionToArray()
+    {
+        return [
+            'code'    => $this->getExceptionErrorCode(Error::CODE_HTTP, 'HttpException'),
+            'message' => $this->exception->getMessage()
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function generalExceptionToArray()
+    {
+        return [
+            'code'    => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.'),
+            'message' => $this->exception->getMessage()
+        ];
     }
 
     /**

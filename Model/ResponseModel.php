@@ -2,8 +2,8 @@
 
 namespace MediaMonks\RestApiBundle\Model;
 
+use MediaMonks\RestApiBundle\Exception\AbstractValidationException;
 use MediaMonks\RestApiBundle\Exception\ExceptionInterface;
-use MediaMonks\RestApiBundle\Exception\FormValidationException;
 use MediaMonks\RestApiBundle\Response\Error;
 use MediaMonks\RestApiBundle\Response\PaginatedResponseInterface;
 use MediaMonks\RestApiBundle\Util\StringUtil;
@@ -29,6 +29,11 @@ class ResponseModel
     protected $data;
 
     /**
+     * @var Response
+     */
+    protected $response;
+
+    /**
      * @var \Exception
      */
     protected $exception;
@@ -39,20 +44,17 @@ class ResponseModel
     protected $pagination;
 
     /**
-     * @var RedirectResponse
-     */
-    protected $redirect;
-
-    /**
      * @return int
      */
     public function getStatusCode()
     {
+        if (isset($this->response)) {
+            return $this->response->getStatusCode();
+        }
         if (isset($this->exception)) {
             return $this->getExceptionStatusCode();
-        } elseif (isset($this->redirect)) {
-            return $this->redirect->getStatusCode();
-        } elseif ($this->isEmpty()) {
+        }
+        if ($this->isEmpty()) {
             return Response::HTTP_NO_CONTENT;
         }
 
@@ -66,6 +68,8 @@ class ResponseModel
     {
         if ($this->exception instanceof HttpException) {
             return $this->exception->getStatusCode();
+        } elseif ($this->exception instanceof AbstractValidationException) {
+            return Response::HTTP_BAD_REQUEST;
         } elseif (
             array_key_exists($this->exception->getCode(), Response::$statusTexts)
             && $this->exception->getCode() >= Response::HTTP_BAD_REQUEST
@@ -165,20 +169,22 @@ class ResponseModel
     }
 
     /**
-     * @return RedirectResponse
+     * @return Response
      */
-    public function getRedirect()
+    public function getResponse()
     {
-        return $this->redirect;
+        return $this->response;
     }
 
     /**
-     * @param RedirectResponse $redirect
-     * @return $this
+     * @param Response $response
+     * @return ResponseModel
      */
-    public function setRedirect(RedirectResponse $redirect)
+    public function setResponse($response)
     {
-        $this->redirect = $redirect;
+        $this->response = $response;
+        $this->setStatusCode($response->getStatusCode());
+        $this->setData($response->getContent());
 
         return $this;
     }
@@ -190,12 +196,12 @@ class ResponseModel
     {
         $return = [];
         if ($this->getReturnStatusCode()) {
-            $return['statusCode'] = $this->getReturnStatusCode();
+            $return['statusCode'] = $this->getStatusCode();
         }
         if (isset($this->exception)) {
             $return['error'] = $this->exceptionToArray();
-        } elseif (isset($this->redirect)) {
-            $return['location'] = $this->redirect->headers->get('Location');
+        } elseif (isset($this->response) && $this->response instanceof RedirectResponse) {
+            $return['location'] = $this->response->headers->get('Location');
         } else {
             $return += $this->toArrayData();
         }
@@ -252,16 +258,16 @@ class ResponseModel
     public function isEmpty()
     {
         return (
-            empty($this->exception)
+            !isset($this->exception)
             && is_null($this->data)
-            && is_null($this->pagination)
-            && is_null($this->redirect)
+            && !isset($this->pagination)
+            && (!isset($this->response) || $this->response->isEmpty())
         );
     }
 
     // @codeCoverageIgnoreStart
     /**
-     * This is called when an exception is thrown for the second time
+     * This is called when an exception is thrown during the response transformation
      *
      * @return string
      */

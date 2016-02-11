@@ -31,8 +31,8 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $location          = 'http://www.mediamonks.com';
         $redirect          = new RedirectResponse($location);
         $responseContainer = new ResponseModel();
-        $responseContainer->setRedirect($redirect);
-        $this->assertEquals($redirect, $responseContainer->getRedirect());
+        $responseContainer->setResponse($redirect);
+        $this->assertEquals($redirect, $responseContainer->getResponse());
     }
 
     public function testPaginationGettersSetter()
@@ -76,9 +76,11 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
     public function testToArrayStatusCode()
     {
         $responseContainer = new ResponseModel();
-        $responseContainer->setReturnStatusCode(Response::HTTP_OK);
+        $responseContainer->setData('foo');
+        $responseContainer->setReturnStatusCode(true);
 
-        $this->assertEquals(['statusCode' => Response::HTTP_OK], $responseContainer->toArray());
+        $result = $responseContainer->toArray();
+        $this->assertEquals(Response::HTTP_OK, $result['statusCode']);
     }
 
     public function testValidationExceptionToArrayFormValidationException()

@@ -7,7 +7,7 @@ use MediaMonks\RestApiBundle\Util\StringUtil;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 
-class FormValidationException extends AbstractFieldsException
+class FormValidationException extends AbstractValidationException
 {
     const FIELD_ROOT = '#';
 
@@ -27,7 +27,7 @@ class FormValidationException extends AbstractFieldsException
         $message = Error::MESSAGE_FORM_VALIDATION,
         $code = Error::CODE_FORM_VALIDATION
     ) {
-        $this->form    = $form;
+        $this->form = $form;
         parent::__construct($message, $code);
     }
 

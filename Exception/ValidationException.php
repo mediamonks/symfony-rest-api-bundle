@@ -3,11 +3,8 @@
 namespace MediaMonks\RestApiBundle\Exception;
 
 use MediaMonks\RestApiBundle\Response\Error;
-use MediaMonks\RestApiBundle\Util\StringUtil;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormInterface;
 
-class ValidationException extends AbstractFieldsException
+class ValidationException extends AbstractValidationException
 {
     /**
      * @var array

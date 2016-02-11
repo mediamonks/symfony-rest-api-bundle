@@ -2,7 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\Exception;
 
-abstract class AbstractFieldsException extends AbstractException implements ExceptionInterface, FieldExceptionInterface
+abstract class AbstractValidationException extends AbstractException implements ExceptionInterface, FieldExceptionInterface
 {
     /**
      * AbstractFieldsException constructor.
@@ -12,7 +12,7 @@ abstract class AbstractFieldsException extends AbstractException implements Exce
     public function __construct($message, $code)
     {
         $this->message = $message;
-        $this->code = $code;
+        $this->code    = $code;
     }
 
     /**

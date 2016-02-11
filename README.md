@@ -10,7 +10,7 @@
 MediaMonksRestApiBundle
 =======
 
-This bundle provides tools to implement an API according to the [MediaMonks REST API specification](https://github.com/MediaMonks/documents/rest-api-spec.pdf).
+This bundle provides tools to implement an API according to the [MediaMonks REST API specification](https://github.com/MediaMonks/documents).
 
 - Converts scalars, arrays and objects to proper output
 - Converts exceptions to proper output

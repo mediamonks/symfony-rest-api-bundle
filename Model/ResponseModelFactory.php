@@ -32,12 +32,7 @@ class ResponseModelFactory
      */
     public static function createFromResponse(Response $response)
     {
-        if ($response instanceof RedirectResponse) {
-            return self::createFromRedirectResponse($response);
-        }
-        return self::create()
-            ->setData($response->getContent())
-            ->setStatusCode($response->getStatusCode());
+        return self::create()->setResponse($response);
     }
 
     /**
@@ -47,15 +42,6 @@ class ResponseModelFactory
     public static function createFromPaginatedResponse(PaginatedResponseInterface $response)
     {
         return self::create()->setPagination($response);
-    }
-
-    /**
-     * @param RedirectResponse $response
-     * @return $this
-     */
-    public static function createFromRedirectResponse(RedirectResponse $response)
-    {
-        return self::create()->setRedirect($response);
     }
 
     /**

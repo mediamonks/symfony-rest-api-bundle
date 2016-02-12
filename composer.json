@@ -5,8 +5,10 @@
   "keywords": [
     "rest",
     "api",
-    "bundle"
+    "bundle",
+    "symfony"
   ],
+  "homepage": "https://www.mediamonks.com/",
   "license": "MIT",
   "authors": [
     {

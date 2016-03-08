@@ -50,7 +50,7 @@ class CursorPaginatedResponseTest extends \PHPUnit_Framework_TestCase
     public function testCursorPaginatedResponseToArray()
     {
         $response = $this->createCursorPaginatedResponse();
-        $data = $response->toArray();
+        $data     = $response->toArray();
 
         $this->assertEquals(self::BEFORE, $data['before']);
         $this->assertEquals(self::AFTER, $data['after']);

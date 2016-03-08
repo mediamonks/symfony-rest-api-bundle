@@ -7,8 +7,7 @@
 [![SensioLabs Insight](https://img.shields.io/sensiolabs/i/c42e43fd-9c7b-47e1-8264-3a98961e9236.svg)](https://insight.sensiolabs.com/projects/c42e43fd-9c7b-47e1-8264-3a98961e9236)
 [![License](https://poser.pugx.org/mediamonks/rest-api-bundle/license)](https://packagist.org/packages/mediamonks/rest-api-bundle)
 
-MediaMonksRestApiBundle
-=======
+# MediaMonksRestApiBundle
 
 This bundle provides tools to implement an API according to the [MediaMonks REST API specification](https://github.com/MediaMonks/documents).
 
@@ -21,7 +20,6 @@ This bundle provides tools to implement an API according to the [MediaMonks REST
 - Supports paginated responses
 - Supports wrapping json response in a method (jsonp) and post message
 
-Documentation
-=============
+# Documentation
 
 Please refer to the files in the [/Resources/doc](/Resources/doc) folder.

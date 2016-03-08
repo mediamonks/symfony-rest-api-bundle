@@ -14,7 +14,7 @@ class ResponseModelFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testAutoDetectException()
     {
-        $exception = new \Exception('foo');
+        $exception         = new \Exception('foo');
         $responseContainer = $this->createResponseModel($exception);
 
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $responseContainer->getStatusCode());
@@ -33,7 +33,7 @@ class ResponseModelFactoryTest extends \PHPUnit_Framework_TestCase
     public function testAutoDetectHttpException()
     {
         $notFoundHttpException = new NotFoundHttpException('foo');
-        $responseContainer = $this->createResponseModel($notFoundHttpException);
+        $responseContainer     = $this->createResponseModel($notFoundHttpException);
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $responseContainer->getStatusCode());
         $this->assertNull($responseContainer->getData());
@@ -78,7 +78,7 @@ class ResponseModelFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectStringResponse()
     {
-        $stringData = 'foo';
+        $stringData        = 'foo';
         $responseContainer = $this->createResponseModel($stringData);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
@@ -91,7 +91,7 @@ class ResponseModelFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectArrayResponse()
     {
-        $arrayData = ['foo', 'bar'];
+        $arrayData         = ['foo', 'bar'];
         $responseContainer = $this->createResponseModel($arrayData);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
@@ -104,8 +104,8 @@ class ResponseModelFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectRedirectResponse()
     {
-        $uri = 'http://www.mediamonks.com';
-        $redirect = new RedirectResponse($uri, Response::HTTP_MOVED_PERMANENTLY);
+        $uri               = 'http://www.mediamonks.com';
+        $redirect          = new RedirectResponse($uri, Response::HTTP_MOVED_PERMANENTLY);
         $responseContainer = $this->createResponseModel($redirect);
 
         $this->assertEquals(Response::HTTP_MOVED_PERMANENTLY, $responseContainer->getStatusCode());
@@ -121,8 +121,8 @@ class ResponseModelFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectSymfonyResponse()
     {
-        $data = 'foo';
-        $response = new Response($data);
+        $data              = 'foo';
+        $response          = new Response($data);
         $responseContainer = $this->createResponseModel($response);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
@@ -135,8 +135,8 @@ class ResponseModelFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectMediaMonksResponse()
     {
-        $data = ['foo'];
-        $response = new \MediaMonks\RestApiBundle\Response\Response($data);
+        $data              = ['foo'];
+        $response          = new \MediaMonks\RestApiBundle\Response\Response($data);
         $responseContainer = $this->createResponseModel($response);
 
         $this->assertEquals(Response::HTTP_OK, $responseContainer->getStatusCode());
@@ -149,7 +149,7 @@ class ResponseModelFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoDetectValidationExceptionResponse()
     {
-        $exception = new ValidationException([]);
+        $exception         = new ValidationException([]);
         $responseContainer = $this->createResponseModel($exception);
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $responseContainer->getStatusCode());

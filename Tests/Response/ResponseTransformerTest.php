@@ -26,7 +26,7 @@ class ResponseTransformerTest extends TestCase
 
     public function testConstructSetsOptions()
     {
-        $origin = 'postmsgorigin';
+        $origin  = 'postmsgorigin';
         $subject = $this->getSubject(['post_message_origin' => $origin]);
 
         $this->assertEquals($origin, $subject->getPostMessageOrigin());
@@ -35,7 +35,7 @@ class ResponseTransformerTest extends TestCase
     public function testSetOptions()
     {
         $subject = $this->getSubject();
-        $origin = 'postmsgorigin';
+        $origin  = 'postmsgorigin';
 
         $subject->setOptions(['post_message_origin' => $origin]);
 
@@ -45,7 +45,7 @@ class ResponseTransformerTest extends TestCase
     public function testSetOptionsWithoutPostMessageOrigin()
     {
         $subject = $this->getSubject();
-        $origin = 'postmsgorigin';
+        $origin  = 'postmsgorigin';
 
         $subject->setOptions(['someotherkey' => $origin]);
 
@@ -55,7 +55,7 @@ class ResponseTransformerTest extends TestCase
     public function testSetPostMessageOrigin()
     {
         $subject = $this->getSubject();
-        $origin = 'postmsgorigin';
+        $origin  = 'postmsgorigin';
 
         $subject->setPostMessageOrigin($origin);
 
@@ -160,7 +160,7 @@ class ResponseTransformerTest extends TestCase
         $actualResponse = $subject->transformEarly($request, $response);
 
         // Verify post-conditions
-        $this->assertNoException(function() use($response) {
+        $this->assertNoException(function () use ($response) {
             $response->shouldHaveReceived('setStatusCode')->with(Response::HTTP_CONFLICT);
         });
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\JsonResponse', $actualResponse);
@@ -282,7 +282,7 @@ class ResponseTransformerTest extends TestCase
         $subject->transformEarly($request, $response);
 
         // Verify post-conditions
-        $this->assertNoException(function() use($factory, $content) {
+        $this->assertNoException(function () use ($factory, $content) {
             $factory->shouldHaveReceived('createFromContent');
         });
     }

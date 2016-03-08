@@ -47,7 +47,7 @@ class OffsetPaginatedResponseTest extends \PHPUnit_Framework_TestCase
     public function testOffsetPaginatedResponseToArray()
     {
         $response = $this->createOffsetPaginatedResponse();
-        $data = $response->toArray();
+        $data     = $response->toArray();
 
         $this->assertEquals(self::OFFSET, $data['offset']);
         $this->assertEquals(self::LIMIT, $data['limit']);

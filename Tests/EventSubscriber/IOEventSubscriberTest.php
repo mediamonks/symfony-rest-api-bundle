@@ -4,7 +4,6 @@ namespace MediaMonks\RestApiBundle\Tests\EventSubscriber;
 
 
 use MediaMonks\RestApiBundle\EventSubscriber\IOEventSubscriber;
-use MediaMonks\RestApiBundle\Request\RequestMatcherInterface;
 use \Mockery as m;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -15,10 +14,11 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
         list($matcher, $requestTransformer, $responseTransformer) = $mocks ?: $this->getMocks();
         return new IOEventSubscriber($matcher, $requestTransformer, $responseTransformer);
     }
+
     protected function getMocks()
     {
-        $matcher = m::mock('MediaMonks\RestApiBundle\Request\RequestMatcherInterface');
-        $requestTransformer = m::mock('MediaMonks\RestApiBundle\Request\RequestTransformerInterface');
+        $matcher             = m::mock('MediaMonks\RestApiBundle\Request\RequestMatcherInterface');
+        $requestTransformer  = m::mock('MediaMonks\RestApiBundle\Request\RequestTransformerInterface');
         $responseTransformer = m::mock('MediaMonks\RestApiBundle\Response\ResponseTransformerInterface');
 
         return [$matcher, $requestTransformer, $responseTransformer];
@@ -38,6 +38,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $this->methodIsBound('onRequest', KernelEvents::REQUEST);
     }
+
     public function testOnRequestNoMatch()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();
@@ -59,6 +60,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(false, $e->getMessage());
         }
     }
+
     public function testOnRequest()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();
@@ -85,6 +87,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $this->methodIsBound('onException', KernelEvents::EXCEPTION);
     }
+
     public function testOnExceptionNoMatch()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();
@@ -105,6 +108,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(false, $e->getMessage());
         }
     }
+
     public function testOnException()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();
@@ -132,6 +136,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $this->methodIsBound('onView', KernelEvents::VIEW);
     }
+
     public function testOnViewNoMatch()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();
@@ -152,6 +157,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(false, $e->getMessage());
         }
     }
+
     public function testOnView()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();
@@ -179,6 +185,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $this->methodIsBound('onResponseEarly', KernelEvents::RESPONSE);
     }
+
     public function testOnResponseEarlyNoMatch()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();
@@ -199,6 +206,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(false, $e->getMessage());
         }
     }
+
     public function testOnResponseEarly()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();
@@ -227,6 +235,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
     {
         $this->methodIsBound('onResponseLate', KernelEvents::RESPONSE);
     }
+
     public function testOnResponseLateNoMatch()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();
@@ -247,6 +256,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
             $this->assertTrue(false, $e->getMessage());
         }
     }
+
     public function testOnResponseLate()
     {
         list($matcher, $requestTransformer, $responseTransformer) = $this->getMocks();

@@ -22,7 +22,7 @@ abstract class AbstractValidationException extends AbstractException implements 
     {
         $return = [
             'code'     => $this->getCode(),
-            'messsage' => $this->getMessage()
+            'message' => $this->getMessage()
         ];
         foreach ($this->getFields() as $field) {
             $return['fields'][] = $field->toArray();

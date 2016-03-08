@@ -74,7 +74,7 @@ class ApiController extends Controller
      */
     public function offsetPaginatedAction()
     {
-        return new OffsetPaginatedResponse('foobar', 30, 10, 56);
+        return new OffsetPaginatedResponse('foobar', 1, 2, 3);
     }
 
     /**
@@ -82,7 +82,7 @@ class ApiController extends Controller
      */
     public function cursorPaginatedAction()
     {
-        return new CursorPaginatedResponse('foobar', 1, 10, 10, 56);
+        return new CursorPaginatedResponse('foobar', 1, 2, 3, 4);
     }
 
     /**

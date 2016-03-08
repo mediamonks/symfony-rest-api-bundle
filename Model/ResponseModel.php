@@ -13,6 +13,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ResponseModel
 {
+    const EXCEPTION_GENERAL = 'Exception';
+    const EXCEPTION_HTTP = 'HttpException';
+
     /**
      * @var int
      */
@@ -208,7 +211,7 @@ class ResponseModel
         } elseif (isset($this->response) && $this->response instanceof RedirectResponse) {
             $return['location'] = $this->response->headers->get('Location');
         } else {
-            $return += $this->toArrayData();
+            $return += $this->dataToArray();
         }
         return $return;
     }
@@ -216,7 +219,7 @@ class ResponseModel
     /**
      * @return array
      */
-    protected function toArrayData()
+    protected function dataToArray()
     {
         $return = [];
         if (isset($this->data)) {
@@ -248,7 +251,7 @@ class ResponseModel
     protected function httpExceptionToArray()
     {
         return [
-            'code'    => $this->getExceptionErrorCode(Error::CODE_HTTP, 'HttpException'),
+            'code'    => $this->getExceptionErrorCode(Error::CODE_HTTP, self::EXCEPTION_HTTP),
             'message' => $this->exception->getMessage()
         ];
     }
@@ -259,7 +262,7 @@ class ResponseModel
     protected function generalExceptionToArray()
     {
         return [
-            'code'    => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, 'Exception'), '.'),
+            'code'    => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, self::EXCEPTION_GENERAL), '.'),
             'message' => $this->exception->getMessage()
         ];
     }

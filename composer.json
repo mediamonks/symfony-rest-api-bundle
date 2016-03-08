@@ -26,11 +26,17 @@
     "codeclimate/php-test-reporter": "dev-master@dev",
     "matthiasnoback/symfony-dependency-injection-test": "0.*",
     "phpunit/phpunit": "^4.8",
-    "mockery/mockery": "^0.9.4"
+    "mockery/mockery": "^0.9.4",
+    "sensio/framework-extra-bundle": "^3.0"
   },
   "autoload": {
     "psr-4": {
       "MediaMonks\\RestApiBundle\\": ""
+    }
+  },
+  "autoload-dev": {
+    "psr-0": {
+      "": "Tests/Functional/src/"
     }
   },
   "extra": {

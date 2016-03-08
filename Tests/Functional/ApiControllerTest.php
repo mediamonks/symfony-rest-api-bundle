@@ -94,44 +94,44 @@ class ApiControllerTest extends WebTestCase
     public function testException()
     {
         $response = $this->requestGet('exception', Response::HTTP_INTERNAL_SERVER_ERROR);
-        $this->testErrorResponse($response);
+        $this->assertErrorResponse($response);
     }
 
     public function testExceptionInvalidHttpStatusCode()
     {
         $response = $this->requestGet('exception-invalid-http-status-code', Response::HTTP_INTERNAL_SERVER_ERROR);
-        $this->testErrorResponse($response);
+        $this->assertErrorResponse($response);
     }
 
     public function testExceptionValidCode()
     {
         $response = $this->requestGet('exception-valid-http-status-code', Response::HTTP_BAD_REQUEST);
-        $this->testErrorResponse($response);
+        $this->assertErrorResponse($response);
     }
 
     public function testSymfonyNotFoundException()
     {
         $response = $this->requestGet('exception-not-found', Response::HTTP_NOT_FOUND);
-        $this->testErrorResponse($response);
+        $this->assertErrorResponse($response);
     }
 
     public function testFormValidationException()
     {
         $response = $this->requestGet('exception-form', Response::HTTP_BAD_REQUEST);
-        $this->testErrorResponse($response, true);
+        $this->assertErrorResponse($response, true);
 
     }
 
     public function testValidationException()
     {
         $response = $this->requestGet('exception-validation', Response::HTTP_BAD_REQUEST);
-        $this->testErrorResponse($response, true);
+        $this->assertErrorResponse($response, true);
     }
 
     public function testMethodNotAllowedException()
     {
         $response = $this->requestGet('post-restricted', Response::HTTP_METHOD_NOT_ALLOWED);
-        $this->testErrorResponse($response);
+        $this->assertErrorResponse($response);
         $this->assertEquals('error.http.method_not_allowed', $response['error']['code']);
         $this->assertEquals('No route found for "GET /api/post-restricted": Method Not Allowed (Allow: POST)', $response['error']['message']);
     }
@@ -139,7 +139,7 @@ class ApiControllerTest extends WebTestCase
     public function testNotFoundHttpException()
     {
         $response = $this->requestGet('non-existing-path', Response::HTTP_NOT_FOUND);
-        $this->testErrorResponse($response);
+        $this->assertErrorResponse($response);
         $this->assertEquals('error.http.not_found', $response['error']['code']);
         $this->assertEquals('No route found for "GET /api/non-existing-path"', $response['error']['message']);
     }
@@ -148,7 +148,7 @@ class ApiControllerTest extends WebTestCase
      * @param $response
      * @param bool $fields
      */
-    protected function testErrorResponse($response, $fields = false)
+    protected function assertErrorResponse($response, $fields = false)
     {
         $this->assertArrayHasKey('error', $response);
         $this->assertArrayHasKey('code', $response['error']);

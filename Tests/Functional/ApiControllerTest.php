@@ -115,11 +115,32 @@ class ApiControllerTest extends WebTestCase
         $this->assertErrorResponse($response);
     }
 
+    public function testEmptyFormValidationException()
+    {
+        $response = $this->requestGet('exception-empty-form', Response::HTTP_BAD_REQUEST);
+        $this->assertErrorResponse($response, true);
+    }
+
     public function testFormValidationException()
     {
-        $response = $this->requestGet('exception-form', Response::HTTP_BAD_REQUEST);
-        $this->assertErrorResponse($response, true);
-
+        $response = $this->requestPost('exception-form', ['email' => 'foo'], Response::HTTP_BAD_REQUEST);
+        $this->assertErrorResponse($response, true, [
+            [
+                'field' => 'name',
+                'code' => 'error.form.validation.not_blank',
+                'message' => 'This value should not be blank.'
+            ],
+            [
+                'field' => 'email',
+                'code' => 'error.form.validation.email',
+                'message' => 'This value is not a valid email address.'
+            ],
+            [
+                'field' => 'email',
+                'code' => 'error.form.validation.length',
+                'message' => 'This value is too short. It should have 5 characters or more.'
+            ]
+        ]);
     }
 
     public function testValidationException()
@@ -147,8 +168,9 @@ class ApiControllerTest extends WebTestCase
     /**
      * @param $response
      * @param bool $fields
+     * @param array $fieldData
      */
-    protected function assertErrorResponse($response, $fields = false)
+    protected function assertErrorResponse($response, $fields = false, $fieldData = [])
     {
         $this->assertArrayHasKey('error', $response);
         $this->assertArrayHasKey('code', $response['error']);
@@ -160,13 +182,25 @@ class ApiControllerTest extends WebTestCase
             $this->assertArrayHasKey('fields', $response['error']);
             $this->assertInternalType('array', $response['error']['fields']);
 
+            $i = 0;
             foreach($response['error']['fields'] as $field) {
                 $this->assertArrayHasKey('field', $field);
                 $this->assertInternalType('string', $field['field']);
+                if(!empty($fieldData[$i]['field'])) {
+                    $this->assertEquals($fieldData[$i]['field'], $field['field']);
+                }
                 $this->assertArrayHasKey('code', $field);
-                $this->assertInternalType('string', $field['field']);
+                $this->assertInternalType('string', $field['code']);
+                if(!empty($fieldData[$i]['code'])) {
+                    $this->assertEquals($fieldData[$i]['code'], $field['code']);
+                }
                 $this->assertArrayHasKey('message', $field);
-                $this->assertInternalType('string', $field['field']);
+                $this->assertInternalType('string', $field['message']);
+                if(!empty($fieldData[$i]['message'])) {
+                    $this->assertEquals($fieldData[$i]['message'], $field['message']);
+                }
+
+                $i++;
             }
         }
     }
@@ -178,19 +212,25 @@ class ApiControllerTest extends WebTestCase
      */
     protected function requestGet($path, $httpCode = Response::HTTP_OK)
     {
-        return $this->request('GET', $path, $httpCode);
+        return $this->request('GET', $path, [], $httpCode);
+    }
+
+    protected function requestPost($path, $data = [], $httpCode = Response::HTTP_CREATED)
+    {
+        return $this->request('POST', $path, $data, $httpCode);
     }
 
     /**
-     * @param $method
-     * @param $path
+     * @param string $method
+     * @param string $path
+     * @param array $data
      * @param int $httpCode
      * @return mixed
      */
-    protected function request($method, $path, $httpCode = Response::HTTP_OK)
+    protected function request($method, $path, array $data = [], $httpCode = Response::HTTP_OK)
     {
         $client = static::createClient();
-        $client->request($method, sprintf('/api/%s', $path));
+        $client->request($method, sprintf('/api/%s', $path), $data);
         $this->assertEquals($httpCode, $client->getResponse()->getStatusCode());
         return json_decode($client->getResponse()->getContent(), true);
     }

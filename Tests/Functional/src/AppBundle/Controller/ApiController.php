@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\Type\TestType;
 use MediaMonks\RestApiBundle\Exception\ErrorField;
 use MediaMonks\RestApiBundle\Exception\ErrorFieldCollection;
 use MediaMonks\RestApiBundle\Exception\ValidationException;
@@ -127,12 +128,29 @@ class ApiController extends Controller
     }
 
     /**
-     * @Route("exception-form")
+     * @Route("exception-empty-form")
      */
-    public function formValidationExceptionAction()
+    public function emptyFormValidationExceptionAction()
     {
         $form = $this->createFormBuilder()->getForm();
         $form->submit([]);
+        if (!$form->isValid()) {
+            throw new FormValidationException($form);
+        }
+        return new Response('foobar', Response::HTTP_CREATED);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws FormValidationException
+     *
+     * @Route("exception-form")
+     */
+    public function formValidationExceptionAction(Request $request)
+    {
+        $form = $this->createForm(TestType::class);
+        $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new FormValidationException($form);
         }

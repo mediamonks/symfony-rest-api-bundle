@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use MediaMonks\RestApiBundle\Exception\ErrorField;
 use MediaMonks\RestApiBundle\Exception\ErrorFieldCollection;
 use MediaMonks\RestApiBundle\Exception\ValidationException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -146,5 +147,14 @@ class ApiController extends Controller
         throw new ValidationException([
             new ErrorField('field', 'code', 'message')
         ]);
+    }
+
+    /**
+     * @Route("post-restricted")
+     * @Method(methods={"POST"})
+     */
+    public function postRestrictedAction()
+    {
+        return new Response('foobar', Response::HTTP_CREATED);
     }
 }

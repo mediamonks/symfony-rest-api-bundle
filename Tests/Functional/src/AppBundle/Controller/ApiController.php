@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use MediaMonks\RestApiBundle\Exception\FormValidationException;
 use MediaMonks\RestApiBundle\Response\CursorPaginatedResponse;
 use MediaMonks\RestApiBundle\Response\OffsetPaginatedResponse;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * @Route("/api/")
@@ -149,7 +150,14 @@ class ApiController extends Controller
      */
     public function formValidationExceptionAction(Request $request)
     {
-        $form = $this->createForm(TestType::class);
+        if (version_compare(Kernel::VERSION, '2.8.0', '>=')) {
+            $form = 'AppBundle\Form\Type\TestType';
+        }
+        else {
+            $form = new TestType();
+        }
+
+        $form = $this->createForm($form);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new FormValidationException($form);

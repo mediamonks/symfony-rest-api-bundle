@@ -4,18 +4,23 @@ namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Constraint;
+use Symfony\Component\HttpKernel\Kernel;
 
 class TestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $textField = 'text';
+        if (version_compare(Kernel::VERSION, '2.8.0', '>=')) {
+            $textField = 'Symfony\Component\Form\Extension\Core\Type\TextType';
+        }
+
         $builder
             ->add(
                 'name',
-                TextType::class,
+                $textField,
                 [
                     'constraints' => [
                         new Constraint\NotBlank,
@@ -25,7 +30,7 @@ class TestType extends AbstractType
             )
             ->add(
                 'email',
-                TextType::class,
+                $textField,
                 [
                     'constraints' => [
                         new Constraint\NotBlank,

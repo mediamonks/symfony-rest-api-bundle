@@ -80,13 +80,22 @@ class FormValidationException extends AbstractValidationException
     {
         $errors = [];
         foreach ($form->all() as $child) {
-            if (!empty($child) && !$child->isValid()) {
+            if ($this->shouldAddChildErrorMessage($child)) {
                 foreach ($this->getErrorMessages($child) as $error) {
                     $errors[] = $error;
                 }
             }
         }
         return $errors;
+    }
+
+    /**
+     * @param FormInterface|null $child
+     * @return bool
+     */
+    protected function shouldAddChildErrorMessage(FormInterface $child = null)
+    {
+        return !empty($child) && !$child->isValid();
     }
 
     /**

@@ -286,8 +286,16 @@ class ResponseModel
             !isset($this->exception)
             && is_null($this->data)
             && !isset($this->pagination)
-            && (!isset($this->response) || $this->response->isEmpty())
+            && $this->isEmptyResponse()
         );
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isEmptyResponse()
+    {
+        return !isset($this->response) || $this->response->isEmpty();
     }
 
     // @codeCoverageIgnoreStart

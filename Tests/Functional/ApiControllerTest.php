@@ -154,7 +154,7 @@ class ApiControllerTest extends WebTestCase
         ]);
     }
 
-    public function testFormValidationSuccess()s
+    public function testFormValidationSuccess()
     {
         $response = $this->requestPost('form', ['name' => 'Robert', 'email' => 'robert@mediamonks.com'],
             Response::HTTP_CREATED);

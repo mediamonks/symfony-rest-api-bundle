@@ -9,6 +9,7 @@ use MediaMonks\RestApiBundle\Exception\ValidationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -129,13 +130,15 @@ class ApiController extends Controller
     }
 
     /**
-     * @Route("exception-empty-form")
+     * @Route("empty-form")
+     * @Method(methods={"POST"})
      */
     public function emptyFormValidationExceptionAction()
     {
         $form = $this->createFormBuilder()->getForm();
         $form->submit([]);
         if (!$form->isValid()) {
+            $form->addError(new FormError('Some general error at root level.'));
             throw new FormValidationException($form);
         }
         return new Response('foobar', Response::HTTP_CREATED);
@@ -146,7 +149,8 @@ class ApiController extends Controller
      * @return Response
      * @throws FormValidationException
      *
-     * @Route("exception-form")
+     * @Route("form")
+     * @Method(methods={"POST"})
      */
     public function formValidationExceptionAction(Request $request)
     {
@@ -173,14 +177,5 @@ class ApiController extends Controller
         throw new ValidationException([
             new ErrorField('field', 'code', 'message')
         ]);
-    }
-
-    /**
-     * @Route("post-restricted")
-     * @Method(methods={"POST"})
-     */
-    public function postRestrictedAction()
-    {
-        return new Response('foobar', Response::HTTP_CREATED);
     }
 }

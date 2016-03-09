@@ -117,30 +117,48 @@ class ApiControllerTest extends WebTestCase
 
     public function testEmptyFormValidationException()
     {
-        $response = $this->requestGet('exception-empty-form', Response::HTTP_BAD_REQUEST);
-        $this->assertErrorResponse($response, true);
+        $response = $this->requestPost('empty-form', [], Response::HTTP_BAD_REQUEST);
+        $this->assertErrorResponse($response, true, [
+            [
+                'field'   => '#',
+                'code'    => 'error.form.validation.csrf',
+                'message' => 'The CSRF token is invalid. Please try to resubmit the form.'
+            ],
+            [
+                'field'   => '#',
+                'code'    => 'error.form.validation.general',
+                'message' => 'Some general error at root level.'
+            ]
+        ]);
     }
 
     public function testFormValidationException()
     {
-        $response = $this->requestPost('exception-form', ['email' => 'foo'], Response::HTTP_BAD_REQUEST);
+        $response = $this->requestPost('form', ['email' => 'foo'], Response::HTTP_BAD_REQUEST);
         $this->assertErrorResponse($response, true, [
             [
-                'field' => 'name',
-                'code' => 'error.form.validation.not_blank',
+                'field'   => 'name',
+                'code'    => 'error.form.validation.not_blank',
                 'message' => 'This value should not be blank.'
             ],
             [
-                'field' => 'email',
-                'code' => 'error.form.validation.email',
+                'field'   => 'email',
+                'code'    => 'error.form.validation.email',
                 'message' => 'This value is not a valid email address.'
             ],
             [
-                'field' => 'email',
-                'code' => 'error.form.validation.length',
+                'field'   => 'email',
+                'code'    => 'error.form.validation.length',
                 'message' => 'This value is too short. It should have 5 characters or more.'
             ]
         ]);
+    }
+
+    public function testFormValidationSuccess()s
+    {
+        $response = $this->requestPost('form', ['name' => 'Robert', 'email' => 'robert@mediamonks.com'],
+            Response::HTTP_CREATED);
+        $this->assertEquals('foobar', $response['data']);
     }
 
     public function testValidationException()
@@ -151,10 +169,11 @@ class ApiControllerTest extends WebTestCase
 
     public function testMethodNotAllowedException()
     {
-        $response = $this->requestGet('post-restricted', Response::HTTP_METHOD_NOT_ALLOWED);
+        $response = $this->requestGet('form', Response::HTTP_METHOD_NOT_ALLOWED);
         $this->assertErrorResponse($response);
         $this->assertEquals('error.http.method_not_allowed', $response['error']['code']);
-        $this->assertEquals('No route found for "GET /api/post-restricted": Method Not Allowed (Allow: POST)', $response['error']['message']);
+        $this->assertEquals('No route found for "GET /api/form": Method Not Allowed (Allow: POST)',
+            $response['error']['message']);
     }
 
     public function testNotFoundHttpException()
@@ -178,25 +197,25 @@ class ApiControllerTest extends WebTestCase
         $this->assertArrayHasKey('message', $response['error']);
         $this->assertInternalType('string', $response['error']['message']);
 
-        if($fields) {
+        if ($fields) {
             $this->assertArrayHasKey('fields', $response['error']);
             $this->assertInternalType('array', $response['error']['fields']);
 
             $i = 0;
-            foreach($response['error']['fields'] as $field) {
+            foreach ($response['error']['fields'] as $field) {
                 $this->assertArrayHasKey('field', $field);
                 $this->assertInternalType('string', $field['field']);
-                if(!empty($fieldData[$i]['field'])) {
+                if (!empty($fieldData[$i]['field'])) {
                     $this->assertEquals($fieldData[$i]['field'], $field['field']);
                 }
                 $this->assertArrayHasKey('code', $field);
                 $this->assertInternalType('string', $field['code']);
-                if(!empty($fieldData[$i]['code'])) {
+                if (!empty($fieldData[$i]['code'])) {
                     $this->assertEquals($fieldData[$i]['code'], $field['code']);
                 }
                 $this->assertArrayHasKey('message', $field);
                 $this->assertInternalType('string', $field['message']);
-                if(!empty($fieldData[$i]['message'])) {
+                if (!empty($fieldData[$i]['message'])) {
                     $this->assertEquals($fieldData[$i]['message'], $field['message']);
                 }
 

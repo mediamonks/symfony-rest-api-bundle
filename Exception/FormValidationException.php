@@ -63,9 +63,6 @@ class FormValidationException extends AbstractValidationException
     {
         $errors = [];
         foreach ($form->getErrors() as $error) {
-            if (empty($error)) {
-                continue;
-            }
             if ($form->isRoot()) {
                 $errors[] = $this->toErrorArray($error);
             } else {

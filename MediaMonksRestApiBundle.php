@@ -16,8 +16,6 @@ class MediaMonksRestApiBundle extends Bundle
             $this->extension = new MediaMonksRestApiExtension();
         }
 
-        if ($this->extension) {
-            return $this->extension;
-        }
+        return $this->extension;
     }
 }

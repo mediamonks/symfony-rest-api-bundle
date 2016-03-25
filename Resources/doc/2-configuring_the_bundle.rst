@@ -1,6 +1,20 @@
 Step 2: Configuring the bundle
 ==============================
 
+Debug Mode
+----------
+
+When debug mode is enabled a stack trace will be outputted when an exception is detected.
+Debug mode is automatically enabled when your app is in debug mode.
+
+You can enable or disable it manually by adding it to your configuration:
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    mediamonks_rest_api:
+        debug: true/false
+
 Request Matching
 ----------------
 

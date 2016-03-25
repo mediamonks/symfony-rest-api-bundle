@@ -1,4 +1,2 @@
 /vendor/
 /composer.lock
-/Tests/Functional/var/cache/*
-/Tests/Functional/var/logs/*

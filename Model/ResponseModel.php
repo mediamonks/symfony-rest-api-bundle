@@ -71,11 +71,14 @@ class ResponseModel
     {
         if ($this->exception instanceof HttpException) {
             return $this->exception->getStatusCode();
-        } elseif ($this->exception instanceof AbstractValidationException) {
+        }
+        if ($this->exception instanceof AbstractValidationException) {
             return Response::HTTP_BAD_REQUEST;
-        } elseif ($this->isValidHttpStatusCode($this->exception->getCode())) {
+        }
+        if ($this->isValidHttpStatusCode($this->exception->getCode())) {
             return $this->exception->getCode();
         }
+
         return Response::HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -238,7 +241,8 @@ class ResponseModel
     {
         if ($this->exception instanceof ExceptionInterface) {
             return $this->exception->toArray();
-        } elseif ($this->exception instanceof HttpException) {
+        }
+        if ($this->exception instanceof HttpException) {
             return $this->httpExceptionToArray();
         }
 

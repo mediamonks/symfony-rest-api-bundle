@@ -29,7 +29,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * @param ArrayNodeDefinition $node
      */
-    protected function addRequestMatcherNode(ArrayNodeDefinition $node)
+    private function addRequestMatcherNode(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode('request_matcher')
@@ -52,7 +52,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * @param ArrayNodeDefinition $node
      */
-    protected function addOutputFormatNode(ArrayNodeDefinition $node)
+    private function addOutputFormatNode(ArrayNodeDefinition $node)
     {
         $node->children()
             ->arrayNode('output_formats')
@@ -69,7 +69,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * @param ArrayNodeDefinition $node
      */
-    protected function addPostMessageOriginNode(ArrayNodeDefinition $node)
+    private function addPostMessageOriginNode(ArrayNodeDefinition $node)
     {
         $node->children()
             ->scalarNode('post_message_origin')

@@ -101,6 +101,32 @@ class ResponseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['error' => $error], $responseContainer->toArray());
     }
 
+    public function testReturnStackTraceEnabled()
+    {
+        $responseContainer = new ResponseModel();
+        $responseContainer->setException(new \Exception('Test'));
+        $responseContainer->setReturnStackTrace(true);
+
+        $this->assertTrue($responseContainer->isReturnStackTrace());
+
+        $data = $responseContainer->toArray();
+        $this->assertArrayHasKey('error', $data);
+        $this->assertArrayHasKey('stack_trace', $data['error']);
+    }
+
+    public function testReturnStackTraceDisabled()
+    {
+        $responseContainer = new ResponseModel();
+        $responseContainer->setException(new \Exception('Test'));
+        $responseContainer->setReturnStackTrace(false);
+
+        $this->assertFalse($responseContainer->isReturnStackTrace());
+
+        $data = $responseContainer->toArray();
+        $this->assertArrayHasKey('error', $data);
+        $this->assertArrayNotHasKey('stack_trace', $data['error']);
+    }
+
     /**
      * @param $content
      * @return ResponseModel

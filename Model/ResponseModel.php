@@ -27,6 +27,11 @@ class ResponseModel
     protected $returnStatusCode = false;
 
     /**
+     * @var bool
+     */
+    protected $returnStackTrace = false;
+
+    /**
      * @var mixed
      */
     protected $data;
@@ -45,6 +50,24 @@ class ResponseModel
      * @var PaginatedResponseInterface
      */
     protected $pagination;
+
+    /**
+     * @return boolean
+     */
+    public function isReturnStackTrace()
+    {
+        return $this->returnStackTrace;
+    }
+
+    /**
+     * @param boolean $returnStackTrace
+     * @return $this
+     */
+    public function setReturnStackTrace($returnStackTrace)
+    {
+        $this->returnStackTrace = $returnStackTrace;
+        return $this;
+    }
 
     /**
      * @return int
@@ -240,13 +263,31 @@ class ResponseModel
     protected function exceptionToArray()
     {
         if ($this->exception instanceof ExceptionInterface) {
-            return $this->exception->toArray();
+            $error = $this->exception->toArray();
         }
-        if ($this->exception instanceof HttpException) {
-            return $this->httpExceptionToArray();
+        elseif ($this->exception instanceof HttpException) {
+            $error = $this->httpExceptionToArray();
         }
+        else {
+            $error = $this->generalExceptionToArray();
+        }
+        if($this->isReturnStackTrace()) {
+            $error['stack_trace'] = $this->getExceptionStackTrace();
+        }
+        return $error;
+    }
 
-        return $this->generalExceptionToArray();
+    /**
+     * @return string
+     */
+    protected function getExceptionStackTrace()
+    {
+        $traces = [];
+        foreach($this->exception->getTrace() as $trace) {
+            $trace['args'] = json_decode(json_encode($trace['args']), true);
+            $traces[] = $trace;
+        }
+        return $traces;
     }
 
     /**

@@ -30,6 +30,11 @@ class ResponseTransformer implements ResponseTransformerInterface
     protected $twig;
 
     /**
+     * @var bool
+     */
+    protected $debug = false;
+
+    /**
      * @var string
      */
     protected $postMessageOrigin;
@@ -57,9 +62,30 @@ class ResponseTransformer implements ResponseTransformerInterface
      */
     public function setOptions(array $options)
     {
+        if (isset($options['debug'])) {
+            $this->setDebug($options['debug']);
+        }
         if (isset($options['post_message_origin'])) {
             $this->setPostMessageOrigin($options['post_message_origin']);
         }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDebug()
+    {
+        return $this->debug;
+    }
+
+    /**
+     * @param boolean $debug
+     * @return ResponseTransformer
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+        return $this;
     }
 
     /**
@@ -90,9 +116,10 @@ class ResponseTransformer implements ResponseTransformerInterface
         $responseModel = $response->getContent();
 
         if (!$responseModel instanceof ResponseModel) {
-            $responseModel = $this->getResonseModelFactory()->createFromContent($response);
+            $responseModel = $this->getResponseModelFactory()->createFromContent($response);
         }
 
+        $responseModel->setReturnStackTrace($this->isDebug());
         $response->setStatusCode($responseModel->getStatusCode());
         $this->forceStatusCodeHttpOK($request, $response, $responseModel);
         $response = $this->createSerializedResponse($request, $response, $responseModel);
@@ -111,7 +138,7 @@ class ResponseTransformer implements ResponseTransformerInterface
     /**
      * @return ResponseModelFactory
      */
-    public function getResonseModelFactory()
+    public function getResponseModelFactory()
     {
         if (!isset($this->responseModelFactory)) {
             $this->responseModelFactory = ResponseModelFactory::createFactory();

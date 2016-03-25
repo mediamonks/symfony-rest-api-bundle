@@ -151,6 +151,7 @@ class ResponseTransformerTest extends TestCase
         $responseModel = m::mock('MediaMonks\RestApiBundle\Model\ResponseModel');
         $responseModel->shouldReceive('getStatusCode')->andReturn(Response::HTTP_CONFLICT);
         $responseModel->shouldReceive('setReturnStatusCode');
+        $responseModel->shouldReceive('setReturnStackTrace');
 
         $response = m::mock('Symfony\Component\HttpFoundation\Response');
         $response->shouldReceive('getContent')->andReturn($responseModel);
@@ -184,6 +185,7 @@ class ResponseTransformerTest extends TestCase
         $responseModel = m::mock('MediaMonks\RestApiBundle\Model\ResponseModel');
         $responseModel->shouldReceive('getStatusCode')->andReturn(Response::HTTP_CONFLICT);
         $responseModel->shouldReceive('setReturnStatusCode');
+        $responseModel->shouldReceive('setReturnStackTrace');
         $responseModel->shouldReceive('toArray');
 
         $response = m::mock('Symfony\Component\HttpFoundation\Response');
@@ -221,6 +223,7 @@ class ResponseTransformerTest extends TestCase
         $responseModel = m::mock('MediaMonks\RestApiBundle\Model\ResponseModel');
         $responseModel->shouldReceive('getStatusCode')->andReturn(Response::HTTP_CONFLICT);
         $responseModel->shouldReceive('setReturnStatusCode');
+        $responseModel->shouldReceive('setReturnStackTrace');
         $responseModel->shouldReceive('toArray');
 
         $response = m::mock('Symfony\Component\HttpFoundation\Response');
@@ -271,6 +274,7 @@ class ResponseTransformerTest extends TestCase
         $responseModel = m::mock('MediaMonks\RestApiBundle\Model\ResponseModel');
         $responseModel->shouldReceive('getStatusCode')->andReturn(Response::HTTP_CONFLICT);
         $responseModel->shouldReceive('setReturnStatusCode');
+        $responseModel->shouldReceive('setReturnStackTrace');
         $responseModel->shouldReceive('toArray');
 
         $factory = m::mock('MediaMonks\RestApiBundle\Model\ResponseModelFactory');
@@ -295,14 +299,14 @@ class ResponseTransformerTest extends TestCase
 
         $subject->setResponseModelFactory($factory);
 
-        $this->assertEquals($factory, $subject->getResonseModelFactory());
+        $this->assertEquals($factory, $subject->getResponseModelFactory());
     }
 
     public function testGetResponseModelFactoryDefault()
     {
         $subject = $this->getSubject();
 
-        $factory = $subject->getResonseModelFactory();
+        $factory = $subject->getResponseModelFactory();
 
         $this->assertInstanceOf('MediaMonks\RestApiBundle\Model\ResponseModelFactory', $factory);
     }

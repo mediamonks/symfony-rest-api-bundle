@@ -19,11 +19,23 @@ final class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('mediamonks_rest_api');
 
+        $this->addDebugNode($rootNode);
         $this->addRequestMatcherNode($rootNode);
         $this->addOutputFormatNode($rootNode);
         $this->addPostMessageOriginNode($rootNode);
 
         return $treeBuilder;
+    }
+
+    /**
+     * @param ArrayNodeDefinition $node
+     */
+    private function addDebugNode(ArrayNodeDefinition $node)
+    {
+        $node->children()
+            ->scalarNode('debug')
+            ->defaultNull()
+            ->end();
     }
 
     /**

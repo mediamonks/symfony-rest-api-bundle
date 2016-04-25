@@ -13,7 +13,8 @@
   "authors": [
     {
       "name": "Robert Slootjes",
-      "email": "robert@mediamonks.com"
+      "email": "robert@mediamonks.com",
+      "homepage": "https://github.com/slootjes"
     }
   ],
   "require": {

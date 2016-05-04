@@ -13,5 +13,5 @@ class Error
     const FORM_TYPE_GENERAL = 'general';
     const FORM_TYPE_CSRF = 'csrf';
 
-    const MESSAGE_FORM_VALIDATION = 'Not all fields are filled incorrectly.';
+    const MESSAGE_FORM_VALIDATION = 'Not all fields are filled in correctly.';
 }

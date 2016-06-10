@@ -18,10 +18,7 @@ class ResponseTransformerTest extends TestCase
         $serializer = m::mock('JMS\Serializer\Serializer');
         $serializer->shouldReceive('serialize');
 
-        $twig = m::mock('Twig_Environment');
-        $twig->shouldReceive('render');
-
-        return new ResponseTransformer($serializer, $twig, $options);
+        return new ResponseTransformer($serializer, $options);
     }
 
     public function testConstructSetsOptions()
@@ -96,6 +93,7 @@ class ResponseTransformerTest extends TestCase
 
         $response = m::mock('MediaMonks\RestApiBundle\Response\JsonResponse');
         $response->shouldReceive('setContent')->andReturnSelf();
+        $response->shouldReceive('getContent')->andReturn('foo');
 
         $response->headers = m::mock('\Symfony\Component\HttpFoundation\ResponseHeaderBag');
         $response->headers->shouldReceive('set');

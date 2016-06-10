@@ -25,11 +25,6 @@ class ResponseTransformer implements ResponseTransformerInterface
     protected $serializer;
 
     /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
-
-    /**
      * @var bool
      */
     protected $debug = false;
@@ -47,13 +42,11 @@ class ResponseTransformer implements ResponseTransformerInterface
     /**
      * ResponseTransformer constructor.
      * @param Serializer $serializer
-     * @param \Twig_Environment $twig
      * @param array $options
      */
-    public function __construct(Serializer $serializer, \Twig_Environment $twig, $options = [])
+    public function __construct(Serializer $serializer, $options = [])
     {
         $this->serializer = $serializer;
-        $this->twig       = $twig;
         $this->setOptions($options);
     }
 
@@ -256,23 +249,20 @@ class ResponseTransformer implements ResponseTransformerInterface
         return $context;
     }
 
+
     /**
      * @param Request $request
      * @param JsonResponse $response
+     * @throws \Exception
      */
     protected function wrapResponse(Request $request, JsonResponse $response)
     {
         switch ($request->query->get(self::PARAMETER_WRAPPER)) {
             case self::WRAPPER_POST_MESSAGE:
-                $response->setContent(
-                    $this->twig->render(
-                        'MediaMonksRestApiBundle::post_message.html.twig',
-                        [
-                            'request'  => $request,
-                            'response' => $response,
-                            'callback' => $request->query->get(self::PARAMETER_CALLBACK),
-                            'origin'   => $this->getPostMessageOrigin()
-                        ]
+                $response->setContent(sprintf($this->getPostMessageTemplate(),
+                        $response->getContent(),
+                        $this->getCallbackFromRequest($request),
+                        $this->getPostMessageOrigin()
                     )
                 )->headers->set('Content-Type', 'text/html');
                 break;
@@ -280,5 +270,42 @@ class ResponseTransformer implements ResponseTransformerInterface
                 $response->setCallback($request->query->get(self::PARAMETER_CALLBACK));
                 break;
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return string
+     */
+    protected function getCallbackFromRequest(Request $request)
+    {
+        $response = new JsonResponse('');
+        $response->setCallback($request->query->get(self::PARAMETER_CALLBACK));
+        return $response->getCallback();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getPostMessageTemplate()
+    {
+        return <<<EOD
+<html>
+<body>
+<script>
+    try {
+        var data = %s;
+    }
+    catch (error) {
+        var data = {"error": {"code": "error.parse.post_message", "message": "Post message parse error"}};
+    }
+
+    top.postMessage(JSON.stringify({
+        name: '%s',
+        result: data
+    }), '%s');
+</script>
+</body>
+</html>
+EOD;
     }
 }

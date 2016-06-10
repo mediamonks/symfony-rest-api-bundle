@@ -34,7 +34,7 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
             ->replaceArgument(0, $config['output_formats']);
 
         $container->getDefinition('mediamonks_rest_api.response_transformer')
-            ->replaceArgument(2, [
+            ->replaceArgument(1, [
                 'debug'               => $this->getDebug($config, $container),
                 'post_message_origin' => $config['post_message_origin']
             ]);

@@ -37,4 +37,12 @@ class JsonResponse extends BaseJsonResponse
         $this->data = $this->content = $content;
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCallback()
+    {
+        return $this->callback;
+    }
 }

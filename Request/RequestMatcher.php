@@ -32,15 +32,10 @@ class RequestMatcher implements RequestMatcherInterface
 
     /**
      * @param Request $request
-     * @param int $requestType
      * @return bool
      */
-    public function matches(Request $request, $requestType = HttpKernelInterface::MASTER_REQUEST)
+    public function matches(Request $request)
     {
-        if ($requestType !== HttpKernelInterface::MASTER_REQUEST) {
-            return false;
-        }
-
         if ($this->matchPreviouslyMatchedRequest($request)) {
             return true;
         }

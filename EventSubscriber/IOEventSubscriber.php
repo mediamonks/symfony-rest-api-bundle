@@ -139,7 +139,7 @@ class IOEventSubscriber implements EventSubscriberInterface
      */
     protected function eventRequestMatches(KernelEvent $event)
     {
-        return $this->requestMatcher->matches($event->getRequest(), $event->getRequestType());
+        return $this->requestMatcher->matches($event->getRequest());
     }
 
     /**

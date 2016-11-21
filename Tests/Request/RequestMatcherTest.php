@@ -13,14 +13,12 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $matcher = new RequestMatcher([]);
         foreach ([
-                     ['path' => '/foo', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => false],
-                     ['path' => '/bar', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => false],
-                     ['path' => '/foo', 'type' => HttpKernelInterface::SUB_REQUEST, 'result' => false],
-                     ['path' => '/bar', 'type' => HttpKernelInterface::SUB_REQUEST, 'result' => false],
+                     ['path' => '/foo', 'result' => false],
+                     ['path' => '/bar', 'result' => false],
                  ] as $test
         ) {
             $this->assertEquals($test['result'],
-                $matcher->matches($this->getRequestFromPath($test['path']), $test['type']));
+                $matcher->matches($this->getRequestFromPath($test['path'])));
         }
     }
 
@@ -31,19 +29,17 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
             '~^/api/~'
         ]);
         foreach ([
-                     ['path' => '/foo', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => false],
-                     ['path' => '/foo', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => false],
-                     ['path' => '/fapi', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => false],
-                     ['path' => '/api', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => true],
-                     ['path' => '/api', 'type' => HttpKernelInterface::SUB_REQUEST, 'result' => false],
-                     ['path' => '/api/', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => true],
-                     ['path' => '/api/', 'type' => HttpKernelInterface::SUB_REQUEST, 'result' => false],
-                     ['path' => '/api/foo', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => true],
-                     ['path' => '/api/doc', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => true],
+                     ['path' => '/foo', 'result' => false],
+                     ['path' => '/foo', 'result' => false],
+                     ['path' => '/fapi', 'result' => false],
+                     ['path' => '/api', 'result' => true],
+                     ['path' => '/api/', 'result' => true],
+                     ['path' => '/api/foo', 'result' => true],
+                     ['path' => '/api/doc', 'result' => true],
                  ] as $test
         ) {
             $this->assertEquals($test['result'],
-                $matcher->matches($this->getRequestFromPath($test['path']), $test['type']));
+                $matcher->matches($this->getRequestFromPath($test['path'])));
         }
     }
 
@@ -56,20 +52,17 @@ class RequestMatcherTest extends \PHPUnit_Framework_TestCase
             '~^/api/doc~'
         ]);
         foreach ([
-                     ['path' => '/foo', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => false],
-                     ['path' => '/foo', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => false],
-                     ['path' => '/fapi', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => false],
-                     ['path' => '/api', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => true],
-                     ['path' => '/api', 'type' => HttpKernelInterface::SUB_REQUEST, 'result' => false],
-                     ['path' => '/api/', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => true],
-                     ['path' => '/api/', 'type' => HttpKernelInterface::SUB_REQUEST, 'result' => false],
-                     ['path' => '/api/foo', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => true],
-                     ['path' => '/api/doc', 'type' => HttpKernelInterface::MASTER_REQUEST, 'result' => false],
-                     ['path' => '/api/doc', 'type' => HttpKernelInterface::SUB_REQUEST, 'result' => false],
+                     ['path' => '/foo', 'result' => false],
+                     ['path' => '/foo', 'result' => false],
+                     ['path' => '/fapi', 'result' => false],
+                     ['path' => '/api', 'result' => true],
+                     ['path' => '/api/', 'result' => true],
+                     ['path' => '/api/foo', 'result' => true],
+                     ['path' => '/api/doc', 'result' => false],
                  ] as $test
         ) {
             $this->assertEquals($test['result'],
-                $matcher->matches($this->getRequestFromPath($test['path']), $test['type']));
+                $matcher->matches($this->getRequestFromPath($test['path'])));
         }
     }
 

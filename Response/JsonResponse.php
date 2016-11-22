@@ -35,6 +35,7 @@ class JsonResponse extends BaseJsonResponse
     public function setContent($content)
     {
         $this->data = $this->content = $content;
+
         return $this;
     }
 

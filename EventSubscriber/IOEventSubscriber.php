@@ -43,8 +43,8 @@ class IOEventSubscriber implements EventSubscriberInterface
         RequestTransformerInterface $requestTransformer,
         ResponseTransformerInterface $responseTransformer
     ) {
-        $this->requestMatcher      = $requestMatcher;
-        $this->requestTransformer  = $requestTransformer;
+        $this->requestMatcher = $requestMatcher;
+        $this->requestTransformer = $requestTransformer;
         $this->responseTransformer = $responseTransformer;
     }
 
@@ -55,7 +55,7 @@ class IOEventSubscriber implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST   => [
-                ['onRequest', 512]
+                ['onRequest', 512],
             ],
             KernelEvents::EXCEPTION => [
                 ['onException', 512],
@@ -66,7 +66,7 @@ class IOEventSubscriber implements EventSubscriberInterface
             KernelEvents::RESPONSE  => [
                 ['onResponseEarly', 0],
                 ['onResponseLate', -512],
-            ]
+            ],
         ];
     }
 

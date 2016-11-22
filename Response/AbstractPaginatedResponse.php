@@ -27,7 +27,7 @@ abstract class AbstractPaginatedResponse
      */
     public function __construct($data, $limit, $total = null)
     {
-        $this->data  = $data;
+        $this->data = $data;
         $this->limit = $limit;
         $this->total = $total;
     }

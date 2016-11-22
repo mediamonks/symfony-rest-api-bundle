@@ -52,6 +52,7 @@ class FormValidationException extends AbstractValidationException
         foreach ($this->getFormChildErrorMessages($form) as $error) {
             $errors[] = $error;
         }
+
         return $errors;
     }
 
@@ -69,6 +70,7 @@ class FormValidationException extends AbstractValidationException
                 $errors[] = $this->toErrorArray($error, $form);
             }
         }
+
         return $errors;
     }
 
@@ -86,6 +88,7 @@ class FormValidationException extends AbstractValidationException
                 }
             }
         }
+
         return $errors;
     }
 
@@ -115,6 +118,7 @@ class FormValidationException extends AbstractValidationException
         } else {
             $code = $this->getErrorCodeByMessage($error);
         }
+
         return new ErrorField($field, $code, $error->getMessage());
     }
 
@@ -127,6 +131,7 @@ class FormValidationException extends AbstractValidationException
         if (stristr($error->getMessage(), Error::FORM_TYPE_CSRF)) {
             return $this->getErrorCode(Error::FORM_TYPE_CSRF);
         }
+
         return $this->getErrorCode(Error::FORM_TYPE_GENERAL);
     }
 
@@ -136,6 +141,6 @@ class FormValidationException extends AbstractValidationException
      */
     protected function getErrorCode($value)
     {
-        return sprintf(Error::CODE_FORM_VALIDATION . '.%s', $value);
+        return sprintf(Error::CODE_FORM_VALIDATION.'.%s', $value);
     }
 }

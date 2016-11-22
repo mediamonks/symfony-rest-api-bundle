@@ -66,6 +66,7 @@ class ResponseModel
     public function setReturnStackTrace($returnStackTrace)
     {
         $this->returnStackTrace = $returnStackTrace;
+
         return $this;
     }
 
@@ -239,6 +240,7 @@ class ResponseModel
         } else {
             $return += $this->dataToArray();
         }
+
         return $return;
     }
 
@@ -254,6 +256,7 @@ class ResponseModel
                 $return['pagination'] = $this->pagination->toArray();
             }
         }
+
         return $return;
     }
 
@@ -264,16 +267,15 @@ class ResponseModel
     {
         if ($this->exception instanceof ExceptionInterface) {
             $error = $this->exception->toArray();
-        }
-        elseif ($this->exception instanceof HttpException) {
+        } elseif ($this->exception instanceof HttpException) {
             $error = $this->httpExceptionToArray();
-        }
-        else {
+        } else {
             $error = $this->generalExceptionToArray();
         }
-        if($this->isReturnStackTrace()) {
+        if ($this->isReturnStackTrace()) {
             $error['stack_trace'] = $this->getExceptionStackTrace();
         }
+
         return $error;
     }
 
@@ -283,10 +285,11 @@ class ResponseModel
     protected function getExceptionStackTrace()
     {
         $traces = [];
-        foreach($this->exception->getTrace() as $trace) {
+        foreach ($this->exception->getTrace() as $trace) {
             $trace['args'] = json_decode(json_encode($trace['args']), true);
             $traces[] = $trace;
         }
+
         return $traces;
     }
 
@@ -297,7 +300,7 @@ class ResponseModel
     {
         return [
             'code'    => $this->getExceptionErrorCode(Error::CODE_HTTP, self::EXCEPTION_HTTP),
-            'message' => $this->exception->getMessage()
+            'message' => $this->exception->getMessage(),
         ];
     }
 
@@ -308,7 +311,7 @@ class ResponseModel
     {
         return [
             'code'    => trim($this->getExceptionErrorCode(Error::CODE_GENERAL, self::EXCEPTION_GENERAL), '.'),
-            'message' => $this->exception->getMessage()
+            'message' => $this->exception->getMessage(),
         ];
     }
 
@@ -351,7 +354,7 @@ class ResponseModel
      */
     public function __toString()
     {
-        $data                  = $this->toArray();
+        $data = $this->toArray();
         $data['error']['code'] = Error::CODE_REST_API_BUNDLE;
 
         return json_encode($data);

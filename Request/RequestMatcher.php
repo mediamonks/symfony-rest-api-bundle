@@ -83,6 +83,7 @@ class RequestMatcher implements RequestMatcherInterface
         if ($this->matchRequestPathAgainstWhitelist($requestPath) === true) {
             return true;
         }
+
         return false;
     }
 

@@ -12,7 +12,7 @@ abstract class AbstractValidationException extends AbstractException implements 
     public function __construct($message, $code)
     {
         $this->message = $message;
-        $this->code    = $code;
+        $this->code = $code;
     }
 
     /**
@@ -21,12 +21,13 @@ abstract class AbstractValidationException extends AbstractException implements 
     public function toArray()
     {
         $return = [
-            'code'     => $this->getCode(),
-            'message' => $this->getMessage()
+            'code'    => $this->getCode(),
+            'message' => $this->getMessage(),
         ];
         foreach ($this->getFields() as $field) {
             $return['fields'][] = $field->toArray();
         }
+
         return $return;
     }
 }

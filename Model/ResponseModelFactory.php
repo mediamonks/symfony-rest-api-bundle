@@ -30,6 +30,7 @@ class ResponseModelFactory
         if ($content instanceof \Exception) {
             return $this->createFromException($content);
         }
+
         return $this->create()->setData($content);
     }
 

@@ -78,6 +78,7 @@ class ResponseTransformer implements ResponseTransformerInterface
     public function setDebug($debug)
     {
         $this->debug = $debug;
+
         return $this;
     }
 
@@ -96,6 +97,7 @@ class ResponseTransformer implements ResponseTransformerInterface
     public function setPostMessageOrigin($postMessageOrigin)
     {
         $this->postMessageOrigin = $postMessageOrigin;
+
         return $this;
     }
 
@@ -189,12 +191,14 @@ class ResponseTransformer implements ResponseTransformerInterface
         try {
             $response = $this->serialize($request, $response, $responseModel);
         } catch (\Exception $e) {
-            $response = new SymfonyJsonResponse([
-                'error' => [
-                    'code'    => Error::CODE_SERIALIZE,
-                    'message' => $e->getMessage()
+            $response = new SymfonyJsonResponse(
+                [
+                    'error' => [
+                        'code'    => Error::CODE_SERIALIZE,
+                        'message' => $e->getMessage(),
+                    ],
                 ]
-            ]);
+            );
         }
 
         return $response;
@@ -213,8 +217,8 @@ class ResponseTransformer implements ResponseTransformerInterface
                 $response->setContent($this->getSerializedContent($request, $responseModel));
                 break;
             default:
-                $headers           = $response->headers;
-                $response          = new JsonResponse(
+                $headers = $response->headers;
+                $response = new JsonResponse(
                     $this->getSerializedContent($request, $responseModel),
                     $response->getStatusCode()
                 );
@@ -246,6 +250,7 @@ class ResponseTransformer implements ResponseTransformerInterface
     {
         $context = new SerializationContext();
         $context->setSerializeNull(true);
+
         return $context;
     }
 
@@ -259,7 +264,9 @@ class ResponseTransformer implements ResponseTransformerInterface
     {
         switch ($request->query->get(self::PARAMETER_WRAPPER)) {
             case self::WRAPPER_POST_MESSAGE:
-                $response->setContent(sprintf($this->getPostMessageTemplate(),
+                $response->setContent(
+                    sprintf(
+                        $this->getPostMessageTemplate(),
                         $response->getContent(),
                         $this->getCallbackFromRequest($request),
                         $this->getPostMessageOrigin()
@@ -280,6 +287,7 @@ class ResponseTransformer implements ResponseTransformerInterface
     {
         $response = new JsonResponse('');
         $response->setCallback($request->query->get(self::PARAMETER_CALLBACK));
+
         return $response->getCallback();
     }
 

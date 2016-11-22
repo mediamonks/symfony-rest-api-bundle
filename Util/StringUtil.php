@@ -12,7 +12,7 @@ class StringUtil
     public static function classToSnakeCase($class, $trim = null)
     {
         $reflect = new \ReflectionClass($class);
-        $name    = $reflect->getShortName();
+        $name = $reflect->getShortName();
         if (!is_null($trim)) {
             $name = str_replace($trim, '', $name);
         }

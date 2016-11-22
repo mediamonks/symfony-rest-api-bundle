@@ -25,7 +25,7 @@ class CursorPaginatedResponse extends AbstractPaginatedResponse implements Pagin
     {
         parent::__construct($data, $limit, $total);
         $this->before = $before;
-        $this->after  = $after;
+        $this->after = $after;
     }
 
     /**
@@ -68,7 +68,7 @@ class CursorPaginatedResponse extends AbstractPaginatedResponse implements Pagin
         $data = [
             'before' => $this->getBefore(),
             'after'  => $this->getAfter(),
-            'limit'  => $this->getLimit()
+            'limit'  => $this->getLimit(),
         ];
         if (!is_null($this->getTotal())) {
             $data['total'] = $this->getTotal();

@@ -27,8 +27,8 @@ class ErrorField
      */
     public function __construct($field, $code, $message)
     {
-        $this->field   = $field;
-        $this->code    = $code;
+        $this->field = $field;
+        $this->code = $code;
         $this->message = $message;
     }
 
@@ -64,7 +64,7 @@ class ErrorField
         return [
             'field'   => $this->getField(),
             'code'    => $this->getCode(),
-            'message' => $this->getMessage()
+            'message' => $this->getMessage(),
         ];
     }
 }

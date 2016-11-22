@@ -22,7 +22,7 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
         $container->getDefinition('mediamonks_rest_api.request_matcher')
@@ -34,10 +34,13 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
             ->replaceArgument(0, $config['output_formats']);
 
         $container->getDefinition('mediamonks_rest_api.response_transformer')
-            ->replaceArgument(1, [
-                'debug'               => $this->getDebug($config, $container),
-                'post_message_origin' => $config['post_message_origin']
-            ]);
+            ->replaceArgument(
+                1,
+                [
+                    'debug'               => $this->getDebug($config, $container),
+                    'post_message_origin' => $config['post_message_origin'],
+                ]
+            );
     }
 
     /**
@@ -61,6 +64,7 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
         if ($container->hasParameter('kernel.debug')) {
             return $container->getParameter('kernel.debug');
         }
+
         return false;
     }
 }

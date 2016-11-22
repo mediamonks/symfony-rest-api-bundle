@@ -44,7 +44,7 @@ class OffsetPaginatedResponse extends AbstractPaginatedResponse implements Pagin
     {
         $data = [
             'offset' => $this->getOffset(),
-            'limit'  => $this->getLimit()
+            'limit'  => $this->getLimit(),
         ];
         if (!is_null($this->getTotal())) {
             $data['total'] = $this->getTotal();

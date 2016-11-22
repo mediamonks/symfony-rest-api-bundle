@@ -46,7 +46,7 @@ class RequestTransformer implements RequestTransformerInterface
     protected function setRequestFormat(Request $request)
     {
         $default = Format::getDefault();
-        $format  = $request->getRequestFormat($request->query->get('_format', $default));
+        $format = $request->getRequestFormat($request->query->get('_format', $default));
         if (!in_array($format, $this->outputFormats)) {
             $format = $default;
         }

@@ -184,7 +184,7 @@ class ResponseModel
     }
 
     /**
-     * @return array
+     * @return PaginatedResponseInterface
      */
     public function getPagination()
     {
@@ -217,7 +217,7 @@ class ResponseModel
      */
     public function setResponse(Response $response)
     {
-        $this->response = $response;
+        $this->response = clone $response;
         $this->setStatusCode($response->getStatusCode());
         $this->setData($response->getContent());
 

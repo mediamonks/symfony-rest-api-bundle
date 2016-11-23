@@ -2,6 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\Tests\Functional;
 
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -184,6 +185,22 @@ class ApiControllerTest extends WebTestCase
         $this->assertEquals('No route found for "GET /api/non-existing-path"', $response['error']['message']);
     }
 
+    public function testForceStatusCode200()
+    {
+        $headers = [
+            'HTTP_X-Force-Status-Code-200' => 1
+        ];
+
+        $response = $this->requestGet('empty', Response::HTTP_OK, $headers);
+        $this->assertEquals($response['statusCode'], Response::HTTP_NO_CONTENT);
+
+        $response = $this->requestGet('string', Response::HTTP_OK, $headers);
+        $this->assertEquals($response['statusCode'], Response::HTTP_OK);
+
+        $response = $this->requestGet('symfony', Response::HTTP_OK, $headers);
+        $this->assertEquals($response['statusCode'], Response::HTTP_CREATED);
+    }
+
     /**
      * @param $response
      * @param bool $fields
@@ -226,17 +243,25 @@ class ApiControllerTest extends WebTestCase
 
     /**
      * @param $path
-     * @param $httpCode
+     * @param int $httpCode
+     * @param array $headers
      * @return mixed
      */
-    protected function requestGet($path, $httpCode = Response::HTTP_OK)
+    protected function requestGet($path, $httpCode = Response::HTTP_OK, $headers = [])
     {
-        return $this->request('GET', $path, [], $httpCode);
+        return $this->request('GET', $path, [], $httpCode, $headers);
     }
 
-    protected function requestPost($path, $data = [], $httpCode = Response::HTTP_CREATED)
+    /**
+     * @param $path
+     * @param array $data
+     * @param int $httpCode
+     * @param array $headers
+     * @return mixed
+     */
+    protected function requestPost($path, $data = [], $httpCode = Response::HTTP_CREATED, $headers = [])
     {
-        return $this->request('POST', $path, $data, $httpCode);
+        return $this->request('POST', $path, $data, $httpCode, $headers);
     }
 
     /**
@@ -244,12 +269,16 @@ class ApiControllerTest extends WebTestCase
      * @param string $path
      * @param array $data
      * @param int $httpCode
+     * @param array $headers
      * @return mixed
      */
-    protected function request($method, $path, array $data = [], $httpCode = Response::HTTP_OK)
+    protected function request($method, $path, array $data = [], $httpCode = Response::HTTP_OK, $headers = [])
     {
+        /**
+         * @var Client $client
+         */
         $client = static::createClient();
-        $client->request($method, sprintf('/api/%s', $path), $data);
+        $client->request($method, sprintf('/api/%s', $path), $data, [], $headers);
         $this->assertEquals($httpCode, $client->getResponse()->getStatusCode());
         return json_decode($client->getResponse()->getContent(), true);
     }

@@ -4,8 +4,10 @@ namespace MediaMonks\RestApiBundle\Serializer;
 
 use MediaMonks\RestApiBundle\Request\Format;
 
-class JsonSerializer extends AbstractSerializer implements SerializerInterface
+class JsonSerializer implements SerializerInterface
 {
+    use SerializerTrait;
+
     /**
      * @param $data
      * @param $format

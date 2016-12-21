@@ -14,7 +14,7 @@ This bundle provides tools to implement an API according to the [MediaMonks REST
 - Converts scalars, arrays and objects to proper output
 - Converts exceptions to proper output
 - Supports application/json, application/x-www-form-urlencoded & multipart/form-data input
-- Supports json and xml output
+- Supports custom serializers like JMS, uses json serializer by default
 - Supports method overriding
 - Supports forcing a "200 OK" status method
 - Supports paginated responses

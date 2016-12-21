@@ -6,8 +6,10 @@ use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializationContext;
 use MediaMonks\RestApiBundle\Request\Format;
 
-class JMSSerializer extends AbstractSerializer implements SerializerInterface
+class JMSSerializer implements SerializerInterface
 {
+    use SerializerTrait;
+
     /**
      * @var Serializer
      */

@@ -2,7 +2,7 @@
 
 namespace MediaMonks\RestApiBundle\Serializer;
 
-abstract class AbstractSerializer
+trait SerializerTrait
 {
     /**
      * @param $format
@@ -11,13 +11,5 @@ abstract class AbstractSerializer
     public function supportsFormat($format)
     {
         return in_array($format, $this->getSupportedFormats());
-    }
-
-    /**
-     * @return array
-     */
-    public function getSupportedFormats()
-    {
-        return [];
     }
 }

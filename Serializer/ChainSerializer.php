@@ -7,8 +7,10 @@ use JMS\Serializer\SerializationContext;
 use MediaMonks\RestApiBundle\Exception\SerializerException;
 use MediaMonks\RestApiBundle\Request\Format;
 
-class ChainSerializer extends AbstractSerializer implements SerializerInterface
+class ChainSerializer implements SerializerInterface
 {
+    use SerializerTrait;
+
     /**
      * @var SerializerInterface[]
      */

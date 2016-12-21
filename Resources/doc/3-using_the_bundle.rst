@@ -32,7 +32,7 @@ will serialize and output the content according to the specification.
 
         public function objectAction()
         {
-            return new \AppBundle\Entity\Example(); // to be used with JMS Serializer
+            return new \AppBundle\Entity\Example(); // can be used when using JMS Serializer
         }
     }
 

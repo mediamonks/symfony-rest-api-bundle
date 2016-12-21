@@ -52,6 +52,8 @@ class ChainSerializer extends AbstractSerializer implements SerializerInterface
      */
     public function getSupportedFormats()
     {
+        $this->assertHasSerializer();
+
         return $this->formats;
     }
 

@@ -9,6 +9,9 @@
         <parameter key="mediamonks_rest_api.request_matcher.class">MediaMonks\RestApiBundle\Request\RequestMatcher</parameter>
         <parameter key="mediamonks_rest_api.request_transformer.class">MediaMonks\RestApiBundle\Request\RequestTransformer</parameter>
         <parameter key="mediamonks_rest_api.response_transformer.class">MediaMonks\RestApiBundle\Response\ResponseTransformer</parameter>
+        <parameter key="mediamonks_rest_api.serializer.jms.class">MediaMonks\RestApiBundle\Serializer\JmsSerializer</parameter>
+        <parameter key="mediamonks_rest_api.serializer.json.class">MediaMonks\RestApiBundle\Serializer\JsonSerializer</parameter>
+        <parameter key="mediamonks_rest_api.serializer.msgpack.class">MediaMonks\RestApiBundle\Serializer\MsgpackSerializer</parameter>
     </parameters>
 
     <services>
@@ -24,11 +27,18 @@
             <argument type="collection"/>
         </service>
         <service id="mediamonks_rest_api.request_transformer" class="%mediamonks_rest_api.request_transformer.class%">
-            <argument type="collection"/>
+            <argument type="service" id="mediamonks_rest_api.serializer.json"/>
         </service>
         <service id="mediamonks_rest_api.response_transformer" class="%mediamonks_rest_api.response_transformer.class%">
-            <argument type="service" id="jms_serializer"/>
+            <argument type="service" id="mediamonks_rest_api.serializer.json"/>
             <argument type="collection"/>
+        </service>
+        <service id="mediamonks_rest_api.serializer.json" class="%mediamonks_rest_api.serializer.json.class%">
+        </service>
+        <service id="mediamonks_rest_api.serializer.msgpack" class="%mediamonks_rest_api.serializer.msgpack.class%">
+        </service>
+        <service id="mediamonks_rest_api.serializer.jms" class="%mediamonks_rest_api.serializer.jms.class%">
+            <argument type="service" id="jms_serializer"/>
         </service>
     </services>
 </container>

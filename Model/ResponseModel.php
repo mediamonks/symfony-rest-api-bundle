@@ -75,9 +75,6 @@ class ResponseModel
      */
     public function getStatusCode()
     {
-        if (isset($this->response)) {
-            return $this->response->getStatusCode();
-        }
         if (isset($this->exception)) {
             return $this->getExceptionStatusCode();
         }
@@ -217,7 +214,7 @@ class ResponseModel
      */
     public function setResponse(Response $response)
     {
-        $this->response = clone $response;
+        $this->response = $response;
         $this->setStatusCode($response->getStatusCode());
         $this->setData($response->getContent());
 

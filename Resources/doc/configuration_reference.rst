@@ -11,4 +11,4 @@ All available configuration options are listed below with their default values.
         request_matcher:
             whitelist: [~^/api/$~,  ~^/api~]
             blacklist: [~^/api/doc~]
-        output_formats: [json]
+        serializer: json

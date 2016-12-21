@@ -2,11 +2,10 @@
 
 namespace MediaMonks\RestApiBundle\Response;
 
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Serializer;
 use MediaMonks\RestApiBundle\Model\ResponseModel;
 use MediaMonks\RestApiBundle\Model\ResponseModelFactory;
 use MediaMonks\RestApiBundle\Request\Format;
+use MediaMonks\RestApiBundle\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
@@ -20,7 +19,7 @@ class ResponseTransformer implements ResponseTransformerInterface
     const PARAMETER_WRAPPER = '_wrapper';
 
     /**
-     * @var Serializer
+     * @var SerializerInterface
      */
     protected $serializer;
 
@@ -41,10 +40,10 @@ class ResponseTransformer implements ResponseTransformerInterface
 
     /**
      * ResponseTransformer constructor.
-     * @param Serializer $serializer
+     * @param SerializerInterface $serializer
      * @param array $options
      */
-    public function __construct(Serializer $serializer, $options = [])
+    public function __construct(SerializerInterface $serializer, $options = [])
     {
         $this->serializer = $serializer;
         $this->setOptions($options);
@@ -236,24 +235,8 @@ class ResponseTransformer implements ResponseTransformerInterface
      */
     protected function getSerializedContent(Request $request, ResponseModel $responseModel)
     {
-        return $this->serializer->serialize(
-            $responseModel->toArray(),
-            $request->getRequestFormat(),
-            $this->getSerializerContext()
-        );
+        return $this->serializer->serialize($responseModel->toArray(), $request->getRequestFormat());
     }
-
-    /**
-     * @return SerializationContext
-     */
-    protected function getSerializerContext()
-    {
-        $context = new SerializationContext();
-        $context->setSerializeNull(true);
-
-        return $context;
-    }
-
 
     /**
      * @param Request $request

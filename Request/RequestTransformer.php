@@ -2,22 +2,22 @@
 
 namespace MediaMonks\RestApiBundle\Request;
 
+use MediaMonks\RestApiBundle\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class RequestTransformer implements RequestTransformerInterface
 {
     /**
-     * @var array
+     * @var SerializerInterface
      */
-    protected $outputFormats = [];
+    protected $serializer;
 
     /**
-     * RequestModifier constructor.
-     * @param array $outputFormats
+     * @param SerializerInterface $serializer
      */
-    public function __construct(array $outputFormats)
+    public function __construct(SerializerInterface $serializer)
     {
-        $this->outputFormats = $outputFormats;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -47,8 +47,8 @@ class RequestTransformer implements RequestTransformerInterface
     {
         $default = Format::getDefault();
         $format = $request->getRequestFormat($request->query->get('_format', $default));
-        if (!in_array($format, $this->outputFormats)) {
-            $format = $default;
+        if (!in_array($format, $this->serializer->getSupportedFormats())) {
+            $format = $this->serializer->getDefaultFormat();
         }
         $request->setRequestFormat($format);
     }

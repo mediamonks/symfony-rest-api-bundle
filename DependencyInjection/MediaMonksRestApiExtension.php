@@ -5,6 +5,7 @@ namespace MediaMonks\RestApiBundle\DependencyInjection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -30,9 +31,6 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
         $container->getDefinition('mediamonks_rest_api.request_matcher')
             ->replaceArgument(1, $config['request_matcher']['blacklist']);
 
-        $container->getDefinition('mediamonks_rest_api.request_transformer')
-            ->replaceArgument(0, $config['output_formats']);
-
         $container->getDefinition('mediamonks_rest_api.response_transformer')
             ->replaceArgument(
                 1,
@@ -41,6 +39,26 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
                     'post_message_origin' => $config['post_message_origin'],
                 ]
             );
+
+        $this->loadSerializer($container, $config);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array $config
+     */
+    protected function loadSerializer(ContainerBuilder $container, array $config)
+    {
+        if (!$container->has($config['serializer'])) {
+            $config['serializer'] = 'mediamonks_rest_api.serializer.'.$config['serializer'];
+        }
+
+        $container->getDefinition('mediamonks_rest_api.request_transformer')
+            ->replaceArgument(0, new Reference($config['serializer']))
+        ;
+        $container->getDefinition('mediamonks_rest_api.response_transformer')
+            ->replaceArgument(0, new Reference($config['serializer']))
+        ;
     }
 
     /**

@@ -31,18 +31,18 @@ You can override these regexes by configuring your own:
             whitelist: [~^/api/$~,  ~^/api~]
             blacklist: [~^/api/doc~]
 
-Output Formats
---------------
+Serializer
+----------
 
-You can configure which output formats are available.
+You can configure the serializer which is used.
 
-You can enable XML by adding it to your configuration:
+By default a json serializer is configured.
 
 .. code-block:: yaml
 
     # app/config/config.yml
     mediamonks_rest_api:
-        output_formats: [json, xml]
+        serializer: json
 
 Post Message Origin
 -------------------

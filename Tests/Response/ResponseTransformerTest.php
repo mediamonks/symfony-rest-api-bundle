@@ -15,7 +15,7 @@ class ResponseTransformerTest extends TestCase
 {
     protected function getSubject($options = [])
     {
-        $serializer = m::mock('JMS\Serializer\Serializer');
+        $serializer = m::mock('MediaMonks\RestApiBundle\Serializer\SerializerInterface');
         $serializer->shouldReceive('serialize');
 
         return new ResponseTransformer($serializer, $options);

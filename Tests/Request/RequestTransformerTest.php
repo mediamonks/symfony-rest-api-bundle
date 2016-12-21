@@ -2,10 +2,11 @@
 
 namespace MediaMonks\RestApiBundle\Tests\Request;
 
-
 use MediaMonks\RestApiBundle\Request\Format;
 use MediaMonks\RestApiBundle\Request\RequestTransformer;
+use MediaMonks\RestApiBundle\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Mockery as m;
 
 class RequestTransformerTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +15,11 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function getSubject()
     {
-        return new RequestTransformer(['json', 'xml']);
+        $serializer = m::mock(SerializerInterface::class);
+        $serializer->shouldReceive('getSupportedFormats')->andReturn(['json', 'xml']);
+        $serializer->shouldReceive('getDefaultFormat')->andReturn('json');
+
+        return new RequestTransformer($serializer);
     }
 
     public function testTransformChangesRequestParameters()

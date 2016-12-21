@@ -21,7 +21,7 @@ final class Configuration implements ConfigurationInterface
 
         $this->addDebugNode($rootNode);
         $this->addRequestMatcherNode($rootNode);
-        $this->addOutputFormatNode($rootNode);
+        $this->addSerializer($rootNode);
         $this->addPostMessageOriginNode($rootNode);
 
         return $treeBuilder;
@@ -64,17 +64,11 @@ final class Configuration implements ConfigurationInterface
     /**
      * @param ArrayNodeDefinition $node
      */
-    private function addOutputFormatNode(ArrayNodeDefinition $node)
+    private function addSerializer(ArrayNodeDefinition $node)
     {
         $node->children()
-            ->arrayNode('output_formats')
-                ->defaultValue([Format::getDefault()])
-                ->prototype('scalar')
-                ->validate()
-                    ->ifNotInArray(Format::getAvailable())
-                    ->thenInvalid('Formats can only contain "' . implode('"', Format::getAvailable()) . '", not "%s"')
-                    ->end()
-                ->end()
+            ->scalarNode('serializer')
+            ->defaultValue('json')
             ->end();
     }
 

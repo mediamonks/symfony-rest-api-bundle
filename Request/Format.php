@@ -6,6 +6,7 @@ class Format
 {
     const FORMAT_JSON = 'json';
     const FORMAT_XML = 'xml';
+    const FORMAT_MSGPACK = 'msgpack';
 
     /**
      * @return string

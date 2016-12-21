@@ -18,7 +18,6 @@ class AppKernel extends Kernel
             new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new \JMS\SerializerBundle\JMSSerializerBundle(),
             new \MediaMonks\RestApiBundle\MediaMonksRestApiBundle(),
             new \AppBundle\AppBundle(),
         ];

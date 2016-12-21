@@ -15,7 +15,7 @@ class RequestTransformerTest extends \PHPUnit_Framework_TestCase
      */
     public function getSubject()
     {
-        $serializer = m::mock(SerializerInterface::class);
+        $serializer = m::mock('MediaMonks\RestApiBundle\Serializer\SerializerInterface');
         $serializer->shouldReceive('getSupportedFormats')->andReturn(['json', 'xml']);
         $serializer->shouldReceive('getDefaultFormat')->andReturn('json');
 

@@ -38,7 +38,7 @@
         <service id="mediamonks_rest_api.serializer.msgpack" class="%mediamonks_rest_api.serializer.msgpack.class%">
         </service>
         <service id="mediamonks_rest_api.serializer.jms" class="%mediamonks_rest_api.serializer.jms.class%">
-            <argument type="service" id="jms_serializer"/>
+            <argument type="service" id="jms_serializer" on-invalid="null"/>
         </service>
     </services>
 </container>

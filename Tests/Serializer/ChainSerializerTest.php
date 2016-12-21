@@ -90,10 +90,10 @@ class ChainSerializerTest extends \PHPUnit_Framework_TestCase
         $serializer = new ChainSerializer();
 
         $jsonSerializer = m::mock('MediaMonks\RestApiBundle\Serializer\JsonSerializer');
-        $jsonSerializer->shouldReceive('getSupportedFormats')->andReturn(['json']);
+        $jsonSerializer->shouldReceive('getSupportedFormats')->andReturn([]);
+        $jsonSerializer->shouldReceive('supportsFormat')->andReturn(false);
         $serializer->addSerializer($jsonSerializer);
 
-        $serializer = new ChainSerializer();
         $serializer->serialize('foo', 'xml');
     }
 }

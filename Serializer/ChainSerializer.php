@@ -40,7 +40,7 @@ class ChainSerializer implements SerializerInterface
     {
         $this->assertHasSerializer();
 
-        foreach($this->serializers as $serializer) {
+        foreach ($this->serializers as $serializer) {
             if ($serializer->supportsFormat($format)) {
                 return $serializer->serialize($data, $format);
             }

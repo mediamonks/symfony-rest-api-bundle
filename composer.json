@@ -19,15 +19,16 @@
   ],
   "require": {
     "php": "^5.4|~7.0",
-    "symfony/framework-bundle": "^2.7|^3.0"
+    "symfony/dependency-injection": "^2.7|^3.0",
+    "symfony/http-kernel": "^2.7|^3.0"
   },
   "require-dev": {
     "symfony/symfony": "^2.7|^3.0",
+    "sensio/framework-extra-bundle": "^3.0",
     "codeclimate/php-test-reporter": "dev-master@dev",
     "matthiasnoback/symfony-dependency-injection-test": "0.*",
     "phpunit/phpunit": "^4.8",
-    "mockery/mockery": "^0.9.4",
-    "sensio/framework-extra-bundle": "^3.0"
+    "mockery/mockery": "^0.9.4"
   },
   "suggest": {
     "jms/serializer-bundle": "Use JMS Serializer as a serializer"

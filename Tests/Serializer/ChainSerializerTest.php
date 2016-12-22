@@ -3,8 +3,6 @@
 namespace MediaMonks\RestApiBundle\Tests\Serializer;
 
 use MediaMonks\RestApiBundle\Serializer\ChainSerializer;
-use MediaMonks\RestApiBundle\Serializer\JsonSerializer;
-use MediaMonks\RestApiBundle\Serializer\MsgpackSerializer;
 use Mockery as m;
 
 class ChainSerializerTest extends \PHPUnit_Framework_TestCase

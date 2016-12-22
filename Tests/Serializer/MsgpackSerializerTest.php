@@ -12,7 +12,6 @@ namespace
 
 namespace MediaMonks\RestApiBundle\Tests\Serializer
 {
-
     use MediaMonks\RestApiBundle\Serializer\MsgpackSerializer;
 
     class MsgpackSerializerTest extends \PHPUnit_Framework_TestCase

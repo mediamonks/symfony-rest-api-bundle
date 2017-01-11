@@ -222,33 +222,51 @@ class ResponseModel
     }
 
     /**
-     * @return array
+     * @param bool $wrapResponse
+     * @return array|string
      */
-    public function toArray()
+    public function toArray($wrapResponse = true)
     {
         $return = [];
-        if ($this->getReturnStatusCode()) {
+        if ($wrapResponse && $this->getReturnStatusCode()) {
             $return['statusCode'] = $this->getStatusCode();
         }
         if (isset($this->exception)) {
-            $return['error'] = $this->exceptionToArray();
+            if ($wrapResponse) {
+                $return['error'] = $this->exceptionToArray();
+            } else {
+                return $this->exceptionToArray();
+            }
         } elseif (isset($this->response) && $this->response instanceof RedirectResponse) {
-            $return['location'] = $this->response->headers->get('Location');
+            if ($wrapResponse) {
+                $return['location'] = $this->response->headers->get('Location');
+            } else {
+                return $this->response->headers->get('Location');
+            }
         } else {
-            $return += $this->dataToArray();
+            if ($wrapResponse) {
+                $return += $this->dataToArray();
+            } else {
+                return $this->dataToArray($wrapResponse);
+            }
         }
 
         return $return;
     }
 
     /**
-     * @return array
+     * @param bool $wrapResponse
+     * @return array|mixed
      */
-    protected function dataToArray()
+    protected function dataToArray($wrapResponse = true)
     {
         $return = [];
         if (isset($this->data)) {
-            $return['data'] = $this->data;
+            if ($wrapResponse) {
+                $return['data'] = $this->data;
+            } else {
+                $return = $this->data;
+            }
             if (isset($this->pagination)) {
                 $return['pagination'] = $this->pagination->toArray();
             }

@@ -56,3 +56,14 @@ You can set it by adding it to your configuration:
     # app/config/config.yml
     mediamonks_rest_api:
         post_message_origin: http://www.mediamonks.com/
+
+Wrap Response Data
+------------------
+
+You can disable response wrapping if needed
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    mediamonks_rest_api:
+        wrap_response_data: false

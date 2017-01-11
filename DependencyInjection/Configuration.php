@@ -23,6 +23,7 @@ final class Configuration implements ConfigurationInterface
         $this->addRequestMatcherNode($rootNode);
         $this->addSerializer($rootNode);
         $this->addPostMessageOriginNode($rootNode);
+        $this->addWrapResponseDataNode($rootNode);
 
         return $treeBuilder;
     }
@@ -80,6 +81,14 @@ final class Configuration implements ConfigurationInterface
         $node->children()
             ->scalarNode('post_message_origin')
             ->defaultNull()
+            ->end();
+    }
+
+    private function addWrapResponseDataNode(ArrayNodeDefinition $node)
+    {
+        $node->children()
+            ->booleanNode('wrap_response_data')
+            ->defaultTrue()
             ->end();
     }
 }

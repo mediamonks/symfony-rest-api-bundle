@@ -39,6 +39,11 @@ class ResponseTransformer implements ResponseTransformerInterface
     protected $responseModelFactory;
 
     /**
+     * @var bool
+     */
+    protected $wrapResponseData = true;
+
+    /**
      * ResponseTransformer constructor.
      * @param SerializerInterface $serializer
      * @param array $options
@@ -59,6 +64,9 @@ class ResponseTransformer implements ResponseTransformerInterface
         }
         if (isset($options['post_message_origin'])) {
             $this->setPostMessageOrigin($options['post_message_origin']);
+        }
+        if (isset($options['wrap_response_data'])) {
+            $this->setWrapResponseData($options['wrap_response_data']);
         }
     }
 
@@ -98,6 +106,22 @@ class ResponseTransformer implements ResponseTransformerInterface
         $this->postMessageOrigin = $postMessageOrigin;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWrapResponseData()
+    {
+        return $this->wrapResponseData;
+    }
+
+    /**
+     * @param bool $wrapResponseData
+     */
+    public function setWrapResponseData($wrapResponseData)
+    {
+        $this->wrapResponseData = $wrapResponseData;
     }
 
     /**
@@ -235,7 +259,7 @@ class ResponseTransformer implements ResponseTransformerInterface
      */
     protected function getSerializedContent(Request $request, ResponseModel $responseModel)
     {
-        return $this->serializer->serialize($responseModel->toArray(), $request->getRequestFormat());
+        return $this->serializer->serialize($responseModel->toArray($this->isWrapResponseData()), $request->getRequestFormat());
     }
 
     /**

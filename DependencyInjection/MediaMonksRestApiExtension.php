@@ -37,6 +37,7 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
                 [
                     'debug'               => $this->getDebug($config, $container),
                     'post_message_origin' => $config['post_message_origin'],
+                    'wrap_response_data'  => $config['wrap_response_data'],
                 ]
             );
 

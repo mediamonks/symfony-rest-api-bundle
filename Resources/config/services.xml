@@ -9,7 +9,7 @@
         <parameter key="mediamonks_rest_api.request_matcher.class">MediaMonks\RestApiBundle\Request\RequestMatcher</parameter>
         <parameter key="mediamonks_rest_api.request_transformer.class">MediaMonks\RestApiBundle\Request\RequestTransformer</parameter>
         <parameter key="mediamonks_rest_api.response_transformer.class">MediaMonks\RestApiBundle\Response\ResponseTransformer</parameter>
-        <parameter key="mediamonks_rest_api.serializer.jms.class">MediaMonks\RestApiBundle\Serializer\JmsSerializer</parameter>
+        <parameter key="mediamonks_rest_api.serializer.jms.class">MediaMonks\RestApiBundle\Serializer\JMSSerializer</parameter>
         <parameter key="mediamonks_rest_api.serializer.json.class">MediaMonks\RestApiBundle\Serializer\JsonSerializer</parameter>
         <parameter key="mediamonks_rest_api.serializer.msgpack.class">MediaMonks\RestApiBundle\Serializer\MsgpackSerializer</parameter>
     </parameters>

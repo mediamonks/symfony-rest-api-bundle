@@ -1,5 +1,5 @@
 {
-  "name": "mediamonks/rest-api-bundle",
+  "name": "krioo/rest-api-bundle",
   "type": "symfony-bundle",
   "description": "MediaMonks Rest API Bundle",
   "keywords": [

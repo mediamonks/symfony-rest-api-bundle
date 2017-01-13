@@ -45,13 +45,13 @@ class RequestMatcher implements RequestMatcherInterface
             return true;
         }
 
-        $match = $this->matchRequestPathAgainstLists($request->getPathInfo());
-
-        if ($match) {
-            $this->markRequestAsMatched($request);
+        if (!$this->matchRequestPathAgainstLists($request->getPathInfo())) {
+            return false;
         }
 
-        return $match;
+        $this->markRequestAsMatched($request);
+
+        return true;
     }
 
     /**
@@ -77,10 +77,10 @@ class RequestMatcher implements RequestMatcherInterface
      */
     protected function matchRequestPathAgainstLists($requestPath)
     {
-        if ($this->matchRequestPathAgainstBlacklist($requestPath) === false) {
+        if ($this->matchRequestPathAgainstBlacklist($requestPath)) {
             return false;
         }
-        if ($this->matchRequestPathAgainstWhitelist($requestPath) === true) {
+        if ($this->matchRequestPathAgainstWhitelist($requestPath)) {
             return true;
         }
 
@@ -95,7 +95,7 @@ class RequestMatcher implements RequestMatcherInterface
     {
         foreach ($this->blacklist as $regex) {
             if (preg_match($regex, $requestPath)) {
-                return false;
+                return true;
             }
         }
     }

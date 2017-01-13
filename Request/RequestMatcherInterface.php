@@ -6,5 +6,5 @@ use Symfony\Component\HttpFoundation\Request;
 
 interface RequestMatcherInterface
 {
-    public function matches(Request $request, $requestTYpe);
+    public function matches(Request $request);
 }

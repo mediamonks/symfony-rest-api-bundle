@@ -3,11 +3,26 @@
 namespace MediaMonks\RestApiBundle\Response;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 interface ResponseTransformerInterface
 {
-    public function transformEarly(Request $request, SymfonyResponse $response);
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
+    public function transformEarly(Request $request, Response $response);
 
-    public function transformLate(Request $request, SymfonyResponse $response);
+    /**
+     * @param Request $request
+     * @param Response $response
+     */
+    public function transformLate(Request $request, Response $response);
+
+    /**
+     * @param $data
+     * @return Response
+     */
+    public function createResponseFromContent($data);
 }

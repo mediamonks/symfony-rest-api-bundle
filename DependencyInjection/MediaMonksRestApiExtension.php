@@ -33,12 +33,16 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
 
         $container->getDefinition('mediamonks_rest_api.response_transformer')
             ->replaceArgument(
-                1,
+                2,
                 [
                     'debug'               => $this->getDebug($config, $container),
                     'post_message_origin' => $config['post_message_origin'],
                 ]
             );
+
+        if (!empty($config['response_model'])) {
+            $this->replaceResponseModel($container, $config);
+        }
 
         $this->loadSerializer($container, $config);
     }
@@ -54,11 +58,19 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
         }
 
         $container->getDefinition('mediamonks_rest_api.request_transformer')
-            ->replaceArgument(0, new Reference($config['serializer']))
-        ;
+            ->replaceArgument(0, new Reference($config['serializer']));
         $container->getDefinition('mediamonks_rest_api.response_transformer')
-            ->replaceArgument(0, new Reference($config['serializer']))
-        ;
+            ->replaceArgument(0, new Reference($config['serializer']));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array $config
+     */
+    protected function replaceResponseModel(ContainerBuilder $container, array $config)
+    {
+        $container->getDefinition('mediamonks_rest_api.response_model_factory')
+            ->replaceArgument(0, new Reference($config['response_model']));
     }
 
     /**

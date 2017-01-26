@@ -8,16 +8,21 @@ use Symfony\Component\HttpFoundation\Response;
 class ResponseModelFactory
 {
     /**
-     * @return ResponseModelFactory
+     * @var ResponseModelInterface
      */
-    public static function createFactory()
+    private $responseModel;
+
+    /**
+     * @param ResponseModelInterface $responseModel
+     */
+    public function __construct(ResponseModelInterface $responseModel)
     {
-        return new self();
+        $this->responseModel = $responseModel;
     }
 
     /**
      * @param mixed $content
-     * @return ResponseModel
+     * @return ResponseModelInterface
      */
     public function createFromContent($content)
     {
@@ -36,7 +41,7 @@ class ResponseModelFactory
 
     /**
      * @param Response $response
-     * @return ResponseModel
+     * @return ResponseModelInterface
      */
     public function createFromResponse(Response $response)
     {
@@ -45,7 +50,7 @@ class ResponseModelFactory
 
     /**
      * @param PaginatedResponseInterface $response
-     * @return ResponseModel
+     * @return ResponseModelInterface
      */
     public function createFromPaginatedResponse(PaginatedResponseInterface $response)
     {
@@ -54,7 +59,7 @@ class ResponseModelFactory
 
     /**
      * @param \Exception $exception
-     * @return ResponseModel
+     * @return ResponseModelInterface
      */
     public function createFromException(\Exception $exception)
     {
@@ -62,10 +67,10 @@ class ResponseModelFactory
     }
 
     /**
-     * @return ResponseModel
+     * @return ResponseModelInterface
      */
-    public function create()
+    private function create()
     {
-        return new ResponseModel;
+        return clone $this->responseModel;
     }
 }

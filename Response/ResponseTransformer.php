@@ -2,8 +2,8 @@
 
 namespace MediaMonks\RestApiBundle\Response;
 
-use MediaMonks\RestApiBundle\Model\ResponseModel;
 use MediaMonks\RestApiBundle\Model\ResponseModelFactory;
+use MediaMonks\RestApiBundle\Model\ResponseModelInterface;
 use MediaMonks\RestApiBundle\Request\Format;
 use MediaMonks\RestApiBundle\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,13 +39,18 @@ class ResponseTransformer implements ResponseTransformerInterface
     protected $responseModelFactory;
 
     /**
-     * ResponseTransformer constructor.
      * @param SerializerInterface $serializer
+     * @param ResponseModelFactory $responseModelFactory
      * @param array $options
      */
-    public function __construct(SerializerInterface $serializer, $options = [])
-    {
+    public function __construct(
+        SerializerInterface $serializer,
+        ResponseModelFactory $responseModelFactory,
+        $options = []
+    ) {
         $this->serializer = $serializer;
+        $this->responseModelFactory = $responseModelFactory;
+
         $this->setOptions($options);
     }
 
@@ -109,8 +114,8 @@ class ResponseTransformer implements ResponseTransformerInterface
     {
         $responseModel = $response->getContent();
 
-        if (!$responseModel instanceof ResponseModel) {
-            $responseModel = $this->getResponseModelFactory()->createFromContent($response);
+        if (!$responseModel instanceof ResponseModelInterface) {
+            $responseModel = $this->responseModelFactory->createFromContent($response);
         }
 
         $responseModel->setReturnStackTrace($this->isDebug());
@@ -119,26 +124,6 @@ class ResponseTransformer implements ResponseTransformerInterface
         $response = $this->createSerializedResponse($request, $response, $responseModel);
 
         return $response;
-    }
-
-    /**
-     * @param ResponseModelFactory $factory
-     */
-    public function setResponseModelFactory($factory)
-    {
-        $this->responseModelFactory = $factory;
-    }
-
-    /**
-     * @return ResponseModelFactory
-     */
-    public function getResponseModelFactory()
-    {
-        if (!isset($this->responseModelFactory)) {
-            $this->responseModelFactory = ResponseModelFactory::createFactory();
-        }
-
-        return $this->responseModelFactory;
     }
 
     /**
@@ -156,16 +141,25 @@ class ResponseTransformer implements ResponseTransformerInterface
     }
 
     /**
+     * @param $data
+     * @return Response
+     */
+    public function createResponseFromContent($data)
+    {
+        return new Response($this->responseModelFactory->createFromContent($data));
+    }
+
+    /**
      * Check if we should put the status code in the output and force a 200 OK in the header
      *
      * @param Request $request
      * @param SymfonyResponse $response
-     * @param ResponseModel $responseModel
+     * @param ResponseModelInterface $responseModel
      */
     protected function forceStatusCodeHttpOK(
         Request $request,
         SymfonyResponse $response,
-        ResponseModel $responseModel
+        ResponseModelInterface $responseModel
     ) {
         if ($request->headers->has('X-Force-Status-Code-200')
             || ($request->getRequestFormat() == Format::FORMAT_JSON && $request->query->has(self::PARAMETER_CALLBACK))
@@ -179,13 +173,13 @@ class ResponseTransformer implements ResponseTransformerInterface
     /**
      * @param Request $request
      * @param SymfonyResponse $response
-     * @param ResponseModel $responseModel
+     * @param ResponseModelInterface $responseModel
      * @return SymfonyResponse
      */
     protected function createSerializedResponse(
         Request $request,
         SymfonyResponse $response,
-        ResponseModel $responseModel
+        ResponseModelInterface $responseModel
     ) {
         try {
             $response = $this->serialize($request, $response, $responseModel);
@@ -193,7 +187,7 @@ class ResponseTransformer implements ResponseTransformerInterface
             $response = new SymfonyJsonResponse(
                 [
                     'error' => [
-                        'code'    => Error::CODE_SERIALIZE,
+                        'code' => Error::CODE_SERIALIZE,
                         'message' => $e->getMessage(),
                     ],
                 ]
@@ -206,10 +200,10 @@ class ResponseTransformer implements ResponseTransformerInterface
     /**
      * @param Request $request
      * @param SymfonyResponse $response
-     * @param ResponseModel $responseModel
+     * @param ResponseModelInterface $responseModel
      * @return JsonResponse|SymfonyResponse
      */
-    protected function serialize(Request $request, SymfonyResponse $response, ResponseModel $responseModel)
+    protected function serialize(Request $request, SymfonyResponse $response, ResponseModelInterface $responseModel)
     {
         switch ($request->getRequestFormat()) {
             case Format::FORMAT_XML:
@@ -230,10 +224,10 @@ class ResponseTransformer implements ResponseTransformerInterface
 
     /**
      * @param Request $request
-     * @param ResponseModel $responseModel
+     * @param ResponseModelInterface $responseModel
      * @return mixed|string
      */
-    protected function getSerializedContent(Request $request, ResponseModel $responseModel)
+    protected function getSerializedContent(Request $request, ResponseModelInterface $responseModel)
     {
         return $this->serializer->serialize($responseModel->toArray(), $request->getRequestFormat());
     }

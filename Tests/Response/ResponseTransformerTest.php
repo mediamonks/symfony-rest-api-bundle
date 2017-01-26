@@ -2,23 +2,30 @@
 
 namespace MediaMonks\RestApiBundle\Tests\Response;
 
-
-use MediaMonks\RestApiBundle\Model\ResponseModelFactory;
+use MediaMonks\RestApiBundle\Model\ResponseModel;
 use MediaMonks\RestApiBundle\Request\Format;
 use MediaMonks\RestApiBundle\Response\ResponseTransformer;
 use MediaMonks\RestApiBundle\Tests\TestCase;
 use \Mockery as m;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ResponseTransformerTest extends TestCase
 {
+    private $responseModelFactory;
+
     protected function getSubject($options = [])
     {
         $serializer = m::mock('MediaMonks\RestApiBundle\Serializer\SerializerInterface');
         $serializer->shouldReceive('serialize');
 
-        return new ResponseTransformer($serializer, $options);
+        $responseModel = new ResponseModel();
+
+        $responseModelFactory = m::mock('MediaMonks\RestApiBundle\Model\ResponseModelFactory');
+        $responseModelFactory->shouldReceive('createFromContent')->andReturn($responseModel);
+
+        $this->responseModelFactory = $responseModelFactory;
+
+        return new ResponseTransformer($serializer, $responseModelFactory, $options);
     }
 
     public function testConstructSetsOptions()
@@ -275,37 +282,14 @@ class ResponseTransformerTest extends TestCase
         $responseModel->shouldReceive('setReturnStackTrace');
         $responseModel->shouldReceive('toArray');
 
-        $factory = m::mock('MediaMonks\RestApiBundle\Model\ResponseModelFactory');
-        $factory->shouldReceive('createFromContent')->andReturn($responseModel);
-
-        $subject->setResponseModelFactory($factory);
-
         // Perform operation
         $subject->transformEarly($request, $response);
+
+        $factory = $this->responseModelFactory;
 
         // Verify post-conditions
         $this->assertNoException(function () use ($factory, $content) {
             $factory->shouldHaveReceived('createFromContent');
         });
-    }
-
-    public function testSetGetResponseModelFactory()
-    {
-        $subject = $this->getSubject();
-
-        $factory = m::mock('MediaMonks\RestApiBundle\Model\ResponseModelFactory');
-
-        $subject->setResponseModelFactory($factory);
-
-        $this->assertEquals($factory, $subject->getResponseModelFactory());
-    }
-
-    public function testGetResponseModelFactoryDefault()
-    {
-        $subject = $this->getSubject();
-
-        $factory = $subject->getResponseModelFactory();
-
-        $this->assertInstanceOf('MediaMonks\RestApiBundle\Model\ResponseModelFactory', $factory);
     }
 }

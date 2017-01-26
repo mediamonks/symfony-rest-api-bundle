@@ -12,6 +12,8 @@
         <parameter key="mediamonks_rest_api.serializer.jms.class">MediaMonks\RestApiBundle\Serializer\JMSSerializer</parameter>
         <parameter key="mediamonks_rest_api.serializer.json.class">MediaMonks\RestApiBundle\Serializer\JsonSerializer</parameter>
         <parameter key="mediamonks_rest_api.serializer.msgpack.class">MediaMonks\RestApiBundle\Serializer\MsgpackSerializer</parameter>
+        <parameter key="mediamonks_rest_api.response_model.class">MediaMonks\RestApiBundle\Model\ResponseModel</parameter>
+        <parameter key="mediamonks_rest_api.response_model_factory.class">MediaMonks\RestApiBundle\Model\ResponseModelFactory</parameter>
     </parameters>
 
     <services>
@@ -21,6 +23,7 @@
             <argument type="service" id="mediamonks_rest_api.request_matcher"/>
             <argument type="service" id="mediamonks_rest_api.request_transformer"/>
             <argument type="service" id="mediamonks_rest_api.response_transformer"/>
+            <argument type="service" id="mediamonks_rest_api.response_model_factory"/>
         </service>
         <service id="mediamonks_rest_api.request_matcher" class="%mediamonks_rest_api.request_matcher.class%">
             <argument type="collection"/>
@@ -31,6 +34,7 @@
         </service>
         <service id="mediamonks_rest_api.response_transformer" class="%mediamonks_rest_api.response_transformer.class%">
             <argument type="service" id="mediamonks_rest_api.serializer.json"/>
+            <argument type="service" id="mediamonks_rest_api.response_model_factory"/>
             <argument type="collection"/>
         </service>
         <service id="mediamonks_rest_api.serializer.json" class="%mediamonks_rest_api.serializer.json.class%">
@@ -39,6 +43,11 @@
         </service>
         <service id="mediamonks_rest_api.serializer.jms" class="%mediamonks_rest_api.serializer.jms.class%">
             <argument type="service" id="jms_serializer" on-invalid="null"/>
+        </service>
+        <service id="mediamonks_rest_api.response_model" class="%mediamonks_rest_api.response_model.class%">
+        </service>
+        <service id="mediamonks_rest_api.response_model_factory" class="%mediamonks_rest_api.response_model_factory.class%">
+            <argument type="service" id="mediamonks_rest_api.response_model"/>
         </service>
     </services>
 </container>

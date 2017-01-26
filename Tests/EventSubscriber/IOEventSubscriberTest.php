@@ -4,6 +4,7 @@ namespace MediaMonks\RestApiBundle\Tests\EventSubscriber;
 
 
 use MediaMonks\RestApiBundle\EventSubscriber\IOEventSubscriber;
+use MediaMonks\RestApiBundle\Response\Response;
 use \Mockery as m;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -20,6 +21,7 @@ class IOEventSubscriberTest extends \PHPUnit_Framework_TestCase
         $matcher             = m::mock('MediaMonks\RestApiBundle\Request\RequestMatcherInterface');
         $requestTransformer  = m::mock('MediaMonks\RestApiBundle\Request\RequestTransformerInterface');
         $responseTransformer = m::mock('MediaMonks\RestApiBundle\Response\ResponseTransformerInterface');
+        $responseTransformer->shouldReceive('createResponseFromContent')->andReturn(new Response());
 
         return [$matcher, $requestTransformer, $responseTransformer];
     }

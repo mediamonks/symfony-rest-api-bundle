@@ -20,20 +20,19 @@ class IOEventSubscriber implements EventSubscriberInterface
     /**
      * @var RequestMatcherInterface
      */
-    protected $requestMatcher;
+    private $requestMatcher;
 
     /**
      * @var RequestTransformerInterface
      */
-    protected $requestTransformer;
+    private $requestTransformer;
 
     /**
      * @var ResponseTransformerInterface
      */
-    protected $responseTransformer;
+    private $responseTransformer;
 
     /**
-     * IOEventSubscriber constructor.
      * @param RequestMatcherInterface $requestMatcher
      * @param RequestTransformerInterface $requestTransformer
      * @param ResponseTransformerInterface $responseTransformer
@@ -91,7 +90,7 @@ class IOEventSubscriber implements EventSubscriberInterface
         if (!$this->eventRequestMatches($event)) {
             return;
         }
-        $event->setResponse($this->createRestApiResponse($event->getException()));
+        $event->setResponse($this->responseTransformer->createResponseFromContent($event->getException()));
     }
 
     /**
@@ -104,7 +103,7 @@ class IOEventSubscriber implements EventSubscriberInterface
         if (!$this->eventRequestMatches($event)) {
             return;
         }
-        $event->setResponse($this->createRestApiResponse($event->getControllerResult()));
+        $event->setResponse($this->responseTransformer->createResponseFromContent($event->getControllerResult()));
     }
 
     /**
@@ -142,12 +141,4 @@ class IOEventSubscriber implements EventSubscriberInterface
         return $this->requestMatcher->matches($event->getRequest(), $event->getRequestType());
     }
 
-    /**
-     * @param $data
-     * @return RestApiResponse
-     */
-    protected function createRestApiResponse($data)
-    {
-        return new RestApiResponse(ResponseModelFactory::createFactory()->createFromContent($data));
-    }
 }

@@ -2,7 +2,6 @@
 
 namespace MediaMonks\RestApiBundle\DependencyInjection;
 
-use MediaMonks\RestApiBundle\Request\Format;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -23,6 +22,7 @@ final class Configuration implements ConfigurationInterface
         $this->addRequestMatcherNode($rootNode);
         $this->addSerializer($rootNode);
         $this->addPostMessageOriginNode($rootNode);
+        $this->addResponseModel($rootNode);
 
         return $treeBuilder;
     }
@@ -79,6 +79,17 @@ final class Configuration implements ConfigurationInterface
     {
         $node->children()
             ->scalarNode('post_message_origin')
+            ->defaultNull()
+            ->end();
+    }
+
+    /**
+     * @param ArrayNodeDefinition $node
+     */
+    private function addResponseModel(ArrayNodeDefinition $node)
+    {
+        $node->children()
+            ->scalarNode('response_model')
             ->defaultNull()
             ->end();
     }

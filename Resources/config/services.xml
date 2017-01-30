@@ -5,15 +5,15 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="mediamonks_rest_api.io_event_subscriber.class">MediaMonks\RestApiBundle\EventSubscriber\IOEventSubscriber</parameter>
-        <parameter key="mediamonks_rest_api.request_matcher.class">MediaMonks\RestApiBundle\Request\RequestMatcher</parameter>
-        <parameter key="mediamonks_rest_api.request_transformer.class">MediaMonks\RestApiBundle\Request\RequestTransformer</parameter>
-        <parameter key="mediamonks_rest_api.response_transformer.class">MediaMonks\RestApiBundle\Response\ResponseTransformer</parameter>
-        <parameter key="mediamonks_rest_api.serializer.jms.class">MediaMonks\RestApiBundle\Serializer\JMSSerializer</parameter>
-        <parameter key="mediamonks_rest_api.serializer.json.class">MediaMonks\RestApiBundle\Serializer\JsonSerializer</parameter>
-        <parameter key="mediamonks_rest_api.serializer.msgpack.class">MediaMonks\RestApiBundle\Serializer\MsgpackSerializer</parameter>
-        <parameter key="mediamonks_rest_api.response_model.class">MediaMonks\RestApiBundle\Model\ResponseModel</parameter>
-        <parameter key="mediamonks_rest_api.response_model_factory.class">MediaMonks\RestApiBundle\Model\ResponseModelFactory</parameter>
+        <parameter key="mediamonks_rest_api.io_event_subscriber.class">MediaMonks\RestApi\EventSubscriber\IOEventSubscriber</parameter>
+        <parameter key="mediamonks_rest_api.request_matcher.class">MediaMonks\RestApi\Request\RequestMatcher</parameter>
+        <parameter key="mediamonks_rest_api.request_transformer.class">MediaMonks\RestApi\Request\RequestTransformer</parameter>
+        <parameter key="mediamonks_rest_api.response_transformer.class">MediaMonks\RestApi\Response\ResponseTransformer</parameter>
+        <parameter key="mediamonks_rest_api.serializer.jms.class">MediaMonks\RestApi\Serializer\JMSSerializer</parameter>
+        <parameter key="mediamonks_rest_api.serializer.json.class">MediaMonks\RestApi\Serializer\JsonSerializer</parameter>
+        <parameter key="mediamonks_rest_api.serializer.msgpack.class">MediaMonks\RestApi\Serializer\MsgpackSerializer</parameter>
+        <parameter key="mediamonks_rest_api.response_model.class">MediaMonks\RestApi\Model\ResponseModel</parameter>
+        <parameter key="mediamonks_rest_api.response_model_factory.class">MediaMonks\RestApi\Model\ResponseModelFactory</parameter>
     </parameters>
 
     <services>

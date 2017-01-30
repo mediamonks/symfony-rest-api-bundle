@@ -1,7 +1,7 @@
 {
   "name": "mediamonks/rest-api-bundle",
   "type": "symfony-bundle",
-  "description": "MediaMonks Rest API Bundle",
+  "description": "MediaMonks Rest API Symfony Bundle",
   "keywords": [
     "rest",
     "api",
@@ -18,9 +18,7 @@
     }
   ],
   "require": {
-    "php": "^5.4|~7.0",
-    "symfony/dependency-injection": "^2.7|^3.0",
-    "symfony/http-kernel": "^2.7|^3.0"
+    "mediamonks/rest-api": "^1.0"
   },
   "require-dev": {
     "symfony/symfony": "^2.7|^3.0",
@@ -44,7 +42,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "2.0-dev"
+      "dev-master": "3.0-dev"
     }
   }
 }

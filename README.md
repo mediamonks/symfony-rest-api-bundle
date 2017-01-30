@@ -7,19 +7,24 @@
 [![SensioLabs Insight](https://img.shields.io/sensiolabs/i/c42e43fd-9c7b-47e1-8264-3a98961e9236.svg)](https://insight.sensiolabs.com/projects/c42e43fd-9c7b-47e1-8264-3a98961e9236)
 [![License](https://poser.pugx.org/mediamonks/rest-api-bundle/license)](https://packagist.org/packages/mediamonks/rest-api-bundle)
 
-# MediaMonksRestApiBundle
+# MediaMonks RestApiBundle
 
-This bundle provides tools to implement an API according to the [MediaMonks REST API specification](https://github.com/mediamonks/documents).
+This bundle provides tools to implement a Rest API by using the [MediaMonks Rest Api](https://github.com/mediamonks/php-rest-api) library.
 
-- Converts scalars, arrays and objects to proper output
-- Converts exceptions to proper output
-- Supports application/json, application/x-www-form-urlencoded & multipart/form-data input
-- Supports custom serializers like JMS, uses json serializer by default
-- Supports method overriding
-- Supports forcing a "200 OK" status method
-- Supports paginated responses
-- Supports wrapping json response in a method (jsonp) and post message
+## Highlights
 
-# Documentation
+- Easiest Rest API bundle to use
+- Supports Symfony 2.7+
+- Supports all library options
+
+## Documentation
 
 Please refer to the files in the [/Resources/doc](/Resources/doc) folder.
+
+## Security
+
+If you discover any security related issues, please email devmonk@mediamonks.com instead of using the issue tracker.
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE) for more information.

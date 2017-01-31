@@ -7,7 +7,7 @@
 [![SensioLabs Insight](https://img.shields.io/sensiolabs/i/c42e43fd-9c7b-47e1-8264-3a98961e9236.svg)](https://insight.sensiolabs.com/projects/c42e43fd-9c7b-47e1-8264-3a98961e9236)
 [![License](https://poser.pugx.org/mediamonks/rest-api-bundle/license)](https://packagist.org/packages/mediamonks/rest-api-bundle)
 
-# MediaMonks RestApiBundle
+# MediaMonks Symfony Rest API Bundle
 
 This bundle provides tools to implement a Rest API by using the [MediaMonks Rest Api](https://github.com/mediamonks/php-rest-api) library.
 
@@ -16,6 +16,8 @@ This bundle provides tools to implement a Rest API by using the [MediaMonks Rest
 - Easiest Rest API bundle to use
 - Supports Symfony 2.7+
 - Supports all library options
+
+The highlights of the library itself can be found in the libraries [readme](https://github.com/mediamonks/php-rest-api).
 
 ## Documentation
 

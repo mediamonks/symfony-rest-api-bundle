@@ -62,7 +62,7 @@ Response Model
 
 Since this bundle was originally created according to the internal api spec of MediaMonks this is the default behavior.
 However it is possible to override this by creating your own class which implements the
-``MediaMonks\RestApiBundle\Model\ResponseModelInterface``. You can then use the ``response_model`` option to point to the
+``MediaMonks\RestApi\Model\ResponseModelInterface``. You can then use the ``response_model`` option to point to the
 service id of your own response model.
 
 .. code-block:: yaml

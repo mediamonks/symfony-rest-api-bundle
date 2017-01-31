@@ -4,7 +4,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Form\Type\TestType;
 use MediaMonks\RestApi\Exception\ErrorField;
-use MediaMonks\RestApi\Exception\ErrorFieldCollection;
 use MediaMonks\RestApi\Exception\ValidationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -163,6 +162,7 @@ class ApiController extends Controller
 
         $form = $this->createForm($form);
         $form->submit($request->request->all());
+
         if (!$form->isValid()) {
             throw new FormValidationException($form);
         }

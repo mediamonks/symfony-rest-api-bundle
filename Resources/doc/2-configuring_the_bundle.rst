@@ -28,8 +28,17 @@ You can override these regexes by configuring your own:
     # app/config/config.yml
     mediamonks_rest_api:
         request_matcher:
-            whitelist: [~^/api/$~,  ~^/api~]
-            blacklist: [~^/api/doc~]
+            whitelist: ['~^/api/$~',  '~^/api~']
+            blacklist: ['~^/api/doc~']
+
+It is also possible to simply match on a single path, in that case the whitelist and blacklist config is ignored:
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    mediamonks_rest_api:
+        request_matcher:
+            path: '/api'
 
 Serializer
 ----------

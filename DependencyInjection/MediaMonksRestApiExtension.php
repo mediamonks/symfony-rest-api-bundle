@@ -26,11 +26,11 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
-        if (!empty($config['request_matcher']['whitelist'])) {
-            $this->useRegexRequestMatcher($container, $config);
-        }
-        elseif (!empty($config['request_matcher']['path'])) {
+        if (!empty($config['request_matcher']['path'])) {
             $this->usePathRequestMatcher($container, $config);
+        }
+        elseif (!empty($config['request_matcher']['whitelist'])) {
+            $this->useRegexRequestMatcher($container, $config);
         }
 
         $container->getDefinition('mediamonks_rest_api.response_transformer')

@@ -65,7 +65,7 @@ code and headers.
 .. note::
 
     If you want to return a non-scalar response instead but still want to have control over your headers you can return
-    an instance of MediaMonks\RestApiBundle\Response\Response instead.
+    an instance of MediaMonks\RestApi\Response\Response instead.
 
 Pagination
 ----------
@@ -75,8 +75,8 @@ Pagination
     <?php
 
     use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-    use MediaMonks\RestApiBundle\Response\CursorPaginatedResponse;
-    use MediaMonks\RestApiBundle\Response\OffsetPaginatedResponse;
+    use MediaMonks\RestApi\Response\CursorPaginatedResponse;
+    use MediaMonks\RestApi\Response\OffsetPaginatedResponse;
 
     class ExampleController extends Controller
     {

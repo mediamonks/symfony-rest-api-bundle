@@ -9,7 +9,7 @@ following command to download the latest stable version of this bundle:
 
 .. code-block:: bash
 
-    $ composer require mediamonks/rest-api-bundle ~1.0
+    $ composer require mediamonks/rest-api-bundle ~3.0
 
 This command requires you to have Composer installed globally, as explained
 in the `installation chapter`_ of the Composer documentation.

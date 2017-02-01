@@ -104,9 +104,9 @@ Exceptions will be automatically converted to a correct error response with best
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
     use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-    use MediaMonks\RestApiBundle\Exception\ErrorField;
-    use MediaMonks\RestApiBundle\Exception\FormValidationException;
-    use MediaMonks\RestApiBundle\Exception\ValidationException;
+    use MediaMonks\RestApi\Exception\ErrorField;
+    use MediaMonks\RestApi\Exception\FormValidationException;
+    use MediaMonks\RestApi\Exception\ValidationException;
 
     class ExampleController extends Controller
     {

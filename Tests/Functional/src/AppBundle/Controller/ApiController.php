@@ -3,9 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Form\Type\TestType;
-use MediaMonks\RestApiBundle\Exception\ErrorField;
-use MediaMonks\RestApiBundle\Exception\ErrorFieldCollection;
-use MediaMonks\RestApiBundle\Exception\ValidationException;
+use MediaMonks\RestApi\Exception\ErrorField;
+use MediaMonks\RestApi\Exception\ValidationException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -13,9 +12,9 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use MediaMonks\RestApiBundle\Exception\FormValidationException;
-use MediaMonks\RestApiBundle\Response\CursorPaginatedResponse;
-use MediaMonks\RestApiBundle\Response\OffsetPaginatedResponse;
+use MediaMonks\RestApi\Exception\FormValidationException;
+use MediaMonks\RestApi\Response\CursorPaginatedResponse;
+use MediaMonks\RestApi\Response\OffsetPaginatedResponse;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -163,6 +162,7 @@ class ApiController extends Controller
 
         $form = $this->createForm($form);
         $form->submit($request->request->all());
+
         if (!$form->isValid()) {
             throw new FormValidationException($form);
         }

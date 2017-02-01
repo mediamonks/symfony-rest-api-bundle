@@ -18,8 +18,8 @@ You can enable or disable it manually by adding it to your configuration:
 Request Matching
 ----------------
 
-The bundle uses regexes to check if a request should be handled by this bundle. By default the bundle matches on /api*
-with the exception of /api/doc* so you can put your documentation there.
+The bundle uses regexes to check if a request should be handled by this bundle. By default the bundle matches on
+``/api*` with the exception of ``/api/doc*`` so you can put your documentation there.
 
 You can override these regexes by configuring your own:
 
@@ -28,8 +28,17 @@ You can override these regexes by configuring your own:
     # app/config/config.yml
     mediamonks_rest_api:
         request_matcher:
-            whitelist: [~^/api/$~,  ~^/api~]
-            blacklist: [~^/api/doc~]
+            whitelist: ['~^/api/$~',  '~^/api~']
+            blacklist: ['~^/api/doc~']
+
+It is also possible to simply match on a single path, in that case the whitelist and blacklist config is ignored:
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    mediamonks_rest_api:
+        request_matcher:
+            path: '/api'
 
 Serializer
 ----------
@@ -56,3 +65,17 @@ You can set it by adding it to your configuration:
     # app/config/config.yml
     mediamonks_rest_api:
         post_message_origin: http://www.mediamonks.com/
+
+Response Model
+--------------
+
+Since this bundle was originally created according to the internal api spec of MediaMonks this is the default behavior.
+However it is possible to override this by creating your own class which implements the
+``MediaMonks\RestApi\Model\ResponseModelInterface``. You can then use the ``response_model`` option to point to the
+service id of your own response model.
+
+.. code-block:: yaml
+
+    # app/config/config.yml
+    mediamonks_rest_api:
+        response_model: service_id_of_your_response_model_class

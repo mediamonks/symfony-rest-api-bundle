@@ -19,7 +19,7 @@ class MediaMonksRestApiExtensionTest extends AbstractExtensionTestCase
     {
         $this->load();
         $this->assertContainerBuilderHasParameter('mediamonks_rest_api.rest_api_event_subscriber.class');
-        $this->assertContainerBuilderHasParameter('mediamonks_rest_api.request_matcher.class');
+        $this->assertContainerBuilderHasParameter('mediamonks_rest_api.regex_request_matcher.class');
         $this->assertContainerBuilderHasParameter('mediamonks_rest_api.request_transformer.class');
         $this->assertContainerBuilderHasParameter('mediamonks_rest_api.response_transformer.class');
     }
@@ -28,7 +28,7 @@ class MediaMonksRestApiExtensionTest extends AbstractExtensionTestCase
     {
         $this->load();
         $this->assertContainerBuilderHasService('mediamonks_rest_api.rest_api_event_subscriber');
-        $this->assertContainerBuilderHasService('mediamonks_rest_api.request_matcher');
+        $this->assertContainerBuilderHasService('mediamonks_rest_api.regex_request_matcher');
         $this->assertContainerBuilderHasService('mediamonks_rest_api.request_transformer');
         $this->assertContainerBuilderHasService('mediamonks_rest_api.response_transformer');
     }

@@ -26,10 +26,12 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
-        $container->getDefinition('mediamonks_rest_api.request_matcher')
-            ->replaceArgument(0, $config['request_matcher']['whitelist']);
-        $container->getDefinition('mediamonks_rest_api.request_matcher')
-            ->replaceArgument(1, $config['request_matcher']['blacklist']);
+        if (!empty($config['request_matcher']['path'])) {
+            $this->usePathRequestMatcher($container, $config);
+        }
+        elseif (!empty($config['request_matcher']['whitelist'])) {
+            $this->useRegexRequestMatcher($container, $config);
+        }
 
         $container->getDefinition('mediamonks_rest_api.response_transformer')
             ->replaceArgument(
@@ -45,6 +47,31 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
         }
 
         $this->loadSerializer($container, $config);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array $config
+     */
+    protected function usePathRequestMatcher(ContainerBuilder $container, array $config)
+    {
+        $container->getDefinition('mediamonks_rest_api.path_request_matcher')
+            ->replaceArgument(0, $config['request_matcher']['path']);
+
+        $container->getDefinition('mediamonks_rest_api.rest_api_event_subscriber')
+            ->replaceArgument(0, new Reference('mediamonks_rest_api.path_request_matcher'));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array $config
+     */
+    protected function useRegexRequestMatcher(ContainerBuilder $container, array $config)
+    {
+        $container->getDefinition('mediamonks_rest_api.regex_request_matcher')
+            ->replaceArgument(0, $config['request_matcher']['whitelist']);
+        $container->getDefinition('mediamonks_rest_api.regex_request_matcher')
+            ->replaceArgument(1, $config['request_matcher']['blacklist']);
     }
 
     /**

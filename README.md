@@ -14,7 +14,6 @@ This bundle provides tools to implement a Rest API by using the [MediaMonks Rest
 ## Highlights
 
 - Easiest Rest API bundle to use
-- Supports Symfony 2.7+
 - Supports all library options
 
 The highlights of the library itself can be found in the libraries [readme](https://github.com/mediamonks/php-rest-api).
@@ -22,6 +21,13 @@ The highlights of the library itself can be found in the libraries [readme](http
 ## Documentation
 
 Please refer to the files in the [/Resources/doc](/Resources/doc) folder.
+
+## Requirements
+
+- PHP >= 5.4
+- Symfony >= 2.7
+
+To use the library.
 
 ## Security
 

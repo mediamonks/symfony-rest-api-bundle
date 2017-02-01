@@ -6,7 +6,8 @@
 
     <parameters>
         <parameter key="mediamonks_rest_api.rest_api_event_subscriber.class">MediaMonks\RestApi\EventSubscriber\RestApiEventSubscriber</parameter>
-        <parameter key="mediamonks_rest_api.request_matcher.class">MediaMonks\RestApi\Request\RequestMatcher</parameter>
+        <parameter key="mediamonks_rest_api.regex_request_matcher.class">MediaMonks\RestApi\Request\RegexRequestMatcher</parameter>
+        <parameter key="mediamonks_rest_api.path_request_matcher.class">MediaMonks\RestApi\Request\PathRequestMatcher</parameter>
         <parameter key="mediamonks_rest_api.request_transformer.class">MediaMonks\RestApi\Request\RequestTransformer</parameter>
         <parameter key="mediamonks_rest_api.response_transformer.class">MediaMonks\RestApi\Response\ResponseTransformer</parameter>
         <parameter key="mediamonks_rest_api.serializer.jms.class">MediaMonks\RestApi\Serializer\JMSSerializer</parameter>
@@ -20,14 +21,17 @@
         <service id="mediamonks_rest_api.rest_api_event_subscriber" class="%mediamonks_rest_api.rest_api_event_subscriber.class%">
             <tag name="kernel.event_subscriber"/>
 
-            <argument type="service" id="mediamonks_rest_api.request_matcher"/>
+            <argument type="service" id="mediamonks_rest_api.regex_request_matcher"/>
             <argument type="service" id="mediamonks_rest_api.request_transformer"/>
             <argument type="service" id="mediamonks_rest_api.response_transformer"/>
             <argument type="service" id="mediamonks_rest_api.response_model_factory"/>
         </service>
-        <service id="mediamonks_rest_api.request_matcher" class="%mediamonks_rest_api.request_matcher.class%">
+        <service id="mediamonks_rest_api.regex_request_matcher" class="%mediamonks_rest_api.regex_request_matcher.class%">
             <argument type="collection"/>
             <argument type="collection"/>
+        </service>
+        <service id="mediamonks_rest_api.path_request_matcher" class="%mediamonks_rest_api.path_request_matcher.class%">
+            <argument type="string"/>
         </service>
         <service id="mediamonks_rest_api.request_transformer" class="%mediamonks_rest_api.request_transformer.class%">
             <argument type="service" id="mediamonks_rest_api.serializer.json"/>

@@ -24,7 +24,6 @@
             <argument type="service" id="mediamonks_rest_api.regex_request_matcher"/>
             <argument type="service" id="mediamonks_rest_api.request_transformer"/>
             <argument type="service" id="mediamonks_rest_api.response_transformer"/>
-            <argument type="service" id="mediamonks_rest_api.response_model_factory"/>
         </service>
         <service id="mediamonks_rest_api.regex_request_matcher" class="%mediamonks_rest_api.regex_request_matcher.class%">
             <argument type="collection"/>

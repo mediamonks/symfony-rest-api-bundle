@@ -6,7 +6,6 @@ php:
     - 5.6
     - 7.0
     - 7.1
-    - hhvm
 
 sudo: false
 
@@ -33,15 +32,28 @@ matrix:
       env: SYMFONY_VERSION=3.1.*@dev
     - php: 7.0
       env: SYMFONY_VERSION=3.2.*@dev
+    - php: 7.0
+      env: SYMFONY_VERSION=3.3.*@dev
+    - php: 7.0
+      env: SYMFONY_VERSION=3.4.*@dev
+    - php: 7.0
+      env: SYMFONY_VERSION=4.0.*@dev
     - php: 7.1
       env: SYMFONY_VERSION=3.0.*@dev
     - php: 7.1
       env: SYMFONY_VERSION=3.1.*@dev
     - php: 7.1
       env: SYMFONY_VERSION=3.2.*@dev
+    - php: 7.1
+      env: SYMFONY_VERSION=3.3.*@dev
+    - php: 7.1
+      env: SYMFONY_VERSION=3.4.*@dev
+    - php: 7.1
+      env: SYMFONY_VERSION=4.0.*@dev
 
 before_install:
   - composer self-update
+  - composer config minimum-stability dev
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
   - if [ "$SYMFONY_VERSION" == "3.0.*@dev" ]; then composer require "twig/twig:^1.31" --no-update; fi;
   - if [ "$TRAVIS_PHP_VERSION" == "5.6" ]; then composer require "codeclimate/php-test-reporter:dev-master@dev" --no-update; fi;

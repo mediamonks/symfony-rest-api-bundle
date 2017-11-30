@@ -4,7 +4,6 @@
     bootstrap="./vendor/autoload.php"
     colors="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
-    checkForUnintentionallyCoveredCode="true"
     beStrictAboutTestSize="true"
     beStrictAboutChangesToGlobalState="true">
     <testsuites>

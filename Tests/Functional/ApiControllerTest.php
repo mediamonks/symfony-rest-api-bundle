@@ -8,6 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiControllerTest extends WebTestCase
 {
+    // make compatible with older versions of symfony
+    protected static function getKernelClass()
+    {
+        return 'MediaMonks\RestApiBundle\Tests\Functional\app\AppKernel';
+    }
+
     public function testEmptyResponse()
     {
         $response = $this->requestGet('empty', Response::HTTP_NO_CONTENT);

@@ -9,8 +9,6 @@ framework:
     templating:
         engines: ['twig']
     default_locale:  "en"
-    trusted_hosts:   ~
-    trusted_proxies: ~
     session:
         handler_id:  ~
     fragments:       ~

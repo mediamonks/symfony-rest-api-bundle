@@ -1,5 +1,7 @@
 <?php
 
+namespace MediaMonks\RestApiBundle\Tests\Functional\app;
+
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;

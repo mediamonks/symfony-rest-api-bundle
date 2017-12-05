@@ -60,6 +60,7 @@ before_install:
 
 install:
   - composer update --prefer-source $COMPOSER_FLAGS
+  - cat composer.lock
 
 script:
   - if [ "$TRAVIS_PHP_VERSION" == "7.0" ]; then phpunit --coverage-clover=coverage.clover; else phpunit; fi;

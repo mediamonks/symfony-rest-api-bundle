@@ -281,11 +281,11 @@ class ApiControllerTest extends WebTestCase
      */
     protected function request($method, $path, array $data = [], $httpCode = Response::HTTP_OK, $headers = [])
     {
-        $yamlParser = new Parser();
+        /*$yamlParser = new Parser();
         if (!method_exists($yamlParser, 'parseFile')) {
             $this->markTestSkipped('Some weird issue with the yaml parser');
             return;
-        }
+        }*/
 
         /**
          * @var Client $client

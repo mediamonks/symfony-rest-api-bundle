@@ -55,12 +55,13 @@ before_install:
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
   - if [ "$SYMFONY_VERSION" == "3.0.*" ]; then composer require "twig/twig:^1.31" --no-update; fi;
   - if [ "$TRAVIS_PHP_VERSION" == "7.0" ]; then composer require "codeclimate/php-test-reporter:dev-master@dev" --no-update; fi;
+  - rm -Rf Tests/Functional/var/cache/test
 
 install:
   - composer update --prefer-source $COMPOSER_FLAGS
 
 script:
-  - if [ "$TRAVIS_PHP_VERSION" == "7.0" ]; then phpunit --coverage-clover=coverage.clover; else phpunit; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.0" ]; then vendor/bin/phpunit --coverage-clover=coverage.clover; else vendor/bin/phpunit; fi;
 
 after_script:
   - if [ "$TRAVIS_PHP_VERSION" == "7.0" ]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi;

@@ -24,8 +24,8 @@ Please refer to the files in the [/Resources/doc](/Resources/doc) folder.
 
 ## Requirements
 
-- PHP >= 5.4
-- Symfony >= 2.7
+- PHP ^5.6, ^7.0
+- Symfony ^3.0, ^4.0
 
 To use the library.
 

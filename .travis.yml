@@ -1,67 +1,41 @@
 language: php
 
 php:
-    - 5.6
-    - 7.0
     - 7.1
     - 7.2
+    - 7.3
 
 sudo: false
 
 cache: false
 
 env:
-  - SYMFONY_VERSION=3.4.*
+  - SYMFONY_VERSION=4.3.*
 
 matrix:
   include:
-    - php: 5.6
-      env: SYMFONY_VERSION=3.0.*
-    - php: 5.6
-      env: SYMFONY_VERSION=3.1.*
-    - php: 5.6
-      env: SYMFONY_VERSION=3.2.*
-    - php: 5.6
-      env: SYMFONY_VERSION=3.3.*
-    - php: 7.0
-      env: SYMFONY_VERSION=3.0.*
-    - php: 7.0
-      env: SYMFONY_VERSION=3.1.*
-    - php: 7.0
-      env: SYMFONY_VERSION=3.2.*
-    - php: 7.0
-      env: SYMFONY_VERSION=3.3.*
-    - php: 7.0
-      env: SYMFONY_VERSION=3.4.*
-    - php: 7.1
-      env: SYMFONY_VERSION=3.0.*
-    - php: 7.1
-      env: SYMFONY_VERSION=3.1.*
-    - php: 7.1
-      env: SYMFONY_VERSION=3.2.*
-    - php: 7.1
-      env: SYMFONY_VERSION=3.3.*
-    - php: 7.1
-      env: SYMFONY_VERSION=3.4.*
-    - php: 7.1
-      env: SYMFONY_VERSION=4.0.*
     - php: 7.2
       env: SYMFONY_VERSION=3.4.*
     - php: 7.2
-      env: SYMFONY_VERSION=4.0.*
+      env: SYMFONY_VERSION=4.1.*
+    - php: 7.2
+      env: SYMFONY_VERSION=4.2.*
+    - php: 7.3
+      env: SYMFONY_VERSION=4.1.*
+    - php: 7.3
+      env: SYMFONY_VERSION=4.2.*
 
 before_install:
   - composer self-update
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
-  - if [ "$SYMFONY_VERSION" == "3.0.*" ]; then composer require "twig/twig:^1.31" --no-update; fi;
-  - if [ "$TRAVIS_PHP_VERSION" == "7.0" ]; then composer require "codeclimate/php-test-reporter:dev-master@dev" --no-update; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ] && [ "$SYMFONY_VERSION" == "4.3.*" ]; then composer require "codeclimate/php-test-reporter:dev-master@dev" --no-update; fi;
   - rm -Rf Tests/Functional/var/cache/test
 
 install:
   - composer update --prefer-source $COMPOSER_FLAGS
 
 script:
-  - if [ "$TRAVIS_PHP_VERSION" == "7.0" ]; then vendor/bin/phpunit --coverage-clover=coverage.clover; else vendor/bin/phpunit; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ] && [ "$SYMFONY_VERSION" == "4.3.*" ]; then vendor/bin/phpunit --coverage-clover=coverage.clover; else vendor/bin/phpunit; fi;
 
 after_script:
-  - if [ "$TRAVIS_PHP_VERSION" == "7.0" ]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi;
+  - if [ "$TRAVIS_PHP_VERSION" == "7.2" ] && [ "$SYMFONY_VERSION" == "4.3.*" ]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi;

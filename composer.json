@@ -18,14 +18,14 @@
     }
   ],
   "require": {
-    "php": "^5.6|^7.0",
+    "php": "^7.0",
     "mediamonks/rest-api": "^1.0"
   },
   "require-dev": {
-    "symfony/symfony": "^2.7|^3.0|^4.0",
+    "symfony/symfony": "^4.0",
     "sensio/framework-extra-bundle": "^3.0|^4.0|^5.0",
-    "phpunit/phpunit": "~5.0",
-    "mockery/mockery": "^0.9.4",
+    "phpunit/phpunit": "^5.0",
+    "mockery/mockery": "^1.0",
     "matthiasnoback/symfony-dependency-injection-test": "^1.0"
   },
   "suggest": {

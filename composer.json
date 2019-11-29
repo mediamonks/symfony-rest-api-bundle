@@ -18,12 +18,12 @@
     }
   ],
   "require": {
-    "php": "^7.0",
-    "mediamonks/rest-api": "^1.0"
+    "php": "^7.1",
+    "mediamonks/rest-api": "^2.0"
   },
   "require-dev": {
-    "symfony/symfony": "^4.0",
-    "sensio/framework-extra-bundle": "^3.0|^4.0|^5.0",
+    "symfony/symfony": "^4.4|^5.0",
+    "sensio/framework-extra-bundle": "^4.4|^5.0",
     "phpunit/phpunit": "^5.0",
     "mockery/mockery": "^1.0",
     "matthiasnoback/symfony-dependency-injection-test": "^1.0"
@@ -43,7 +43,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "3.0-dev"
+      "dev-master": "4.0-dev"
     }
   }
 }

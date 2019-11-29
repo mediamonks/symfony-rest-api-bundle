@@ -6,10 +6,11 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use MediaMonks\RestApi\Request\PathRequestMatcher;
 use MediaMonks\RestApiBundle\DependencyInjection\MediaMonksRestApiExtension;
 use Mockery as m;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class MediaMonksRestApiExtensionTest extends AbstractExtensionTestCase
 {
-    protected function getContainerExtensions()
+    protected function getContainerExtensions(): array
     {
         return [
             new MediaMonksRestApiExtension(),
@@ -48,7 +49,7 @@ class MediaMonksRestApiExtensionTest extends AbstractExtensionTestCase
 
     public function testGetDebugFromConfig()
     {
-        $containerBuilder = m::mock('Symfony\Component\DependencyInjection\ContainerBuilder');
+        $containerBuilder = m::mock(ContainerBuilder::class);
 
         $container = new MediaMonksRestApiExtension();
         $this->assertTrue($container->getDebug(['debug' => true], $containerBuilder));
@@ -56,7 +57,7 @@ class MediaMonksRestApiExtensionTest extends AbstractExtensionTestCase
 
     public function testGetDebugFromKernel()
     {
-        $containerBuilder = m::mock('Symfony\Component\DependencyInjection\ContainerBuilder');
+        $containerBuilder = m::mock(ContainerBuilder::class);
         $containerBuilder->shouldReceive('hasParameter')->withArgs(['kernel.debug'])->andReturn(true);
         $containerBuilder->shouldReceive('getParameter')->withArgs(['kernel.debug'])->andReturn(true);
 

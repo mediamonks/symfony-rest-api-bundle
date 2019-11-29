@@ -2,15 +2,17 @@
 
 namespace MediaMonks\RestApiBundle\Tests;
 
+use MediaMonks\RestApiBundle\DependencyInjection\MediaMonksRestApiExtension;
 use MediaMonks\RestApiBundle\MediaMonksRestApiBundle;
+use PHPUnit\Framework\TestCase;
 
-class MediaMonksRestApiBundleTest extends \PHPUnit_Framework_TestCase
+class MediaMonksRestApiBundleTest extends TestCase
 {
     public function testGetContainerExtension()
     {
         $bundle = new MediaMonksRestApiBundle();
         $this->assertInstanceOf(
-            '\MediaMonks\RestApiBundle\DependencyInjection\MediaMonksRestApiExtension',
+            MediaMonksRestApiExtension::class,
             $bundle->getContainerExtension()
         );
     }

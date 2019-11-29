@@ -4,7 +4,6 @@
     bootstrap="Tests/bootstrap.php"
     colors="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
-    beStrictAboutTestSize="true"
     beStrictAboutChangesToGlobalState="true">
     <testsuites>
         <testsuite name="MediaMonksRestApiBundle">
@@ -13,8 +12,8 @@
     </testsuites>
 
     <php>
-        <server name="KERNEL_DIR" value="/Tests/Functional/app/" />
-        <server name="KERNEL_CLASS" value="MediaMonks\RestApiBundle\Tests\Functional\app\AppKernel" />
+        <server name="KERNEL_DIR" value="./Tests/Functional/src" />
+        <server name="KERNEL_CLASS" value="App\Kernel" />
     </php>
 
     <filter>

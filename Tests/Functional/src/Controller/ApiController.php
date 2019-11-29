@@ -1,13 +1,11 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\Form\Type\TestType;
+use App\Form\Type\TestType;
 use MediaMonks\RestApi\Exception\ErrorField;
 use MediaMonks\RestApi\Exception\ValidationException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,13 +13,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use MediaMonks\RestApi\Exception\FormValidationException;
 use MediaMonks\RestApi\Response\CursorPaginatedResponse;
 use MediaMonks\RestApi\Response\OffsetPaginatedResponse;
-use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/api/")
  */
-class ApiController extends Controller
+class ApiController extends AbstractController
 {
+
     /**
      * @Route("empty")
      */
@@ -59,8 +58,9 @@ class ApiController extends Controller
      */
     public function objectAction()
     {
-        $object      = new \stdClass();
+        $object = new \stdClass();
         $object->foo = 'bar';
+
         return $object;
     }
 
@@ -93,7 +93,10 @@ class ApiController extends Controller
      */
     public function symfonyRedirectAction()
     {
-        return $this->redirect('http://www.mediamonks.com', Response::HTTP_SEE_OTHER);
+        return $this->redirect(
+            'http://www.mediamonks.com',
+            Response::HTTP_SEE_OTHER
+        );
     }
 
     /**
@@ -109,7 +112,9 @@ class ApiController extends Controller
      */
     public function exceptionInvalidHttpStatusCodeAction()
     {
-        throw new \Exception('foo', 900); // will return 500 Internal Server Error
+        throw new \Exception(
+            'foo', 900
+        ); // will return 500 Internal Server Error
     }
 
     /**
@@ -117,7 +122,9 @@ class ApiController extends Controller
      */
     public function exceptionValidCodeAction()
     {
-        throw new \Exception('foo', Response::HTTP_BAD_REQUEST); // will return 400 Bad Request
+        throw new \Exception(
+            'foo', Response::HTTP_BAD_REQUEST
+        ); // will return 400 Bad Request
     }
 
     /**
@@ -129,43 +136,33 @@ class ApiController extends Controller
     }
 
     /**
-     * @Route("empty-form")
-     * @Method(methods={"POST"})
+     * @Route("empty-form", methods={"POST"})
      */
     public function emptyFormValidationExceptionAction()
     {
         $form = $this->createFormBuilder()->getForm();
         $form->submit([]);
-        if (!$form->isValid()) {
-            $form->addError(new FormError('Some general error at root level.'));
-            throw new FormValidationException($form);
-        }
-        return new Response('foobar', Response::HTTP_CREATED);
+        $form->addError(new FormError('Some general error at root level.'));
+        throw new FormValidationException($form);
     }
 
     /**
      * @param Request $request
+     *
      * @return Response
      * @throws FormValidationException
      *
-     * @Route("form")
-     * @Method(methods={"POST"})
+     * @Route("form", methods={"POST"})
      */
     public function formValidationExceptionAction(Request $request)
     {
-        if (version_compare(Kernel::VERSION, '2.8.0', '>=')) {
-            $form = 'AppBundle\Form\Type\TestType';
-        }
-        else {
-            $form = new TestType();
-        }
-
-        $form = $this->createForm($form);
+        $form = $this->createForm(TestType::class);
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
             throw new FormValidationException($form);
         }
+
         return new Response('foobar', Response::HTTP_CREATED);
     }
 
@@ -174,8 +171,10 @@ class ApiController extends Controller
      */
     public function validationExceptionAction()
     {
-        throw new ValidationException([
-            new ErrorField('field', 'code', 'message')
-        ]);
+        throw new ValidationException(
+            [
+                new ErrorField('field', 'code', 'message'),
+            ]
+        );
     }
 }

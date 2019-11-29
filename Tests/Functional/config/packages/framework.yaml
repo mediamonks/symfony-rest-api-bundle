@@ -1,0 +1,12 @@
+parameters:
+    kernel.secret: "MediaMonksRestApiBundleSecret"
+
+framework:
+    test: ~
+    secret: "%kernel.secret%"
+    form: ~
+    default_locale: "en"
+    session:
+        handler_id: ~
+    fragments: ~
+    http_method_override: true

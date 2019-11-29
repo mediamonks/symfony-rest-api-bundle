@@ -15,8 +15,8 @@ final class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('mediamonks_rest_api');
+        $treeBuilder = new TreeBuilder('mediamonks_rest_api');
+        $rootNode = $treeBuilder->getRootNode();
 
         $this->addDebugNode($rootNode);
         $this->addRequestMatcherNode($rootNode);

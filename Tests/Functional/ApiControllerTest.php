@@ -2,30 +2,22 @@
 
 namespace MediaMonks\RestApiBundle\Tests\Functional;
 
-use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Yaml\Parser;
 
 class ApiControllerTest extends WebTestCase
 {
-    // make compatible with older versions of symfony
-    protected static function getKernelClass()
-    {
-        return 'MediaMonks\RestApiBundle\Tests\Functional\app\AppKernel';
-    }
-
     public function testEmptyResponse()
     {
         $response = $this->requestGet('empty', Response::HTTP_NO_CONTENT);
-        $this->assertEquals([], $response);
+        $this->assertEquals(null, $response);
     }
 
     public function testStringResponse()
     {
         $response = $this->requestGet('string');
         $this->assertArrayHasKey('data', $response);
-        $this->assertInternalType('string', $response['data']);
+        $this->assertIsScalar( $response['data']);
         $this->assertEquals('foobar', $response['data']);
     }
 
@@ -33,7 +25,7 @@ class ApiControllerTest extends WebTestCase
     {
         $response = $this->requestGet('integer');
         $this->assertArrayHasKey('data', $response);
-        $this->assertInternalType('integer', $response['data']);
+        $this->assertIsInt($response['data']);
         $this->assertEquals(42, $response['data']);
     }
 
@@ -41,7 +33,7 @@ class ApiControllerTest extends WebTestCase
     {
         $response = $this->requestGet('array');
         $this->assertArrayHasKey('data', $response);
-        $this->assertInternalType('array', $response['data']);
+        $this->assertIsArray($response['data']);
         $this->assertEquals(['foo', 'bar'], $response['data']);
     }
 
@@ -49,21 +41,21 @@ class ApiControllerTest extends WebTestCase
     {
         $response = $this->requestGet('object');
         $this->assertArrayHasKey('data', $response);
-        $this->assertInternalType('array', $response['data']);
+        $this->assertIsArray($response['data']);
     }
 
     public function testSymfonyResponse()
     {
         $response = $this->requestGet('symfony', Response::HTTP_CREATED);
         $this->assertArrayHasKey('data', $response);
-        $this->assertInternalType('string', $response['data']);
+        $this->assertIsScalar($response['data']);
         $this->assertEquals('foobar', $response['data']);
     }
 
     public function testOffsetPaginated()
     {
         $response = $this->requestGet('paginated/offset');
-        $this->assertInternalType('string', $response['data']);
+        $this->assertIsScalar($response['data']);
         $this->assertArrayHasKey('data', $response);
         $this->assertEquals('foobar', $response['data']);
         $this->assertArrayHasKey('pagination', $response);
@@ -78,7 +70,7 @@ class ApiControllerTest extends WebTestCase
     public function testCursorPaginated()
     {
         $response = $this->requestGet('paginated/cursor');
-        $this->assertInternalType('string', $response['data']);
+        $this->assertIsScalar($response['data']);
         $this->assertArrayHasKey('data', $response);
         $this->assertEquals('foobar', $response['data']);
         $this->assertArrayHasKey('pagination', $response);
@@ -126,12 +118,8 @@ class ApiControllerTest extends WebTestCase
     public function testEmptyFormValidationException()
     {
         $response = $this->requestPost('empty-form', [], Response::HTTP_BAD_REQUEST);
+
         $this->assertErrorResponse($response, true, [
-            [
-                'field'   => '#',
-                'code'    => 'error.form.validation.csrf',
-                'message' => 'The CSRF token is invalid. Please try to resubmit the form.'
-            ],
             [
                 'field'   => '#',
                 'code'    => 'error.form.validation.general',
@@ -192,20 +180,27 @@ class ApiControllerTest extends WebTestCase
         $this->assertEquals('No route found for "GET /api/non-existing-path"', $response['error']['message']);
     }
 
-    public function testForceStatusCode200()
+    /**
+     * @dataProvider forceStatus200Provider
+     *
+     * @param string $path
+     * @param int $statusCode
+     */
+    public function testForceStatusCode200(string $path, int $statusCode)
     {
         $headers = [
             'HTTP_X-Force-Status-Code-200' => 1
         ];
 
-        $response = $this->requestGet('empty', Response::HTTP_OK, $headers);
-        $this->assertEquals($response['statusCode'], Response::HTTP_NO_CONTENT);
+        $response = $this->requestGet($path, Response::HTTP_OK, $headers);
+        $this->assertEquals($response['statusCode'], $statusCode);
+    }
 
-        $response = $this->requestGet('string', Response::HTTP_OK, $headers);
-        $this->assertEquals($response['statusCode'], Response::HTTP_OK);
-
-        $response = $this->requestGet('symfony', Response::HTTP_OK, $headers);
-        $this->assertEquals($response['statusCode'], Response::HTTP_CREATED);
+    public function forceStatus200Provider()
+    {
+        yield ['empty', Response::HTTP_NO_CONTENT];
+        yield ['string', Response::HTTP_OK];
+        yield ['symfony', Response::HTTP_CREATED];
     }
 
     /**
@@ -217,28 +212,28 @@ class ApiControllerTest extends WebTestCase
     {
         $this->assertArrayHasKey('error', $response);
         $this->assertArrayHasKey('code', $response['error']);
-        $this->assertInternalType('string', $response['error']['code']);
+        $this->assertIsScalar( $response['error']['code']);
         $this->assertArrayHasKey('message', $response['error']);
-        $this->assertInternalType('string', $response['error']['message']);
+        $this->assertIsScalar($response['error']['message']);
 
         if ($fields) {
             $this->assertArrayHasKey('fields', $response['error']);
-            $this->assertInternalType('array', $response['error']['fields']);
+            $this->assertIsArray($response['error']['fields']);
 
             $i = 0;
             foreach ($response['error']['fields'] as $field) {
                 $this->assertArrayHasKey('field', $field);
-                $this->assertInternalType('string', $field['field']);
+                $this->assertIsScalar($field['field']);
                 if (!empty($fieldData[$i]['field'])) {
                     $this->assertEquals($fieldData[$i]['field'], $field['field']);
                 }
                 $this->assertArrayHasKey('code', $field);
-                $this->assertInternalType('string', $field['code']);
+                $this->assertIsScalar($field['code']);
                 if (!empty($fieldData[$i]['code'])) {
                     $this->assertEquals($fieldData[$i]['code'], $field['code']);
                 }
                 $this->assertArrayHasKey('message', $field);
-                $this->assertInternalType('string', $field['message']);
+                $this->assertIsScalar( $field['message']);
                 if (!empty($fieldData[$i]['message'])) {
                     $this->assertEquals($fieldData[$i]['message'], $field['message']);
                 }

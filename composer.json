@@ -19,7 +19,7 @@
   ],
   "require": {
     "php": "^7.1",
-    "mediamonks/rest-api": "^2.0"
+    "mediamonks/rest-api": "^2.1"
   },
   "require-dev": {
     "symfony/symfony": "^4.4|^5.0",

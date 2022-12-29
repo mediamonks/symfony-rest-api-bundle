@@ -100,10 +100,7 @@ class MediaMonksRestApiExtension extends Extension implements ExtensionInterface
             ->replaceArgument(0, new Reference($config['response_model']));
     }
 
-    /**
-     * @return string
-     */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'mediamonks_rest_api';
     }

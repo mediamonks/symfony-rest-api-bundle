@@ -1,3 +1,65 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+empty:
+  path: /api/empty
+  controller: App\Controller\ApiController::emptyAction
+
+string:
+  path: /api/string
+  controller: App\Controller\ApiController::stringAction
+
+integer:
+  path: /api/integer
+  controller: App\Controller\ApiController::integerAction
+
+array:
+  path: /api/array
+  controller: App\Controller\ApiController::arrayAction
+
+object:
+  path: /api/object
+  controller: App\Controller\ApiController::objectAction
+
+symfony:
+  path: /api/symfony
+  controller: App\Controller\ApiController::symfonyResponseAction
+
+paginated_offset:
+  path: /api/paginated/offset
+  controller: App\Controller\ApiController::offsetPaginatedAction
+
+paginated_cursor:
+  path: /api/paginated/cursor
+  controller: App\Controller\ApiController::cursorPaginatedAction
+
+redirect:
+  path: /api/redirect
+  controller: App\Controller\ApiController::symfonyRedirectAction
+
+exception:
+  path: /api/exception
+  controller: App\Controller\ApiController::exceptionAction
+
+exception_invalid_http_status_code:
+  path: /api/exception-invalid-http-status-code
+  controller: App\Controller\ApiController::exceptionInvalidHttpStatusCodeAction
+
+exception_valid_http_status_code:
+  path: /api/exception-valid-http-status-code
+  controller: App\Controller\ApiController::exceptionValidCodeAction
+
+exception_not_found:
+  path: /api/exception-not-found
+  controller: App\Controller\ApiController::symfonyNotFoundExceptionAction
+
+empty_form:
+  path: /api/empty-form
+  controller: App\Controller\ApiController::emptyFormValidationExceptionAction
+  methods: POST
+
+form:
+  path: /api/form
+  controller: App\Controller\ApiController::formValidationExceptionAction
+  methods: POST
+
+exception_validation:
+  path: /api/exception-validation
+  controller: App\Controller\ApiController::validationExceptionAction

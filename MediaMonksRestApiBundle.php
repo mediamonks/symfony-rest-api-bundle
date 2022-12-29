@@ -7,10 +7,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class MediaMonksRestApiBundle extends Bundle
 {
-    /**
-     * @inheritdoc
-     */
-    public function getContainerExtension()
+    public function getContainerExtension(): ?MediaMonksRestApiExtension
     {
         if (null === $this->extension) {
             $this->extension = new MediaMonksRestApiExtension();

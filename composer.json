@@ -22,11 +22,12 @@
     "mediamonks/rest-api": "^2.3"
   },
   "require-dev": {
-    "symfony/symfony": "^5.0",
+    "symfony/symfony": "^5.0||^6.0",
     "phpunit/phpunit": "^9.5",
     "mockery/mockery": "^1.4",
     "matthiasnoback/symfony-dependency-injection-test": "^4.0",
-    "monolog/monolog": "^2.8||^3.2"
+    "monolog/monolog": "^2.8||^3.2",
+    "masterminds/html5": "^2.7"
   },
   "suggest": {
     "jms/serializer-bundle": "Use JMS Serializer as a serializer"

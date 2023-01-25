@@ -13,7 +13,7 @@ class ApiControllerTest extends WebTestCase
         $this->assertEquals(null, $response);
     }
 
-    public function testStringRespOonse()
+    public function testStringResponse()
     {
         $response = $this->requestGet('string');
         $this->assertArrayHasKey('data', $response);

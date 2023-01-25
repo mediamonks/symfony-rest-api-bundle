@@ -13,49 +13,30 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use MediaMonks\RestApi\Exception\FormValidationException;
 use MediaMonks\RestApi\Response\CursorPaginatedResponse;
 use MediaMonks\RestApi\Response\OffsetPaginatedResponse;
-use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/")
- */
 class ApiController extends AbstractController
 {
 
-    /**
-     * @Route("empty")
-     */
     public function emptyAction()
     {
-        return;
+        return null;
     }
 
-    /**
-     * @Route("string")
-     */
     public function stringAction()
     {
         return 'foobar';
     }
 
-    /**
-     * @Route("integer")
-     */
     public function integerAction()
     {
         return 42;
     }
 
-    /**
-     * @Route("array")
-     */
     public function arrayAction()
     {
         return ['foo', 'bar'];
     }
 
-    /**
-     * @Route("object")
-     */
     public function objectAction()
     {
         $object = new \stdClass();
@@ -64,33 +45,21 @@ class ApiController extends AbstractController
         return $object;
     }
 
-    /**
-     * @Route("symfony")
-     */
     public function symfonyResponseAction()
     {
         return new Response('foobar', Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("paginated/offset")
-     */
     public function offsetPaginatedAction()
     {
         return new OffsetPaginatedResponse('foobar', 1, 2, 3);
     }
 
-    /**
-     * @Route("paginated/cursor")
-     */
     public function cursorPaginatedAction()
     {
         return new CursorPaginatedResponse('foobar', 1, 2, 3, 4);
     }
 
-    /**
-     * @Route("redirect")
-     */
     public function symfonyRedirectAction()
     {
         return $this->redirect(
@@ -99,17 +68,11 @@ class ApiController extends AbstractController
         );
     }
 
-    /**
-     * @Route("exception")
-     */
     public function exceptionAction()
     {
         throw new \Exception('Foo'); // will return 500 Internal Server Error
     }
 
-    /**
-     * @Route("exception-invalid-http-status-code")
-     */
     public function exceptionInvalidHttpStatusCodeAction()
     {
         throw new \Exception(
@@ -117,9 +80,6 @@ class ApiController extends AbstractController
         ); // will return 500 Internal Server Error
     }
 
-    /**
-     * @Route("exception-valid-http-status-code")
-     */
     public function exceptionValidCodeAction()
     {
         throw new \Exception(
@@ -127,17 +87,11 @@ class ApiController extends AbstractController
         ); // will return 400 Bad Request
     }
 
-    /**
-     * @Route("exception-not-found")
-     */
     public function symfonyNotFoundExceptionAction()
     {
         throw new NotFoundHttpException('foo'); // will return 404 Not Found
     }
 
-    /**
-     * @Route("empty-form", methods={"POST"})
-     */
     public function emptyFormValidationExceptionAction()
     {
         $form = $this->createFormBuilder()->getForm();
@@ -152,7 +106,6 @@ class ApiController extends AbstractController
      * @return Response
      * @throws FormValidationException
      *
-     * @Route("form", methods={"POST"})
      */
     public function formValidationExceptionAction(Request $request)
     {
@@ -166,9 +119,6 @@ class ApiController extends AbstractController
         return new Response('foobar', Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("exception-validation")
-     */
     public function validationExceptionAction()
     {
         throw new ValidationException(

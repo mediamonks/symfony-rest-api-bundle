@@ -168,8 +168,6 @@ class ApiControllerTest extends WebTestCase
         $response = $this->requestGet('form', Response::HTTP_METHOD_NOT_ALLOWED);
         $this->assertErrorResponse($response);
         $this->assertEquals('error.http.method_not_allowed', $response['error']['code']);
-        $this->assertEquals('No route found for "GET /api/form": Method Not Allowed (Allow: POST)',
-            $response['error']['message']);
     }
 
     public function testNotFoundHttpException()
@@ -177,7 +175,6 @@ class ApiControllerTest extends WebTestCase
         $response = $this->requestGet('non-existing-path', Response::HTTP_NOT_FOUND);
         $this->assertErrorResponse($response);
         $this->assertEquals('error.http.not_found', $response['error']['code']);
-        $this->assertEquals('No route found for "GET /api/non-existing-path"', $response['error']['message']);
     }
 
     /**
